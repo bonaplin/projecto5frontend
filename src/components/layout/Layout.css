@@ -1,0 +1,23 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  align-self: flex-end;
+}
+
+.small-text {
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}

@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--secondary-color);
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header__left,
+.header__center,
+.header__right {
+  display: flex;
+  align-items: center;
+}
+
+.header__left > .burger-icon,
+.header__right > .profile-icon {
+  margin-right: 20px;
+}
+
+.header__center {
+  flex: 1;
+  margin: 0 20px;
+}
+
+.header__center > input {
+  flex: 1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+}
+img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.header-name {
+  margin-right: 2rem;
+  font-weight: bold;
+  text-shadow: #fff 0px 0px 1px;
+}
+.profile-icon,
+#logo-menu {
+  border: var(--primary-color) 2px solid;
+  cursor: pointer;
+  transition: transform 0.5s ease;
+}
+
+#logo-menu:hover {
+  opacity: 0.4;
+  transform: rotate(360deg);
+}
