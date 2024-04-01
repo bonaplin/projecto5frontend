@@ -10,12 +10,45 @@ import { tsuccess, terror, twarn } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
 
 function Users() {
-  let userData = userStore((state) => state.user);
   const [isChange, setIsChange] = useState(false); //to change the fetch
   const role = userStore.getState().role;
   const token = userStore.getState().token;
   // User selected
   const [editUser, setEditUser] = useState(null);
+  const [userData, setUserData] = useState([]);
+
+  const fetchUsers = async () => {
+    const response = await fetch(
+      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
+      {
+        headers: {
+          token: token,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setUserData(data);
+      userStore.getState().setUsers(data);
+      // tsuccess("Users fetched successfully");
+    } else {
+      switch (response.status) {
+        case 401:
+          terror(data.message); // Unauthorized
+          break;
+        default:
+          // twarn("An error occurred: " + data.message);
+          break;
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [isChange]); // Add dependencies here if any
+
 
   /* ******* ******* ADD USER BUTTON  ***************** *****/
   const [isModalOpen, setModalOpen] = useState(false);
@@ -257,24 +290,7 @@ function Users() {
     userData = [""];
   }
 
-  useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch(
-        "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            token: token,
-          },
-        }
-      );
-      userData = await response.json();
-      userStore.getState().setUsers(userData);
-    }
-
-    fetchUsers();
-  }, [isChange]); // Dependency array includes editUser, so useEffect will run whenever editUser changes
+ 
 
   return (
     <>

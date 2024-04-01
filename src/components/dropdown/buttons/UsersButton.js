@@ -7,22 +7,7 @@ export default function UsersButton() {
   const token = userStore.getState().token;
 
   async function handleClick() {
-    // console.log("UsersButton click");
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
-    let userData = await response.json();
-
-    // Filter the data
-    userStore.getState().setUsers(userData); // Update the store
-    // console.log(userData); // Log the filtered userData to the console
+  
     navigate("/users");
   }
   // console.log("UsersButton");
