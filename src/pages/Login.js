@@ -10,7 +10,8 @@ import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import tcicon from "../assets/icon/tccolor.png";
 import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
-
+import ResetForm from "../components/formInput/ResetFormInput";
+import LoginForm from "../components/formInput/LoginForm";
 function Login() {
   const [inputs, setInputs] = useState({
     username: "",
@@ -75,7 +76,7 @@ function Login() {
 
   const handlePasswordReset = (event) => {
     event.preventDefault();
-    
+    console.log(inputs.email)
     fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`, {
       method: "POST",
       headers: {
@@ -91,41 +92,6 @@ function Login() {
   };
 
 
-  const LoginForm = (
-    <form data-testid="login-form" onSubmit={handleSubmit}>
-      <FormInput
-        icon={<Person2OutlinedIcon />}
-        placeholder={"Enter your username"}
-        type="text"
-        name="username"
-        value={inputs.username}
-        onChange={handleChange}
-      />
-      <FormInput
-        placeholder="Enter your password"
-        type="password"
-        name="password"
-        value={inputs.password}
-        onChange={handleChange}
-      />
-      <input type="submit" value="Login" />
-    </form>
-  );
-
-  const ResetPasswordForm = (
-    <form onSubmit={handlePasswordReset}>
-      <FormInput
-        placeholder="Enter your email"
-        type="email"
-        name="email"
-        value={inputs.email}
-        onChange={handleChange}
-      />
-      <input type="submit" value="Reset Password" />
-    </form>
-  );
-
-
   return (
     <Layout data-testid="login">
       <div className="login-outer-container">
@@ -134,7 +100,9 @@ function Login() {
             <h1>{isResettingPassword ? 'Reset Password' : 'Login'}</h1>
             <img src={tcicon} alt="" />
           </div>
-          {isResettingPassword ? ResetPasswordForm : LoginForm}
+          {isResettingPassword ? 
+            <ResetForm inputs={inputs} handleChange={handleChange} handlePasswordReset={handlePasswordReset} /> : 
+            <LoginForm inputs={inputs} handleChange={handleChange} handleSubmit={handleSubmit} />}
           <p className="small-text">
             New to ScrumBoard?{" "}
             <Link

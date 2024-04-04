@@ -24,6 +24,8 @@ const FormInput = ({ placeholder, type, name, value, onChange }) => {
         return <LockIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "password-new":
         return <LockIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
+        case "passwordAgain":
+        return <LockIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "email":
         return (
           <EmailIcon style={{ marginRight: "10px", marginLeft: "10px" }} />

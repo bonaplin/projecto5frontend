@@ -15,7 +15,10 @@ import Users from "./pages/Users";
 import EditProfile from "./pages/EditProfile";
 import DeletedTasks from "./pages/DeletedTasks";
 import ScrumBoard from "./pages/ScrumBoard";
+import ResetPassword from "./pages/ResetPassword";
+import ConfirmAccount from "./pages/ConfirmAccount";
 import { ToastContainer } from "react-toastify";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -36,6 +39,10 @@ root.render(
       <Route path="/deletedtasks" element={<DeletedTasks />} />
 
       <Route path="/footer" element={<Footer />} />
+
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/confirm-account/:token" element={<ConfirmAccount />} />
+
     </Routes>
     <ToastContainer />
   </Router>
