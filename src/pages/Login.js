@@ -22,6 +22,8 @@ function Login() {
   const updateToken = userStore((state) => state.updateToken);
   const navigate = useNavigate();
 
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -70,32 +72,69 @@ function Login() {
         terror("There was an error: " + error.message);
       });
   };
+
+  const handlePasswordReset = (event) => {
+    event.preventDefault();
+    
+    fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+  }).then(async (response) => {
+    if(response.ok) {
+      tsuccess("Password reset email sent");
+    }
+  }).catch((error) => {
+    console.error("There was an error: " + error.message);
+  });
+  };
+
+
+  const LoginForm = (
+    <form data-testid="login-form" onSubmit={handleSubmit}>
+      <FormInput
+        icon={<Person2OutlinedIcon />}
+        placeholder={"Enter your username"}
+        type="text"
+        name="username"
+        value={inputs.username}
+        onChange={handleChange}
+      />
+      <FormInput
+        placeholder="Enter your password"
+        type="password"
+        name="password"
+        value={inputs.password}
+        onChange={handleChange}
+      />
+      <input type="submit" value="Login" />
+    </form>
+  );
+
+  const ResetPasswordForm = (
+    <form onSubmit={handlePasswordReset}>
+      <FormInput
+        placeholder="Enter your email"
+        type="email"
+        name="email"
+        value={inputs.email}
+        onChange={handleChange}
+      />
+      <input type="submit" value="Reset Password" />
+    </form>
+  );
+
+
   return (
     <Layout data-testid="login">
       <div className="login-outer-container">
         <div className="login-page-wrap">
           <div className="header-profile">
-            <h1>Login</h1>
+            <h1>{isResettingPassword ? 'Reset Password' : 'Login'}</h1>
             <img src={tcicon} alt="" />
           </div>
-          <form data-testid="login-form" onSubmit={handleSubmit}>
-            <FormInput
-              icon={<Person2OutlinedIcon />}
-              placeholder={"Enter your username"}
-              type="text"
-              name="username"
-              value={inputs.username}
-              onChange={handleChange}
-            />
-            <FormInput
-              placeholder="Enter your password"
-              type="password"
-              name="password"
-              value={inputs.password}
-              onChange={handleChange}
-            />
-            <input type="submit" value="Login" />
-          </form>
+          {isResettingPassword ? ResetPasswordForm : LoginForm}
           <p className="small-text">
             New to ScrumBoard?{" "}
             <Link
@@ -105,6 +144,11 @@ function Login() {
             >
               Create an account
             </Link>
+            <div>
+              <button onClick={() => setIsResettingPassword(!isResettingPassword)}>
+                {isResettingPassword ? 'Back to Login' : 'Reset Password'}
+              </button>
+            </div>
           </p>
         </div>
       </div>
