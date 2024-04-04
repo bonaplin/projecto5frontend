@@ -294,7 +294,7 @@ export default function ScrumBoard() {
         }
       );
       if (!response.ok) {
-        terror("Failed to fetch users:", response.statusText);
+        terror("Failed to fetch categories:", response.statusText);
         return;
       }
       const categories = await response.json();

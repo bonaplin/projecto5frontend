@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Layout from "../components/layout/Layout";
 import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 import tcicon from "../assets/icon/tccolor.png";
 import "react-notifications/lib/notifications.css";
@@ -10,6 +11,7 @@ import { useParams } from "react-router-dom";
 import ResetPasswordInput from "../components/formInput/ResetPasswordInput";
 
 function ResetPassword() {
+  const navigate = useNavigate();
     const { token } = useParams();
     const [inputs, setInputs] = useState({
     password: "",
@@ -42,7 +44,8 @@ function ResetPassword() {
             },            
     }).then(async (response) => {
     if(response.ok) {
-      tsuccess("Password reset email sent");
+      tsuccess("Password reset sucessful. Please login to continue.");
+      navigate("/login");
     }
   }).catch((error) => {
     console.error("There was an error: " + error.message);
