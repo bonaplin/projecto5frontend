@@ -17,8 +17,10 @@ import DeletedTasks from "./pages/DeletedTasks";
 import ScrumBoard from "./pages/ScrumBoard";
 import ResetPassword from "./pages/ResetPassword";
 import ConfirmAccount from "./pages/ConfirmAccount";
+import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
-
+import Forbidden from "./pages/Forbiden";
+import PrivateRoute from "./PrivateRoute";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -28,21 +30,59 @@ root.render(
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/singup" element={<Singup />} />
-
-      <Route path="/header" element={<Header />} />
-      <Route path="/scrum-board" element={<ScrumBoard />} />
-      <Route path="/users" element={<Users />} />
-
-      <Route path="/edit-profile" element={<EditProfile />} />
-      <Route path="/categories" element={<Categories />} />
-
-      <Route path="/deletedtasks" element={<DeletedTasks />} />
-
+      <Route path="/forbidden" element={<Forbidden />} />
+      <Route
+        path="/header"
+        element={
+          <PrivateRoute>
+            <Header />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/scrum-board"
+        element={
+          <PrivateRoute>
+            <ScrumBoard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <PrivateRoute>
+            <Users />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/users/:selectedUser" element={<Profile />} />
+      <Route
+        path="/edit-profile"
+        element={
+          <PrivateRoute>
+            <EditProfile />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <PrivateRoute>
+            <Categories />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/deletedtasks"
+        element={
+          <PrivateRoute>
+            <DeletedTasks />
+          </PrivateRoute>
+        }
+      />
       <Route path="/footer" element={<Footer />} />
-
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/confirm-account/:token" element={<ConfirmAccount />} />
-
     </Routes>
     <ToastContainer />
   </Router>

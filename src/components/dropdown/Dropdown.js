@@ -5,6 +5,7 @@ const Dropdown = ({ data, onChange, type, value }) => {
     onChange(e.target.value);
   };
   return (
+    
     <select
       value={value || ""}
       onChange={handleChange}
@@ -13,7 +14,8 @@ const Dropdown = ({ data, onChange, type, value }) => {
       <option value="" disabled>
         {type}
       </option>
-      {data.map((item, index) => (
+      {Array.isArray(data) &&
+      data.map((item, index) => (
         <option key={index} value={item.value}>
           {item}
         </option>

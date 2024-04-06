@@ -12,6 +12,7 @@ import ModalYesNo from "../components/modal/ModalYesNo";
 import { categoriesStore } from "../stores/CategoriesStore";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
+import { South } from "@mui/icons-material";
 
 function Categories() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function Categories() {
   const [categorieData, setCategorieData] = useState([]);
   const [editCategory, setEditCategory] = useState(null);
 
+  console.log("Categories token", token);
   const fetchCategories = async () => {
     const response = await fetch(
       "http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/",

@@ -1,12 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormInput from "../components/formInput/FormInput";
 import Layout from "../components/layout/Layout";
 import "./Login.css";
 import { userStore } from "../stores/UserStore";
 import { Link } from "react-router-dom";
-import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import tcicon from "../assets/icon/tccolor.png";
 import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
@@ -21,6 +19,7 @@ function Login() {
   const updateUsername = userStore((state) => state.updateUsername);
   const updateRole = userStore((state) => state.updateRole);
   const updateToken = userStore((state) => state.updateToken);
+  const updateConfirm = userStore((state) => state.updateConfirm);
   const navigate = useNavigate();
 
   const [isResettingPassword, setIsResettingPassword] = useState(false);
@@ -53,6 +52,8 @@ function Login() {
           updateUsername(data.username);
           updateRole(data.role);
           updateToken(data.token);
+          updateConfirm(data.confirmed);
+          console.log(data);
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
         } else {
@@ -76,48 +77,55 @@ function Login() {
 
   const handlePasswordReset = (event) => {
     event.preventDefault();
-    console.log(inputs.email)
-    fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-  }).then(async (response) => {
-    if(response.ok) {
-      tsuccess("Password reset email sent");
-    }
-  }).catch((error) => {
-    console.error("There was an error: " + error.message);
-  });
+    console.log(inputs.email);
+    fetch(
+      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        if (response.ok) {
+          tsuccess("Password reset email sent");
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error: " + error.message);
+      });
   };
-
 
   return (
     <Layout data-testid="login">
       <div className="login-outer-container">
         <div className="login-page-wrap">
           <div className="header-profile">
-            <h1>{isResettingPassword ? 'Reset Password' : 'Login'}</h1>
+            <h1>{isResettingPassword ? "Reset Password" : "Login"}</h1>
             <img src={tcicon} alt="" />
           </div>
-          {isResettingPassword ? 
-            <ResetForm inputs={inputs} handleChange={handleChange} handlePasswordReset={handlePasswordReset} /> : 
-            <LoginForm inputs={inputs} handleChange={handleChange} handleSubmit={handleSubmit} />}
-          <p className="small-text">
-            New to ScrumBoard?{" "}
-            <Link
-              to="/singup"
-              className="signup-link"
-              style={{ color: "blue" }}
+          {isResettingPassword ? (
+            <ResetForm
+              inputs={inputs}
+              handleChange={handleChange}
+              handlePasswordReset={handlePasswordReset}
+            />
+          ) : (
+            <LoginForm
+              inputs={inputs}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+            />
+          )}
+
+          <div>
+            <button
+              onClick={() => setIsResettingPassword(!isResettingPassword)}
             >
-              Create an account
-            </Link>
-            <div>
-              <button onClick={() => setIsResettingPassword(!isResettingPassword)}>
-                {isResettingPassword ? 'Back to Login' : 'Reset Password'}
-              </button>
-            </div>
-          </p>
+              {isResettingPassword ? "Back to Login" : "Reset Password"}
+            </button>
+          </div>
         </div>
       </div>
     </Layout>

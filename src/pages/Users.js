@@ -265,7 +265,7 @@ function Users() {
     "phone",
     "role",
     "active",
-    "actions",
+    "actions"
   ];
 
   if (role === "sm") {

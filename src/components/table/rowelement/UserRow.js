@@ -1,9 +1,7 @@
 import React from "react";
 import Delete from "../../icon-buttons/delete.js";
 import Edit from "../../icon-buttons/edit.js";
-import Restore from "../../icon-buttons/restore.js";
 import DeleteTask from "../../icon-buttons/delete-tasks.js";
-import CloseIcon from "@mui/icons-material/Close";
 import "./Slider.css";
 const UserRow = ({
   item,
@@ -15,8 +13,19 @@ const UserRow = ({
 }) => {
   // Define the keys in the order you want them to be displayed
 
-  return (
-    <tr>
+
+  let color ="";
+
+ 
+  if (!item.confirmed) {
+    color = "#FFFF99"; // soft yellow
+  } else if (!item.active) {
+    color = "#FF7F7F"; // soft red
+  } else {
+    color = ""; // default color
+  }
+    return (
+    <tr style={{backgroundColor: color}}>
       {columns.map((column) => (
         <td
           key={column}
@@ -24,8 +33,9 @@ const UserRow = ({
             column === "role" ||
             column === "active" ||
             column === "actions" ||
+            column === "confirmed"||
             column === "photoURL"
-              ? { textAlign: "center" }
+              ? { textAlign: "center"}
               : {}
           }
         >
@@ -53,9 +63,7 @@ const UserRow = ({
                 DTasks
               </DeleteTask>
             </>
-          ) : (
-            item[column]
-          )}
+          ) : item[column]}
         </td>
       ))}
     </tr>

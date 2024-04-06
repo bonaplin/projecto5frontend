@@ -84,9 +84,9 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
                   onChange={(e) => setUsername(e.target.value)}
                 />
                 <FormInput
-                  placeholder="Enter password"
+                  placeholder="Enter password (optional)"
                   type="password"
-                  name="password"
+                  name="passwordNew"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

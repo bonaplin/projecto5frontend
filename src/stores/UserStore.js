@@ -21,6 +21,7 @@ export const userStore = create(
       photourl: "",
       email: "",
       phone: "",
+      confirmed: "",
       user: [],
 
       setUsers: (user) => set({ user }),
@@ -35,6 +36,7 @@ export const userStore = create(
       updatePhotoUrl: (photoURL) => set({ photoURL }), //new action
       updateEmail: (email) => set({ email }), //new action
       updatePhone: (phone) => set({ phone }), //new action
+      updateConfirm: (confirmed) => set({ confirmed }), //new action
     }),
     {
       name: "userstore", //name of the storage

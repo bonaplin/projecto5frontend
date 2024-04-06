@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "./FormInput.css";
+import React from "react";
+import "../formInput/FormInput.css";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import LockIcon from "@mui/icons-material/Lock";
 import EmailIcon from "@mui/icons-material/Email";
@@ -9,7 +9,8 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import TitleOutlinedIcon from "@mui/icons-material/TitleOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-const FormInput = ({ placeholder, type, name, value, onChange }) => {
+
+const ProfileDisplay = ({ name, value }) => {
   const getIcon = (name) => {
     switch (name) {
       case "username":
@@ -79,44 +80,13 @@ const FormInput = ({ placeholder, type, name, value, onChange }) => {
         return null;
     }
   };
-  const [charCount, setCharCount] = useState(value?.length || 0);
-  const maxLenght = 200;
-  const handleTextChange = (event) => {
-    onChange(event);
-    setCharCount(event.target.value.length);
-  };
 
   return (
     <div className="form-input">
       {getIcon(name)}
-
-      {name === "description" ? (
-        <div className="description-input">
-          <textarea
-            required={name !== "finaldate"}
-            name={name}
-            style={{}}
-            defaultValue={value || ""}
-            onChange={handleTextChange}
-            placeholder={placeholder}
-            maxLength={maxLenght}
-          />
-          <div style={{ fontSize: "10px" }}>
-            {charCount}/{maxLenght}
-          </div>
-        </div>
-      ) : (
-        <input
-          required={name !== "finaldate" && name !== "passwordNew"}
-          style={{}}
-          type={type}
-          name={name}
-          defaultValue={value || ""}
-          onChange={onChange}
-          placeholder={placeholder}
-        />
-      )}
+      <p>{value}</p>
     </div>
   );
 };
-export default FormInput;
+
+export default ProfileDisplay;

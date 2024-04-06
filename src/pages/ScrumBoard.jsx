@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { userStore } from "../stores/UserStore";
 import { categoriesStore } from "../stores/CategoriesStore";
 import "./ScrumBoard.css";
@@ -26,7 +27,7 @@ export default function ScrumBoard() {
   const [todo, setTodo] = useState([]);
   const [doing, setDoing] = useState([]);
   const [done, setDone] = useState([]);
-
+  const navigate = useNavigate();
   const [usernameDD, setUsername] = useState(null);
   const [categoryDD, setCategory] = useState(null);
 
@@ -295,6 +296,9 @@ export default function ScrumBoard() {
       );
       if (!response.ok) {
         terror("Failed to fetch categories:", response.statusText);
+        if(response.status === 403){
+          terror("You don't have permission")
+        }
         return;
       }
       const categories = await response.json();

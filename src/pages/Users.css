@@ -12,7 +12,7 @@
   border: 1rem solid #ffffff;
   background-color: var(--primary-color);
   max-width: 62rem;
-  width: 100%; /* This will make the table take up as much space as it can, up to the max-width */
+  /*width: 100%; This will make the table take up as much space as it can, up to the max-width */
   margin: 0 auto; /* This will center the table */
 }
 
