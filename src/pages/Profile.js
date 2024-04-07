@@ -53,7 +53,7 @@ function Profile() {
     { name: "Done", value: inputs.donecount },
   ];
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  const COLORS = ["#ec9191", "#5f9ea0", "#4c59af"];
   const renderLabel = ({ name, value }) => `${name}: ${value}`;
   return (
     <>
@@ -62,10 +62,12 @@ function Profile() {
         <div className="edit-profile-outer-container">
           <div className="edit-profile-page-wrap">
             <div className="header-profile">
-              <h1>{inputs.username}</h1>
-              <h3>
-                ({inputs.firstname} {inputs.lastname})
-              </h3>
+              <div>
+                <h1>{inputs.username}</h1>
+                <h3>
+                  ({inputs.firstname} {inputs.lastname})
+                </h3>
+              </div>
               <img
                 src={inputs.photoURL}
                 alt="Profile"
@@ -74,7 +76,14 @@ function Profile() {
             </div>
 
             <DisplayProfile name="email" value={inputs.email} />
-            <DisplayProfile name="tasks" value={inputs.taskcount} />
+            <button
+              className="yes-no yes"
+              type="button"
+              value="Chat"
+              onClick={() => navigate("/users")}
+            >
+              Chat
+            </button>
             <div
               style={{
                 display: "flex",
@@ -83,28 +92,37 @@ function Profile() {
                 height: "300px",
               }}
             >
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart width={300} height={300}>
-                  <Pie
-                    data={datatasks}
-                    labelLine={false}
-                    label={renderLabel}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {datatasks.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+              {inputs.taskcount === 0 ? (
+                <h1>No tasks</h1>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart width={300} height={300}>
+                    <Pie
+                      data={datatasks}
+                      labelLine={false}
+                      label={renderLabel}
+                      outerRadius={100}
+                      fill=""
+                      dataKey="value"
+                    >
+                      {datatasks.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
             <div className="button-group">
-              <button className="yes-no no" type="button" value="Cancel">
+              <button
+                className="yes-no no"
+                type="button"
+                value="Cancel"
+                onClick={() => navigate("/users")}
+              >
                 Cancel
               </button>
             </div>

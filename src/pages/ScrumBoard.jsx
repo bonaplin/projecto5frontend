@@ -62,7 +62,7 @@ export default function ScrumBoard() {
     setIsAddTaskModal(true);
   }
   async function AddTask(task) {
-    //console.log("task", task);
+    console.log("task", task);
     const response = await fetch(
       "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/",
       {
@@ -296,8 +296,8 @@ export default function ScrumBoard() {
       );
       if (!response.ok) {
         terror("Failed to fetch categories:", response.statusText);
-        if(response.status === 403){
-          terror("You don't have permission")
+        if (response.status === 403) {
+          terror("You don't have permission");
         }
         return;
       }

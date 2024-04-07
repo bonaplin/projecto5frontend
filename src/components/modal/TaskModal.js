@@ -94,10 +94,14 @@ const TaskModal = ({ open, onClose, onSubmit, title_modal, task = {} }) => {
               name="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              options={Array.isArray(categories) ? categories.map((category) => ({
-                value: category.title,
-                label: category.title,
-              })) : []}
+              options={
+                Array.isArray(categories)
+                  ? categories.map((category) => ({
+                      value: category.title,
+                      label: category.title,
+                    }))
+                  : []
+              }
             />
             <FormSelect
               name="priority"

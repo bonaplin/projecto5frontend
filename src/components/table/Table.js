@@ -9,6 +9,7 @@ const Table = ({
   handleDelete,
   handleDeleteTasks,
   handleActiveChange,
+  handleUserClick,
   type,
 }) => {
   if (data.length === 0) {
@@ -49,6 +50,7 @@ const Table = ({
                 handleDelete={handleDelete}
                 handleDeleteTasks={handleDeleteTasks}
                 handleActiveChange={handleActiveChange}
+                handleUserClick={handleUserClick}
               />
             ) : (
               <Row

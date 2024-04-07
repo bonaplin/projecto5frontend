@@ -10,22 +10,26 @@ const UserRow = ({
   handleDelete,
   handleDeleteTasks,
   handleActiveChange,
+  handleUserClick,
 }) => {
-  // Define the keys in the order you want them to be displayed
+  let color = "";
+  let fontcolor = "";
 
-
-  let color ="";
-
- 
   if (!item.confirmed) {
     color = "#FFFF99"; // soft yellow
   } else if (!item.active) {
-    color = "#FF7F7F"; // soft red
+    color = "#595959";
+    fontcolor = "white";
   } else {
     color = ""; // default color
   }
-    return (
-    <tr style={{backgroundColor: color}}>
+
+  //Stop propagation to prevent the row click event from being triggered.
+  return (
+    <tr
+      style={{ backgroundColor: color, color: fontcolor }}
+      onClick={() => handleUserClick(item.id, item.username)}
+    >
       {columns.map((column) => (
         <td
           key={column}
@@ -33,9 +37,9 @@ const UserRow = ({
             column === "role" ||
             column === "active" ||
             column === "actions" ||
-            column === "confirmed"||
+            column === "confirmed" ||
             column === "photoURL"
-              ? { textAlign: "center"}
+              ? { textAlign: "center" }
               : {}
           }
         >
@@ -46,24 +50,48 @@ const UserRow = ({
               style={{ width: "50px", height: "50px" }}
             />
           ) : column === "active" ? (
-            <label className="switch">
+            <label className="switch" onClick={(e) => e.stopPropagation()}>
               <input
                 type="checkbox"
                 className="my-checkbox"
                 checked={item[column]}
-                onChange={() => handleActiveChange(item)}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleActiveChange(item);
+                }}
               />
               <span className="slider round"></span>
             </label>
           ) : column === "actions" ? (
             <>
-              <Edit onClick={() => handleEdit(item)}>Edit</Edit>
-              <Delete onClick={() => handleDelete(item)}>Delete</Delete>
-              <DeleteTask onClick={() => handleDeleteTasks(item)}>
+              <Edit
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(item);
+                }}
+              >
+                Edit
+              </Edit>
+              <Delete
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(item);
+                }}
+              >
+                Delete
+              </Delete>
+              <DeleteTask
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteTasks(item);
+                }}
+              >
                 DTasks
               </DeleteTask>
             </>
-          ) : item[column]}
+          ) : (
+            item[column]
+          )}
         </td>
       ))}
     </tr>

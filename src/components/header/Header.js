@@ -96,11 +96,10 @@ function Header() {
           <li>
             <TasksButton />
           </li>
-          {role === "po" || role === "sm" ? (
-            <li>
-              <UsersButton />
-            </li>
-          ) : null}
+          <li>
+            <UsersButton />
+          </li>
+
           {role === "po" ? (
             <li>
               <CategoriesButton />

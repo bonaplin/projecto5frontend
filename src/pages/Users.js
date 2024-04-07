@@ -8,8 +8,10 @@ import { userStore } from "../stores/UserStore";
 import UserModal from "../components/modal/UserModal";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
+import { useNavigate } from "react-router-dom";
 
 function Users() {
+  const navigate = useNavigate();
   const [isChange, setIsChange] = useState(false); //to change the fetch
   const role = userStore.getState().role;
   const token = userStore.getState().token;
@@ -48,7 +50,6 @@ function Users() {
   useEffect(() => {
     fetchUsers();
   }, [isChange]); // Add dependencies here if any
-
 
   /* ******* ******* ADD USER BUTTON  ***************** *****/
   const [isModalOpen, setModalOpen] = useState(false);
@@ -262,15 +263,16 @@ function Users() {
     "username",
     "firstname",
     "lastname",
+    "email",
     "phone",
     "role",
     "active",
-    "actions"
+    "actions",
   ];
 
-  if (role === "sm") {
+  if (role === "sm" || role === "dev") {
     // Filter the userData array to exclude inactive users
-    userData = userData.filter((user) => user.active);
+    userData.filter((user) => user.active);
     // Find the index of the "actions" column
     const actionsIndex = columns.indexOf("actions");
     // If the "actions" column exists, remove it
@@ -287,10 +289,13 @@ function Users() {
     // Perform your operations for the "po" role here
   } else {
     columns = [""];
-    userData = [""];
   }
 
- 
+  function handleUserClick(id, username) {
+    // alert("User clicked: " + user.username);
+
+    navigate(`/users/${username}`);
+  }
 
   return (
     <>
@@ -356,6 +361,7 @@ function Users() {
                 handleDelete={handleDelete}
                 handleDeleteTasks={handleDeleteTasks}
                 handleActiveChange={handleActiveChange}
+                handleUserClick={handleUserClick}
               />
             </div>
           </div>
