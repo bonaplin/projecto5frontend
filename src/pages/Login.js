@@ -54,6 +54,30 @@ function Login() {
           updateToken(data.token);
           updateConfirm(data.confirmed);
           console.log(data);
+
+          let socket = new WebSocket(
+            "ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" +
+              data.token
+          );
+
+          socket.onopen = function (event) {
+            console.log("Conexão WebSocket aberta", event);
+            socket.send("Hello Server! - " + event);
+          };
+
+          socket.onmessage = function (event) {
+            console.log(`Mensagem recebida do servidor: ${event.data}`);
+            twarn("Recebeu uma mensagem: " + event.data);
+          };
+
+          socket.onerror = function (error) {
+            console.log(`Erro WebSocket: ${error.message}`);
+          };
+
+          socket.onclose = function (event) {
+            console.log("Conexão WebSocket fechada", event);
+          };
+
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
         } else {
