@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "./ChatSidebar.css";
 import { userStore } from "../../stores/UserStore";
-import { twarn } from "../messages/Message";
+import { tsuccess, twarn } from "../messages/Message";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
@@ -14,6 +14,11 @@ function ChatSideBar({ onClose }) {
   // useRef retorna um objeto mutável onde .current é inicializado como null.
   const socketRef = useRef(null);
   const { selectedUser } = useParams();
+  const [messages, setMessages] = useState([]);
+
+  const handleSendMessage = (message) => {
+    setMessages([...messages, message]);
+  };
 
   useEffect(() => {
     socketRef.current = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/message/" + token);
@@ -24,9 +29,15 @@ function ChatSideBar({ onClose }) {
     };
 
     socketRef.current.onmessage = function (e) {
-      twarn("Recebeu uma mensagem do backend: " + e.data);
+      try {
+        let data = JSON.parse(e.data);
+        let message = data.message;
 
-      console.log(`Mensagem recebida do servidor: ${e.data}`);
+        setMessages((prevMessages) => [...prevMessages, message]);
+        console.log(`Mensagem recebida do servidor: ${message}`);
+      } catch (error) {
+        console.log("Erro ao analisar a mensagem recebida: ", e.data);
+      }
     };
 
     socketRef.current.onerror = function (e) {
@@ -41,20 +52,6 @@ function ChatSideBar({ onClose }) {
       socketRef.current.close();
     };
   }, []);
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   handleSendMessage(e.target.elements.message.value);
-
-  //   // Antes de enviar uma mensagem, verifica se o socket está aberto.
-  //   if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-  //     console.log("Mensagem do frontend: " + sendMessage + "\n\nUser com token: " + token + "\nPara user: " + selectedUser);
-
-  //     socketRef.current.send("Mensagem do frontend: " + sendMessage + "\n User com token: " + token + "\nPara user: " + selectedUser);
-  //   }
-
-  //   e.target.reset();
-  // }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -73,19 +70,13 @@ function ChatSideBar({ onClose }) {
 
       // Convert the object to a JSON string
       let messageJSON = JSON.stringify(messageObject);
-      console.log(messageJSON);
       // Send the JSON string
       socketRef.current.send(messageJSON);
     }
-    handleSendMessage(e.target.elements.message.value);
+    //limpar campos
     e.target.reset();
+    setSendMessage("");
   }
-
-  const [messages, setMessages] = useState([]);
-
-  const handleSendMessage = (message) => {
-    setMessages([...messages, message]);
-  };
 
   const [sendMessage, setSendMessage] = useState();
 
