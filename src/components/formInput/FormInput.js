@@ -9,15 +9,12 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import TitleOutlinedIcon from "@mui/icons-material/TitleOutlined";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import SearchIcon from "@mui/icons-material/Search";
 const FormInput = ({ placeholder, type, name, value, onChange }) => {
   const getIcon = (name) => {
     switch (name) {
       case "username":
-        return (
-          <Person2OutlinedIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <Person2OutlinedIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "password":
         return <LockIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "password-again":
@@ -29,52 +26,26 @@ const FormInput = ({ placeholder, type, name, value, onChange }) => {
       case "passwordNew":
         return <LockIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "email":
-        return (
-          <EmailIcon style={{ marginRight: "10px", marginLeft: "10px" }} />
-        );
+        return <EmailIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "firstname":
-        return (
-          <BadgeIcon style={{ marginRight: "10px", marginLeft: "10px" }} />
-        );
+        return <BadgeIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "lastname":
-        return (
-          <BadgeIcon style={{ marginRight: "10px", marginLeft: "10px" }} />
-        );
+        return <BadgeIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "phone":
-        return (
-          <ContactPhoneIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <ContactPhoneIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "photoURL":
-        return (
-          <AddAPhotoIcon style={{ marginRight: "10px", marginLeft: "10px" }} />
-        );
+        return <AddAPhotoIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "title":
-        return (
-          <TitleOutlinedIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <TitleOutlinedIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
 
       case "date":
-        return (
-          <EditCalendarOutlinedIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <EditCalendarOutlinedIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "finaldate":
-        return (
-          <EditCalendarOutlinedIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <EditCalendarOutlinedIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       case "description":
-        return (
-          <DescriptionOutlinedIcon
-            style={{ marginRight: "10px", marginLeft: "10px" }}
-          />
-        );
+        return <DescriptionOutlinedIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
+      case "search":
+        return <SearchIcon style={{ marginRight: "10px", marginLeft: "10px" }} />;
       default:
         return null;
     }

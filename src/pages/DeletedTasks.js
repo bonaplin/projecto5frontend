@@ -21,14 +21,11 @@ function DeletedTasks() {
   const [taskselected, setTaskselected] = useState(null);
 
   const fetchInactiveTasks = async () => {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false",
-      {
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false", {
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -67,15 +64,12 @@ function DeletedTasks() {
     setIsDeleteTaskModalOpen(true);
   }
   async function handleDeleteTask() {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${taskselected.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${taskselected.id}`, {
+      method: "DELETE",
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -106,15 +100,12 @@ function DeletedTasks() {
     setIsRestoreTaskModalOpen(true);
   }
   async function handleRestoreTask() {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${taskselected.id}/restore`,
-      {
-        method: "PUT",
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${taskselected.id}/restore`, {
+      method: "PUT",
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -139,21 +130,17 @@ function DeletedTasks() {
       }
     }
   }
-  const [isDeleteAllTasksModalOpen, setIsDeleteAllTasksModalOpen] =
-    useState(false);
+  const [isDeleteAllTasksModalOpen, setIsDeleteAllTasksModalOpen] = useState(false);
   function handleDeleteAll() {
     setIsDeleteAllTasksModalOpen(true);
   }
   async function handleDeleteAllTasks() {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/",
-      {
-        method: "DELETE",
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/", {
+      method: "DELETE",
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -178,21 +165,17 @@ function DeletedTasks() {
       }
     }
   }
-  const [isRestoreAllTaskModalOpen, setIsRestoreAllTaskModalOpen] =
-    useState(false);
+  const [isRestoreAllTaskModalOpen, setIsRestoreAllTaskModalOpen] = useState(false);
   function handleRestoreAll() {
     setIsRestoreAllTaskModalOpen(true);
   }
   async function handleRestoreAllTask() {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/restore",
-      {
-        method: "PUT",
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/restore", {
+      method: "PUT",
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -229,20 +212,12 @@ function DeletedTasks() {
               <div className="top-buttons">
                 <div>
                   <Tooltip title="Delete All Tasks">
-                    <DeleteForeverIcon
-                      onClick={handleDeleteAll}
-                      className="add-some"
-                      fontSize="large"
-                    />
+                    <DeleteForeverIcon onClick={handleDeleteAll} className="add-some" fontSize="large" />
                   </Tooltip>
                 </div>
                 <div>
                   <Tooltip title="Restore All Tasks">
-                    <RestoreFromTrashIcon
-                      onClick={handleRestoreAll}
-                      className="restore-some"
-                      fontSize="large"
-                    />
+                    <RestoreFromTrashIcon onClick={handleRestoreAll} className="restore-some" fontSize="large" />
                   </Tooltip>
                 </div>
               </div>
@@ -288,18 +263,7 @@ function DeletedTasks() {
               />
             )}
 
-            <div className="main-board">
-              <div className="table-board">
-                <Table
-                  class="table"
-                  type="deleted_tasks"
-                  data={deletedTasksData}
-                  columns={columns}
-                  handleDelete={handleDelete}
-                  handleEdit={handleRestore}
-                />
-              </div>
-            </div>
+            <Table class="table" type="deleted_tasks" data={deletedTasksData} columns={columns} handleDelete={handleDelete} handleEdit={handleRestore} />
           </div>
           <Footer />
         </div>

@@ -1,72 +1,107 @@
-import React, { useState } from "react";
-import "./Table.css";
+import React from "react";
+import { useTable, usePagination, useSortBy, useGlobalFilter } from "react-table";
 import UserRow from "../table/rowelement/UserRow";
 import Row from "./rowelement/Row";
-const Table = ({
-  data,
-  columns,
-  handleEdit,
-  handleDelete,
-  handleDeleteTasks,
-  handleActiveChange,
-  handleUserClick,
-  type,
-}) => {
+import "./Table.css";
+import ArrowDropUpRoundedIcon from "@mui/icons-material/ArrowDropUpRounded";
+import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import FormInput from "../formInput/FormInput";
+function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, handleActiveChange, handleUserClick, type }) {
+  // react - table acessores (obrigatorio em react-table)
+  const tableConfig = React.useMemo(
+    () => ({
+      columns: columns.map((column) => ({
+        Header: column,
+        accessor: column,
+      })),
+      data,
+    }),
+    [data, columns]
+  );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    nextPage,
+    previousPage,
+    setGlobalFilter,
+    state: { pageIndex, globalFilter },
+  } = useTable(tableConfig, useGlobalFilter, useSortBy, usePagination);
+  // ract - table
   if (data.length === 0) {
-    return <p>No data available</p>;
+    return (
+      <div className="main-board">
+        <div className="table-board">
+          <p>No data available</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="table-container">
-      <table className="table">
-        <thead>
-          <tr>
-            {columns.map((column, index) => (
-              <th
-                key={index}
-                style={
-                  column === "role" ||
-                  column === "active" ||
-                  column === "actions"
-                    ? { textAlign: "center" }
-                    : {}
-                }
-              >
-                {column === "actions-category"
-                  ? "Actions"
-                  : column.charAt(0).toUpperCase() + column.slice(1)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) =>
-            type === "user" ? (
-              <UserRow
-                key={index}
-                item={item}
-                columns={columns}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-                handleDeleteTasks={handleDeleteTasks}
-                handleActiveChange={handleActiveChange}
-                handleUserClick={handleUserClick}
-              />
-            ) : (
-              <Row
-                type={type}
-                key={index}
-                item={item}
-                columns={columns}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-              />
-            )
-          )}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className="main-board">
+        <div className="center">
+          <FormInput value={globalFilter || ""} onChange={(e) => setGlobalFilter(e.target.value || undefined)} placeholder={`Search`} name="search" />
+        </div>
+
+        <div className="table-board">
+          <div className="table-container">
+            <table {...getTableProps()} className="table">
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                        {column.render("Header")}
+                        <span>{column.isSorted ? column.isSortedDesc ? <ArrowDropDownRoundedIcon /> : <ArrowDropUpRoundedIcon /> : ""}</span>
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {page.map((row, i) => {
+                  prepareRow(row);
+                  return type === "user" ? (
+                    <UserRow
+                      key={i}
+                      item={row.original}
+                      columns={columns}
+                      handleEdit={handleEdit}
+                      handleDelete={handleDelete}
+                      handleDeleteTasks={handleDeleteTasks}
+                      handleActiveChange={handleActiveChange}
+                      handleUserClick={handleUserClick}
+                    />
+                  ) : (
+                    <Row type={type} key={i} item={row.original} columns={columns} handleEdit={handleEdit} handleDelete={handleDelete} />
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="page-bar">
+          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {<ChevronLeftRoundedIcon />}
+          </button>
+          <button onClick={() => nextPage()} disabled={!canNextPage}>
+            {<ChevronRightRoundedIcon />}
+          </button>
+          <span>
+            Page <strong className="page-number">{pageIndex + 1}</strong>{" "}
+          </span>
+        </div>
+      </div>
+    </>
   );
-};
+}
 
 export default Table;

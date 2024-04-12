@@ -107,7 +107,7 @@
 
 select,
 form input {
-  width: 100%;
+  /* width: 100%; */
   border: none;
 }
 select:focus {

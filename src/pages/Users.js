@@ -20,14 +20,11 @@ function Users() {
   const [userData, setUserData] = useState([]);
 
   const fetchUsers = async () => {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
-      {
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/", {
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -60,18 +57,15 @@ function Users() {
     setModalOpen(true);
   };
   async function handleCreateUser(user) {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          role: role,
-        },
-        body: JSON.stringify(user),
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        role: role,
+      },
+      body: JSON.stringify(user),
+    });
     if (response.ok) {
       // console.log("User Created");
       setModalOpen(false);
@@ -93,17 +87,17 @@ function Users() {
     setIsEditModalOpen(true);
   };
   async function handleUpdateUser(user) {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(user),
-      }
-    );
+    // let useru = { ...user };
+    // delete useru.password;
+
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(user),
+    });
     const data = await response.json();
 
     if (response.ok) {
@@ -132,16 +126,13 @@ function Users() {
     console.dir(user);
   };
   async function handleDeleteUser(user) {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
     const data = await response.json();
 
     if (response.ok) {
@@ -174,16 +165,13 @@ function Users() {
     console.dir(user);
   };
   async function handleDeleteTasksUser(user) {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}/tasks`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}/tasks`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -222,17 +210,14 @@ function Users() {
       username: user.username,
       active: user.active,
     };
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}/status`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${user.username}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(body),
+    });
 
     const data = await response.json();
 
@@ -258,17 +243,7 @@ function Users() {
   }
   /* ******* ******* *********************************** *****/
 
-  let columns = [
-    "photoURL",
-    "username",
-    "firstname",
-    "lastname",
-    "email",
-    "phone",
-    "role",
-    "active",
-    "actions",
-  ];
+  let columns = ["photoURL", "username", "firstname", "lastname", "email", "phone", "role", "active", "actions"];
 
   if (role === "sm" || role === "dev") {
     // Filter the userData array to exclude inactive users
@@ -306,11 +281,7 @@ function Users() {
           {role === "po" && (
             <>
               <Tooltip title="Add User">
-                <AddCircleIcon
-                  className="add-some"
-                  onClick={handleAddUserButton}
-                  fontSize="large"
-                />
+                <AddCircleIcon className="add-some" onClick={handleAddUserButton} fontSize="large" />
               </Tooltip>
 
               <UserModal
@@ -349,22 +320,17 @@ function Users() {
               user={editUser}
             />
           )}
-
-          <div className="main-board">
-            <div className="table-board">
-              <Table
-                class="table"
-                data={userData}
-                type="user"
-                columns={columns}
-                handleEdit={handleEdit}
-                handleDelete={handleDelete}
-                handleDeleteTasks={handleDeleteTasks}
-                handleActiveChange={handleActiveChange}
-                handleUserClick={handleUserClick}
-              />
-            </div>
-          </div>
+          <Table
+            class="table"
+            data={userData}
+            type="user"
+            columns={columns}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleDeleteTasks={handleDeleteTasks}
+            handleActiveChange={handleActiveChange}
+            handleUserClick={handleUserClick}
+          />
         </div>
         <Footer />
       </div>

@@ -24,14 +24,11 @@ function Categories() {
 
   console.log("Categories token", token);
   const fetchCategories = async () => {
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/",
-      {
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/", {
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -60,15 +57,12 @@ function Categories() {
   };
   async function handleDeleteCategory() {
     const category = editCategory;
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/${category.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/${category.id}`, {
+      method: "DELETE",
+      headers: {
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -99,17 +93,14 @@ function Categories() {
   };
 
   async function handleEditCategory(category) {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/${category.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(category),
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/${category.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(category),
+    });
 
     const data = await response.json();
 
@@ -144,17 +135,14 @@ function Categories() {
   async function handleCreateCategory(category) {
     console.log("Create Category", category);
     category.owner = username;
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(category),
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(category),
+    });
 
     const data = await response.json();
 
@@ -195,11 +183,7 @@ function Categories() {
           {role === "po" && (
             <>
               <Tooltip title="Add Category">
-                <AddCircleIcon
-                  className="add-some"
-                  onClick={handleAddCategoryButton}
-                  fontSize="large"
-                />
+                <AddCircleIcon className="add-some" onClick={handleAddCategoryButton} fontSize="large" />
               </Tooltip>
 
               <CategoryModal
@@ -232,18 +216,8 @@ function Categories() {
               />
             </>
           )}
-          <div className="main-board">
-            <div className="table-board">
-              <Table
-                class="table"
-                type="category"
-                data={categorieData}
-                columns={columns}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-              />
-            </div>
-          </div>
+
+          <Table class="table" type="category" data={categorieData} columns={columns} handleDelete={handleDelete} handleEdit={handleEdit} />
         </div>
         <Footer />
       </div>

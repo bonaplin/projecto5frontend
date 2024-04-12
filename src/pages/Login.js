@@ -55,14 +55,11 @@ function Login() {
           updateConfirm(data.confirmed);
           console.log(data);
 
-          let socket = new WebSocket(
-            "ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" +
-              data.token
-          );
+          let socket = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/message/" + data.token);
 
           socket.onopen = function (event) {
             console.log("Conexão WebSocket aberta", event);
-            socket.send("Hello Server! - " + event);
+            //socket.send("A season starts now! (login)", event);
           };
 
           socket.onmessage = function (event) {
@@ -102,15 +99,12 @@ function Login() {
   const handlePasswordReset = (event) => {
     event.preventDefault();
     console.log(inputs.email);
-    fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password-reset/${inputs.email}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then(async (response) => {
         if (response.ok) {
           tsuccess("Password reset email sent");
@@ -130,25 +124,13 @@ function Login() {
             <img src={tcicon} alt="" />
           </div>
           {isResettingPassword ? (
-            <ResetForm
-              inputs={inputs}
-              handleChange={handleChange}
-              handlePasswordReset={handlePasswordReset}
-            />
+            <ResetForm inputs={inputs} handleChange={handleChange} handlePasswordReset={handlePasswordReset} />
           ) : (
-            <LoginForm
-              inputs={inputs}
-              handleChange={handleChange}
-              handleSubmit={handleSubmit}
-            />
+            <LoginForm inputs={inputs} handleChange={handleChange} handleSubmit={handleSubmit} />
           )}
 
           <div>
-            <button
-              onClick={() => setIsResettingPassword(!isResettingPassword)}
-            >
-              {isResettingPassword ? "Back to Login" : "Reset Password"}
-            </button>
+            <button onClick={() => setIsResettingPassword(!isResettingPassword)}>{isResettingPassword ? "Back to Login" : "Reset Password"}</button>
           </div>
         </div>
       </div>

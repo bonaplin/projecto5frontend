@@ -3,6 +3,7 @@
   border-collapse: collapse;
   margin: 0;
   padding: 0;
+  border-radius: var(--border-radius);
 }
 
 .table th,
@@ -41,6 +42,31 @@ tr:hover {
 button {
   cursor: pointer;
 }
-.table {
+
+.search-bar {
+  border: none;
+  width: 10rem;
+  height: 2rem;
+  margin: 1rem;
+}
+.page-bar {
+  display: flex;
   border-radius: var(--border-radius);
+
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+}
+.page-bar button {
+  background-color: none;
+  border: none;
+  color: var(--task-color);
+}
+.page-number {
+  color: var(--task-color);
+}
+.center {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
 }

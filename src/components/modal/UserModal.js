@@ -14,7 +14,7 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
+    let userData = {
       username,
       password,
       email,
@@ -23,10 +23,15 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
       phone,
       photoURL,
       role,
-    });
+    };
+
+    if (title === "Edit User") {
+      delete userData.password;
+    }
+
+    onSubmit(userData);
     resetForm();
   };
-
   const resetForm = () => {
     setRole("");
     setUsername("");
@@ -44,11 +49,7 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
       {title === "Delete User" || title === "Delete User Tasks" ? (
         <form onSubmit={handleSubmit}>
           <div className="delete-modal-headers">
-            {title === "Delete User" ? (
-              <p>Are you sure you want to delete this user?</p>
-            ) : (
-              <p>Are you sure you want to delete this user's tasks?</p>
-            )}
+            {title === "Delete User" ? <p>Are you sure you want to delete this user?</p> : <p>Are you sure you want to delete this user's tasks?</p>}
           </div>
           <div className="button-container">
             <button type="submit" className="yes yes-no">
@@ -76,13 +77,7 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
 
             {title === "Create User" && (
               <>
-                <FormInput
-                  placeholder="Enter username"
-                  type="text"
-                  name="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
+                <FormInput placeholder="Enter username" type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 <FormInput
                   placeholder="Enter password (optional)"
                   type="password"
@@ -92,41 +87,11 @@ const UserModal = ({ open, onClose, onSubmit, title, user = {} }) => {
                 />
               </>
             )}
-            <FormInput
-              placeholder="Enter email"
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <FormInput
-              placeholder="Enter first name"
-              type="text"
-              name="firstname"
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-            />
-            <FormInput
-              placeholder="Enter last name"
-              type="text"
-              name="lastname"
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-            />
-            <FormInput
-              placeholder="Enter phone number"
-              type="tel"
-              name="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <FormInput
-              placeholder="Enter photo URL"
-              type="url"
-              name="photoURL"
-              value={photoURL}
-              onChange={(e) => setPhotoURL(e.target.value)}
-            />
+            <FormInput placeholder="Enter email" type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <FormInput placeholder="Enter first name" type="text" name="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
+            <FormInput placeholder="Enter last name" type="text" name="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
+            <FormInput placeholder="Enter phone number" type="tel" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <FormInput placeholder="Enter photo URL" type="url" name="photoURL" value={photoURL} onChange={(e) => setPhotoURL(e.target.value)} />
             <div className="button-container">
               <button type="submit" className="yes-no yes">
                 Save

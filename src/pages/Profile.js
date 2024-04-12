@@ -7,7 +7,7 @@ import DisplayProfile from "../components/display/DisplayProfile";
 import Header from "../components/header/Header";
 import { userStore } from "../stores/UserStore";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
+import ChatSidebar from "../components/chat/ChatSideBar";
 function Profile() {
   const { selectedUser } = useParams();
   const token = userStore.getState().token; // Get the token from the Zustand store
@@ -25,18 +25,18 @@ function Profile() {
     doingcount: "",
     donecount: "",
   });
-
+  const [isChatOpen, setIsChatOpen] = useState(false); // Chat visibility state
+  const handleChatClick = () => {
+    setIsChatOpen(!isChatOpen); // Toggle chat visibility
+  };
   useEffect(() => {
-    fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/profile/${selectedUser}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    )
+    fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/profile/${selectedUser}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
@@ -55,6 +55,11 @@ function Profile() {
 
   const COLORS = ["#ec9191", "#5f9ea0", "#4c59af"];
   const renderLabel = ({ name, value }) => `${name}: ${value}`;
+
+  function handleCloseSidebar() {
+    setIsChatOpen(false);
+  }
+
   return (
     <>
       <Header />
@@ -68,22 +73,14 @@ function Profile() {
                   ({inputs.firstname} {inputs.lastname})
                 </h3>
               </div>
-              <img
-                src={inputs.photoURL}
-                alt="Profile"
-                className="edit-profile-img"
-              />
+              <img src={inputs.photoURL} alt="Profile" className="edit-profile-img" />
             </div>
 
             <DisplayProfile name="email" value={inputs.email} />
-            <button
-              className="yes-no yes"
-              type="button"
-              value="Chat"
-              onClick={() => navigate("/users")}
-            >
+            <button className="yes-no yes" type="button" value="Chat" onClick={handleChatClick}>
               Chat
             </button>
+
             <div
               style={{
                 display: "flex",
@@ -97,19 +94,9 @@ function Profile() {
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart width={300} height={300}>
-                    <Pie
-                      data={datatasks}
-                      labelLine={false}
-                      label={renderLabel}
-                      outerRadius={100}
-                      fill=""
-                      dataKey="value"
-                    >
+                    <Pie data={datatasks} labelLine={false} label={renderLabel} outerRadius={100} fill="" dataKey="value">
                       {datatasks.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
                   </PieChart>
@@ -117,18 +104,14 @@ function Profile() {
               )}
             </div>
             <div className="button-group">
-              <button
-                className="yes-no no"
-                type="button"
-                value="Cancel"
-                onClick={() => navigate("/users")}
-              >
+              <button className="yes-no no" type="button" value="Cancel" onClick={() => navigate("/users")}>
                 Cancel
               </button>
             </div>
           </div>
         </div>
       </Layout>
+      {isChatOpen && <ChatSidebar onClose={handleCloseSidebar} />}
     </>
   );
 }
