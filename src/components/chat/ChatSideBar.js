@@ -32,8 +32,12 @@ function ChatSideBar({ onClose }) {
       try {
         let data = JSON.parse(e.data);
         let message = data.message;
+        let timestamp = new Date(); // Adicione um timestamp para cada mensagem
 
-        setMessages((prevMessages) => [...prevMessages, message]);
+        let isOwnMessage = data.senderToken === token; // Verifique se a mensagem foi enviada pelo usuário atual
+
+        // Agora, cada "message" é um objeto com várias propriedades
+        setMessages((prevMessages) => [...prevMessages, { message, isOwnMessage, timestamp }]);
         console.log(`Mensagem recebida do servidor: ${message}`);
       } catch (error) {
         console.log("Erro ao analisar a mensagem recebida: ", e.data);
@@ -58,7 +62,7 @@ function ChatSideBar({ onClose }) {
 
     // Antes de enviar uma mensagem, verifica se o socket está aberto.
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log("Mensagem do frontend: " + sendMessage + "\n\nUser com token: " + token + "\nPara user: " + selectedUser);
+      // console.log("Mensagem do frontend: " + sendMessage + "\n\nUser com token: " + token + "\nPara user: " + selectedUser);
 
       // Create a JSON object
       let messageObject = {
@@ -73,7 +77,7 @@ function ChatSideBar({ onClose }) {
       // Send the JSON string
       socketRef.current.send(messageJSON);
     }
-    //limpar campos
+    //limpar
     e.target.reset();
     setSendMessage("");
   }
@@ -96,8 +100,8 @@ function ChatSideBar({ onClose }) {
           <h3>{selectedUser}</h3> <CloseIcon onClick={handleOnClose} style={{ cursor: "pointer" }} />
         </div>
         <div className="messages">
-          {messages.map((message, index) => (
-            <MessageBubble key={index} message={message} owner={true} time={"10:23"} />
+          {messages.map((messageObj, index) => (
+            <MessageBubble key={index} messageObj={messageObj} />
           ))}
         </div>
         <form onSubmit={handleSubmit}>
