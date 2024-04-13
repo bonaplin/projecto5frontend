@@ -21,73 +21,81 @@ import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import Forbidden from "./pages/Forbiden";
 import PrivateRoute from "./PrivateRoute";
+import { userStore } from "./stores/UserStore";
+import WebSocketProvider from "./WebSocketProvider";
+
+function AppWrapper() {
+  const token = userStore((state) => state.token);
+  return (
+    <WebSocketProvider token={token}>
+      <Router>
+        <Routes>
+          <Route index element={<App />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/singup" element={<Singup />} />
+          <Route path="/forbidden" element={<Forbidden />} />
+          <Route
+            path="/header"
+            element={
+              <PrivateRoute>
+                <Header />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/scrum-board"
+            element={
+              <PrivateRoute>
+                <ScrumBoard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <Users />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/users/:selectedUser" element={<Profile />} />
+          <Route
+            path="/edit-profile"
+            element={
+              <PrivateRoute>
+                <EditProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <PrivateRoute>
+                <Categories />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/deletedtasks"
+            element={
+              <PrivateRoute>
+                <DeletedTasks />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/footer" element={<Footer />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/confirm-account/:token" element={<ConfirmAccount />} />
+        </Routes>
+        <ToastContainer />
+      </Router>
+    </WebSocketProvider>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <Router>
-    <Routes>
-      <Route index element={<App />} />
-      <Route path="/" element={<Login />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/singup" element={<Singup />} />
-      <Route path="/forbidden" element={<Forbidden />} />
-
-      <Route
-        path="/header"
-        element={
-          <PrivateRoute>
-            <Header />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/scrum-board"
-        element={
-          <PrivateRoute>
-            <ScrumBoard />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <PrivateRoute>
-            <Users />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/users/:selectedUser" element={<Profile />} />
-      <Route
-        path="/edit-profile"
-        element={
-          <PrivateRoute>
-            <EditProfile />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/categories"
-        element={
-          <PrivateRoute>
-            <Categories />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/deletedtasks"
-        element={
-          <PrivateRoute>
-            <DeletedTasks />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/footer" element={<Footer />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/confirm-account/:token" element={<ConfirmAccount />} />
-    </Routes>
-    <ToastContainer />
-  </Router>
-);
+root.render(<AppWrapper />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

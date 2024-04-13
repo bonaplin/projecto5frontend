@@ -10,6 +10,7 @@ import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import ResetForm from "../components/formInput/ResetFormInput";
 import LoginForm from "../components/formInput/LoginForm";
+
 function Login() {
   const [inputs, setInputs] = useState({
     username: "",
@@ -51,30 +52,9 @@ function Login() {
         if (response.ok) {
           updateUsername(data.username);
           updateRole(data.role);
-          updateToken(data.token);
+          updateToken(data.token); // trigger create new websocket
+          console.log("Token apos login: ", data.token);
           updateConfirm(data.confirmed);
-          console.log(data);
-
-          let socket = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/message/" + data.token);
-
-          socket.onopen = function (event) {
-            console.log("Conexão WebSocket aberta", event);
-            //socket.send("A season starts now! (login)", event);
-          };
-
-          socket.onmessage = function (event) {
-            console.log(`Mensagem recebida do servidor: ${event.data}`);
-            twarn("Recebeu uma mensagem: " + event.data);
-          };
-
-          socket.onerror = function (error) {
-            console.log(`Erro WebSocket: ${error.message}`);
-          };
-
-          socket.onclose = function (event) {
-            console.log("Conexão WebSocket fechada", event);
-          };
-
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
         } else {
