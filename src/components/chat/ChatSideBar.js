@@ -9,6 +9,7 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import MessageBubble from "./MessageBubble";
 function ChatSideBar({ onClose }) {
   const token = userStore.getState().token;
+  const username = userStore.getState().username;
   const { selectedUser } = useParams();
   const [messages, setMessages] = useState([]);
   const [sendMessage, setSendMessage] = useState();
@@ -19,10 +20,11 @@ function ChatSideBar({ onClose }) {
       socket.onmessage = function (e) {
         try {
           let data = JSON.parse(e.data);
+          console.log("Mensagem recebida do servidor: ", data);
           let message = data.message;
-          let timestamp = new Date(); // Adicione um timestamp para cada mensagem
+          let timestamp = new Date(data.time);
 
-          let isOwnMessage = data.senderToken === token; // Verifique se a mensagem foi enviada pelo usuário atual
+          let isOwnMessage = data.sender === username; // Verifique se a mensagem foi enviada pelo usuário atual
 
           // Agora, cada "message" é um objeto com várias propriedades
           setMessages((prevMessages) => [...prevMessages, { message, isOwnMessage, timestamp }]);
@@ -45,8 +47,8 @@ function ChatSideBar({ onClose }) {
     if (socket && socket.readyState === WebSocket.OPEN) {
       let messageObject = {
         message: sendMessage,
-        senderToken: token,
-        receiverUsername: selectedUser,
+        // senderToken: token,
+        receiver: selectedUser,
         type: 10,
       };
 

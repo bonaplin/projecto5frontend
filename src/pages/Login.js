@@ -53,7 +53,7 @@ function Login() {
           updateUsername(data.username);
           updateRole(data.role);
           updateToken(data.token); // trigger create new websocket
-          console.log("Token apos login: ", data.token);
+          // console.log("Token apos login: ", data.token);
           updateConfirm(data.confirmed);
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.

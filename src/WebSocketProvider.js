@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { webSocketStore } from "./stores/WebSocketStore";
 import { terror, tsuccess, twarn } from "./components/messages/Message";
-import { userStore } from "./stores/UserStore";
+import { handleWebSocketJSON } from "./components/websockets/HandleWebSocketJSON";
 
 function WebSocketProvider({ children, token }) {
   // const { token } = userStore();
@@ -13,29 +13,30 @@ function WebSocketProvider({ children, token }) {
     }
     console.log("A abrir websocket...");
 
-    const socket = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/message/" + token);
+    const ws = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" + token);
 
-    socket.onopen = function (e) {
+    ws.onopen = function (e) {
       tsuccess("Conexão WebSocket aberta");
-      console.log("Conexão WebSocket aberta", e);
+      // console.log("Conexão WebSocket aberta", e);
     };
 
-    socket.onmessage = function (e) {
-      tsuccess("Mensagem recebida", e.data);
+    ws.onmessage = function (e) {
+      handleWebSocketJSON(e.data);
     };
 
-    socket.onerror = function (e) {
+    ws.onerror = function (e) {
       terror("Erro websocket");
-      console.log(`Erro websocket ${e.data}`);
+      // console.log(`Erro websocket ${e.data}`);
     };
 
-    socket.onclose = function (e) {
-      console.log("WebSocket connection closed:", e.reason);
+    ws.onclose = function (e) {
+      twarn("Conexão WebSocket fechada");
+      // console.log("WebSocket connection closed:", e.reason);
     };
 
-    setSocket(socket);
+    setSocket(ws);
     // Limpeza ao desmontar
-    return () => socket.close();
+    return () => ws.close();
   }, [token, setSocket]); // Adicione o token como uma dependência
 
   return children;
