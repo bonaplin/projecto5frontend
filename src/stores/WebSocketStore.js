@@ -11,6 +11,7 @@ export const webSocketStore = create(
       //tasks: [],
       setSocket: (socket) => set({ socket }),
       addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+      setMessages: (newMessages) => set({ messages: newMessages }),
       addNotification: (notification) => set((state) => ({ notifications: [...state.notifications, notification] })),
       //addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
       clearMessages: () => set({ messages: [] }),

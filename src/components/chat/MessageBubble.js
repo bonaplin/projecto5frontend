@@ -1,17 +1,19 @@
-function MessageBubble({ messageObj }) {
-  const { message, isOwnMessage, timestamp } = messageObj;
+function MessageBubble(props) {
+  // const teste = props.sender;
+  // console.log("teste", teste);
+
   return (
     <div>
       <div
         style={{
           display: "flex",
-          justifyContent: isOwnMessage ? "flex-end" : "flex-start",
+          justifyContent: props.isOwnMessage ? "flex-end" : "flex-start",
         }}
       >
         <div
           style={{
-            backgroundColor: isOwnMessage ? "#ff88" : "#c6c6c6",
-            alignSelf: isOwnMessage ? "flex-start" : "flex-end",
+            backgroundColor: props.isOwnMessage ? "#ff88" : "#c6c6c6",
+            alignSelf: props.isOwnMessage ? "flex-start" : "flex-end",
             fontSize: "15px",
             color: "black",
             textAlign: "right",
@@ -21,16 +23,16 @@ function MessageBubble({ messageObj }) {
             maxWidth: "80%", // Para evitar que a mensagem ocupe toda a largura disponível
           }}
         >
-          {message}
+          {props.message}
           <div
             style={{
               fontSize: "10px",
               marginTop: "5px",
 
-              textAlign: isOwnMessage ? "right" : "left",
+              textAlign: props.isOwnMessage ? "right" : "left",
             }}
           >
-            {timestamp.toLocaleTimeString()}
+            {new Date(props.time).toLocaleDateString() + " " + new Date(props.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{" "}
           </div>
         </div>
       </div>

@@ -1,10 +1,11 @@
 import { webSocketStore } from "../../stores/WebSocketStore";
+import { userStore } from "../../stores/UserStore";
 import { tsuccess } from "../messages/Message";
 
 function handleWebSocketJSON(json) {
-  let data;
+  const username = userStore.getState().username;
 
-  //   console.log("a tentar desserializar JSON", json);
+  let data;
 
   try {
     data = JSON.parse(json);
@@ -12,8 +13,6 @@ function handleWebSocketJSON(json) {
     console.error("Erro ao fazer parse do JSON", json);
     return;
   }
-
-  //   console.log("verificar o type do JSON");
 
   switch (data.type) {
     case 10:
@@ -31,13 +30,12 @@ function handleWebSocketJSON(json) {
   }
 
   function handleMessage(data) {
-    //a mensagem que eu enviar para outro user, volta para mim como websocket.
-    // webSocketStore.getState().addMessage({
-    //   message: data.message,
-    //   senderToken: data.senderToken,
-    //   receiverUsername: data.receiverUsername,
-    //   timestamp: new Date(),
-    // });
+    if (data.receiver === username) {
+      tsuccess("Nova mensagem recebida de: " + data.sender);
+      //verificar se o user tem a janela aberta de chat com o sender antes de enviar o toast.
+    }
+    // Adicione a nova mensagem à webSocketStore
+    webSocketStore.getState().addMessage(data);
   }
   function handleNotification(data) {
     console.log("Notificação recebida", data);
