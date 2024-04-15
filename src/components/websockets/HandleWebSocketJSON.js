@@ -1,6 +1,7 @@
 import { webSocketStore } from "../../stores/WebSocketStore";
 import { userStore } from "../../stores/UserStore";
-import { tsuccess } from "../messages/Message";
+import { tsuccess, twarn } from "../messages/Message";
+import MessageType from "./MessageType";
 
 function handleWebSocketJSON(json) {
   const username = userStore.getState().username;
@@ -15,13 +16,19 @@ function handleWebSocketJSON(json) {
   }
 
   switch (data.type) {
-    case 10:
+    case MessageType.TYPE_10:
       handleMessage(data);
       break;
-    case 20:
+    case MessageType.TYPE_20:
       handleNotification(data);
-
       break;
+    case MessageType.LOGOUT:
+      handleLogout(data);
+      break;
+    case MessageType.TYPE_40:
+      console.log("Mensagem recebida", data);
+      break;
+
     case "error":
       console.error("Erro recebido", data);
       break;
@@ -39,6 +46,10 @@ function handleWebSocketJSON(json) {
   }
   function handleNotification(data) {
     console.log("Notificação recebida", data);
+  }
+  function handleLogout(data) {
+    twarn("Time out, you are logged out!");
+    userStore.getState().logout();
   }
 }
 export { handleWebSocketJSON };

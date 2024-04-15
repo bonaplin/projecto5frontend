@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import MessageBubble from "./MessageBubble";
+import MessageType from "../websockets/MessageType";
 function ChatSideBar({ onClose }) {
   const token = userStore.getState().token;
   const username = userStore.getState().username;
@@ -37,6 +38,18 @@ function ChatSideBar({ onClose }) {
       });
   }, [socket, token]);
 
+  //sempre que a lista de mensagens for atualizada, faz scroll para o final
+  useEffect(() => {
+    scrollToBottom("messages");
+  }, [webSocketStore.getState().messages]);
+
+  function scrollToBottom(elementId) {
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      element.scrollTop = element.scrollHeight;
+    }, 0);
+  }
+  // scroll to bottom ^^
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -45,7 +58,7 @@ function ChatSideBar({ onClose }) {
         message: sendMessage,
         // senderToken: token,
         receiver: selectedUser,
-        type: 10,
+        type: MessageType.TYPE_10,
       };
 
       let messageJSON = JSON.stringify(messageToSend);
@@ -70,7 +83,7 @@ function ChatSideBar({ onClose }) {
         <div className="chat-title">
           <h3>{selectedUser}</h3> <CloseIcon onClick={handleOnClose} style={{ cursor: "pointer" }} />
         </div>
-        <div className="messages">
+        <div className="messages" id="messages">
           {webSocketStore.getState().messages.map((message, index) => (
             <MessageBubble
               key={index}
