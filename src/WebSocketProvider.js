@@ -1,23 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { webSocketStore } from "./stores/WebSocketStore";
-import { terror, tsuccess, twarn } from "./components/messages/Message";
+import { terror, tsuccess, twarn, tinfo, tdefault } from "./components/messages/Message";
 import { handleWebSocketJSON } from "./components/websockets/HandleWebSocketJSON";
 
 function WebSocketProvider({ children, token }) {
   // const { token } = userStore();
   const { setSocket } = webSocketStore();
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!token) {
       return;
     }
-    console.log("A abrir websocket...");
+    // console.log("A abrir websocket...");
 
     const ws = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" + token);
 
     ws.onopen = function (e) {
       tsuccess("Conexão WebSocket aberta");
-      // console.log("Conexão WebSocket aberta", e);
+
+      console.log("Conexão WebSocket aberta");
     };
 
     ws.onmessage = function (e) {
@@ -31,13 +33,21 @@ function WebSocketProvider({ children, token }) {
 
     ws.onclose = function (e) {
       twarn("Conexão WebSocket fechada");
-      // console.log("WebSocket connection closed:", e.reason);
+      // userStore.getState().logout();
+      // Se a conexão foi fechada de forma não intencional, tente reconectar
+      if (e.code !== 1000) {
+        let times = 0;
+        setTimeout(() => {
+          console.log("Tentando reconectar: " + times++ + "'x");
+          setConnected(!connected);
+        }, 1000); // Tente reconectar a cada 5 segundos
+      }
     };
 
     setSocket(ws);
     // Limpeza ao desmontar
     return () => ws.close();
-  }, [token, setSocket]); // Adicione o token como uma dependência
+  }, [token, setSocket, connected]); // Adicione o token como uma dependência
 
   return children;
 }

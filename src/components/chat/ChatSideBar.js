@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ChatSidebar.css";
 import { userStore } from "../../stores/UserStore";
 import { webSocketStore } from "../../stores/WebSocketStore";
-import { tsuccess, twarn } from "../messages/Message";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
@@ -29,7 +28,7 @@ function ChatSideBar({ onClose }) {
         return response.json();
       })
       .then((data) => {
-        console.log("Mensagens recebidas", data);
+        console.log("GET messages with user");
         // Atualize a webSocketStore com as mensagens recebidas
         webSocketStore.getState().setMessages(data);
       })

@@ -135,9 +135,9 @@ select:hover {
   padding: 2rem;
   z-index: 2;
   border-radius: 10px;
-  width: 20rem;
-  border: 1px solid #000;
-  max-width: 50%;
+  width: 23rem;
+  /* border: 1px solid #000; */
+  /* max-width: 50%; */
 }
 
 .header-profile .long-text {
@@ -197,7 +197,7 @@ form button {
 .yes-no {
   border: none;
   border-radius: var(--border-radius-half);
-  height: 2rem;
+  /* height: 2rem; */
   width: 5rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -221,4 +221,15 @@ form button {
 .button-container {
   display: flex;
   justify-content: center;
+}
+
+.btn {
+  padding: 0;
+}
+
+p {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
