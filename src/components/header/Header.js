@@ -9,6 +9,7 @@ import LogoutButton from "../dropdown/buttons/LogoutButton.js";
 import ProfileButton from "../dropdown/buttons/ProfileButton.js";
 import { userStore } from "../../stores/UserStore.js";
 import { webSocketStore } from "../../stores/WebSocketStore.js";
+import { notificationStore } from "../../stores/NotificationStore.js";
 import { useNavigate } from "react-router-dom";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -17,15 +18,15 @@ import Dropdown from "react-bootstrap/Dropdown";
 function Header() {
   const navigate = useNavigate();
   const role = userStore((state) => state.role);
-  const notifications = webSocketStore((state) => state.notifications);
-
-  // State to store the number of notifications
-  const count = webSocketStore((state) => state.notifications.length);
   const username = userStore((state) => state.username);
   const userimg = userStore((state) => state.photoURL);
-
   const token = userStore.getState().token; // Get the token from the store
   const [user, setUser] = useState(userStore.getState()); // Get the user from the store
+
+  const count = notificationStore((state) => state.notifications.length);
+  const notifications = notificationStore((state) => state.notifications);
+  const unreadCount = notificationStore((state) => state.notificationCounter);
+
   useEffect(() => {
     //subscribe -> Este método é usado para registrar uma função callback que será chamada sempre que um evento específico ocorrer. No seu caso, a função callback é chamada sempre que o estado do userStore muda.
     //unsubstube -> Este método é usado para cancelar uma assinatura que foi criada anteriormente com subscribe. Ele impede que a função callback seja chamada no futuro. No seu caso, unsubscribe é chamado quando o seu componente é desmontado para evitar vazamentos de memória.
@@ -57,17 +58,77 @@ function Header() {
     fetchData();
   }, [token]);
 
+  function handleMarkAsRead(id) {
+    notificationStore.getState().setNotifications(
+      notificationStore.getState().notifications.map((notification) => {
+        if (notification.id === id) {
+          notification.read = true;
+        }
+        return notification;
+      })
+    );
+  }
+  function handleMarkAllAsRead() {
+    notificationStore.getState().setNotifications(
+      notificationStore.getState().notifications.map((notification) => {
+        notification.read = true;
+        return notification;
+      })
+    );
+    notificationStore.getState().setNotificationCounter(0);
+  }
+
+  async function markNotificationAsRead() {
+    let url = "http://localhost:8080/demo-1.0-SNAPSHOT/rest/notifications";
+    // if (id) {
+    //   url += `?id=${id}`;
+    // }
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: userStore.getState().token,
+        },
+      });
+
+      if (response.ok) {
+        // Se a resposta for bem-sucedida, marque a notificação como lida no Zustand store
+        // const notifications = notificationStore.getState().notifications.map((notification) => {
+        // if (notification.id === id) {
+        //   notification.read = true;
+        // }
+        //   return notification;
+        // });
+
+        // notificationStore.getState().setNotifications(notifications);
+
+        // if (id) {
+        //   handleMarkAsRead(id);
+        // } else {
+        handleMarkAllAsRead();
+
+        // }
+      } else {
+        // Se a resposta falhar
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      console.error("There was an error: " + error.message);
+    }
+  }
+
   const handleTasksDeletedClick = () => {
     navigate("/deletedtasks");
   };
 
   function handleClearAll() {
-    webSocketStore.getState().clearNotifications();
+    notificationStore.getState().clearNotifications();
   }
 
-  function handleClickNotifications() {
-    webSocketStore.getState().setNotificationNew([]);
-  }
+  function handleClickNotifications() {}
 
   return (
     <header className="header">
@@ -102,25 +163,42 @@ function Header() {
 
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <div>
-              <NotificationsNoneIcon onClick={() => handleClickNotifications} />
-              {count > 0 ? <div id="notificationsCounter">{count}</div> : null}
+            <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
+              {notifications.length > 0 ? (
+                <div className="btn btn-primary position-relative">
+                  <NotificationsNoneIcon />
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
+                    {unreadCount}
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                </div>
+              ) : (
+                <NotificationsNoneIcon />
+              )}
             </div>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            {count > 0 ? (
+            {notifications.length > 0 ? (
               <>
-                <Dropdown.Item onClick={handleClearAll} style={{ display: "flex", justifyContent: "center" }}>
-                  <button type="button" className="btn btn-outline-danger" style={{ border: "none" }}>
-                    Clear All
-                  </button>
+                <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
+                  <div className="btn" role="group" aria-label="Basic outlined example">
+                    <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
+                      Mark All as Read
+                    </button>
+                  </div>
                 </Dropdown.Item>
-                {notifications.map((notification, index) => (
-                  <Dropdown.Item key={index} href={`/users/${notification.sender}`}>
-                    {notification.message}
-                  </Dropdown.Item>
-                ))}
+                {notifications.length > 0 &&
+                  notifications.map((notification, index) => (
+                    <Dropdown.Item
+                      key={index}
+                      href={`/users/${notification.sender}`}
+                      style={{ backgroundColor: notification.read ? "white" : "#9999" }}
+                      // onClick={() => markNotificationAsRead(notification.id)}
+                    >
+                      {notification.message}
+                    </Dropdown.Item>
+                  ))}
               </>
             ) : (
               <Dropdown.Item>No Notifications to see</Dropdown.Item>

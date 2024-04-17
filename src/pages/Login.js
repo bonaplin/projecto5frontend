@@ -11,6 +11,7 @@ import { tsuccess, terror, twarn } from "../components/messages/Message";
 import ResetForm from "../components/formInput/ResetFormInput";
 import LoginForm from "../components/formInput/LoginForm";
 import { webSocketStore } from "../stores/WebSocketStore";
+import { notificationStore } from "../stores/NotificationStore";
 
 function Login() {
   const [inputs, setInputs] = useState({
@@ -55,7 +56,7 @@ function Login() {
           updateRole(data.role);
           updateToken(data.token); // trigger create new websocket
           updateConfirm(data.confirmed);
-          getNotification();
+          await getNotification();
 
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
@@ -97,26 +98,32 @@ function Login() {
       });
   };
 
-  function getNotification() {
-    const response = fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/notifications", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        token: userStore.getState().token,
-      },
-    })
-      .then(async (response) => {
-        const data = await response.json();
-        if (response.ok) {
-          webSocketStore.getState().setNotificationCounter(data.length);
-          webSocketStore.getState().setNotifications(data);
-          console.log("Notification counter: ", data);
-          return data;
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error: " + error.message);
+  async function getNotification() {
+    try {
+      const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/notifications", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: userStore.getState().token,
+        },
       });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Limpar as notificações existentes
+
+        notificationStore.getState().setNotifications(data);
+        // // Adicionar cada notificação à lista apropriada
+        // data.forEach((notification) => {
+        //   notificationStore.getState().addNotification(notification);
+        // });
+
+        console.log("Notification counter: ", data.length);
+        return data;
+      }
+    } catch (error) {
+      console.error("There was an error: " + error.message);
+    }
   }
 
   return (

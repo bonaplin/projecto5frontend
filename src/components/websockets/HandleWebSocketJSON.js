@@ -1,11 +1,12 @@
 import { webSocketStore } from "../../stores/WebSocketStore";
+import { notificationStore } from "../../stores/NotificationStore";
 import { userStore } from "../../stores/UserStore";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
 
 function handleWebSocketJSON(json) {
   const username = userStore.getState().username;
-  const { notifications, addNotification } = webSocketStore.getState();
+  const { notifications, addNotification } = notificationStore.getState();
   let data;
 
   try {
@@ -28,7 +29,6 @@ function handleWebSocketJSON(json) {
       break;
     case MessageType.TYPE_40:
       handleNotification(data);
-      console.log("Mensagem recebida", data);
       break;
 
     case "error":
@@ -40,15 +40,14 @@ function handleWebSocketJSON(json) {
 
   function handleMessage(data) {
     if (data.receiver === username) {
-      // tdefault("Nova mensagem recebida de: " + data.sender);
-      //verificar se o user tem a janela aberta de chat com o sender antes de enviar o toast.
+      // Se o usuário for o destinatário da mensagem, exiba-a
     }
     // Adicione a nova mensagem à webSocketStore
     webSocketStore.getState().addMessage(data);
   }
   function handleNotification(data) {
-    addNotification(data);
-    console.log("Notificação recebida", data);
+    notificationStore.getState().addNotification(data);
+    notificationStore.getState().addNotificationCounter();
   }
   function handleLogout(data) {
     twarn("Time out, you are logged out!");

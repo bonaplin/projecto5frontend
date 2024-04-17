@@ -85,6 +85,7 @@ function ChatSideBar({ onClose }) {
         <div className="messages" id="messages">
           {webSocketStore.getState().messages.map((message, index) => (
             <MessageBubble
+              id={message.id}
               key={index}
               message={message.message}
               read={message.read}
