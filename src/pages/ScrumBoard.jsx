@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { userStore } from "../stores/UserStore";
 import { categoriesStore } from "../stores/CategoriesStore";
 import "./ScrumBoard.css";
+import "../App.css";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "../components/scrum-board/Column";
@@ -32,14 +33,11 @@ export default function ScrumBoard() {
   const [categoryDD, setCategory] = useState(null);
 
   async function updateStatus(id, newStatus) {
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${id}/status/`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", token: token },
-        body: JSON.stringify({ status: newStatus }),
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${id}/status/`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", token: token },
+      body: JSON.stringify({ status: newStatus }),
+    });
 
     const data = await response.json();
 
@@ -63,17 +61,14 @@ export default function ScrumBoard() {
   }
   async function AddTask(task) {
     console.log("task", task);
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(task),
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(task),
+    });
 
     const data = await response.json();
 
@@ -106,17 +101,14 @@ export default function ScrumBoard() {
   };
   async function handleEditTask(task) {
     //console.log("task", task);
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${task.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(task),
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${task.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(task),
+    });
 
     const data = await response.json();
 
@@ -150,16 +142,13 @@ export default function ScrumBoard() {
   };
   async function handleDeleteTask(task) {
     //console.log("task", task);
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${task.id}/desactivate`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${task.id}/desactivate`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -194,16 +183,13 @@ export default function ScrumBoard() {
 
   async function handleViewTask(task) {
     //console.log("task", task);
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/get?id=${task.id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    )
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/get?id=${task.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    })
       .then((response) => {
         //console.log(response.status);
         if (response.ok) {
@@ -262,14 +248,11 @@ export default function ScrumBoard() {
   // Fetch users --------------------------------------------------------------------------------------------------------
   useEffect(() => {
     async function fetchUsers() {
-      const response = await fetch(
-        "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/",
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/", {
+        headers: {
+          token: token,
+        },
+      });
       if (!response.ok) {
         terror("Failed to fetch users:", response.statusText);
         return;
@@ -286,14 +269,11 @@ export default function ScrumBoard() {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     async function fetchCategories() {
-      const response = await fetch(
-        "http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/",
-        {
-          headers: {
-            token: token,
-          },
-        }
-      );
+      const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/", {
+        headers: {
+          token: token,
+        },
+      });
       if (!response.ok) {
         terror("Failed to fetch categories:", response.statusText);
         if (response.status === 403) {
@@ -304,7 +284,7 @@ export default function ScrumBoard() {
       const categories = await response.json();
       const categoriesNames = categories.map((category) => category.title);
       setCategories(categoriesNames);
-      console.log("ver");
+      // console.log("ver");
     }
     fetchCategories();
   }, [categoriesStore.getState().categories]);
@@ -392,25 +372,13 @@ export default function ScrumBoard() {
           <h2>Tasks</h2>
           <div>
             <Tooltip title="Add task">
-              <AddCircleIcon
-                onClick={handleAddClick}
-                className="add-some"
-                fontSize="large"
-              />
+              <AddCircleIcon onClick={handleAddClick} className="add-some" fontSize="large" />
             </Tooltip>
             <Tooltip title="My Tasks">
-              <FilterAltIcon
-                onClick={handleClickMyTasks}
-                className="restore-button"
-                fontSize="large"
-              />
+              <FilterAltIcon onClick={handleClickMyTasks} className="restore-button" fontSize="large" />
             </Tooltip>
             <Tooltip title="Reset Filter / Order">
-              <RestoreIcon
-                className="restore-button"
-                onClick={handleResetFilter}
-                fontSize="large"
-              />
+              <RestoreIcon className="restore-button" onClick={handleResetFilter} fontSize="large" />
             </Tooltip>
             {(role === "sm" || role === "po") && (
               <div className="filter-container">
@@ -464,41 +432,12 @@ export default function ScrumBoard() {
               task={selectedTask}
             />
           )}
-          {
-            <TaskModal
-              open={isAddTaskModal}
-              title_modal="Add task"
-              onClose={handleCloseAddModal}
-              onSubmit={AddTask}
-              task={selectedTask}
-            />
-          }
+          {<TaskModal open={isAddTaskModal} title_modal="Add task" onClose={handleCloseAddModal} onSubmit={AddTask} task={selectedTask} />}
           <DragDropContext onDragEnd={handleDragEnd}>
             <div className="scrum-board">
-              <Column
-                title={"TO DO"}
-                tasks={todo}
-                id={"100"}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                handleView={handleView}
-              />
-              <Column
-                title={"DOING"}
-                tasks={doing}
-                id={"200"}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                handleView={handleView}
-              />
-              <Column
-                title={"DONE"}
-                tasks={done}
-                id={"300"}
-                handleDelete={handleDelete}
-                handleEdit={handleEdit}
-                handleView={handleView}
-              />{" "}
+              <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+              <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+              <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
             </div>{" "}
           </DragDropContext>
         </div>

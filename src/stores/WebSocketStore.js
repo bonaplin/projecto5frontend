@@ -1,4 +1,3 @@
-// store.js
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -7,15 +6,12 @@ export const webSocketStore = create(
     (set, get) => ({
       socket: null,
       messages: [],
-      notifications: [],
-      //tasks: [],
+
       setSocket: (socket) => set({ socket }),
       addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
-      addNotification: (notification) => set((state) => ({ notifications: [...state.notifications, notification] })),
-      //addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+      setMessages: (newMessages) => set({ messages: newMessages }),
+
       clearMessages: () => set({ messages: [] }),
-      clearNotifications: () => set({ notifications: [] }),
-      //clearTasks: () => set({ tasks: [] }),
     }),
     {
       name: "socketstore",

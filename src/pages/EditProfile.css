@@ -45,7 +45,6 @@
   border: 2px solid black;
 }
 .button-group input[type="submit"],
-.button-group input[type="button"],
-.form-input {
+.button-group input[type="button"] {
   cursor: pointer;
 }

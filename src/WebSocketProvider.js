@@ -1,42 +1,53 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { webSocketStore } from "./stores/WebSocketStore";
-import { terror, tsuccess, twarn } from "./components/messages/Message";
-import { userStore } from "./stores/UserStore";
+import { terror, tsuccess, twarn, tinfo, tdefault } from "./components/messages/Message";
+import { handleWebSocketJSON } from "./components/websockets/HandleWebSocketJSON";
 
 function WebSocketProvider({ children, token }) {
   // const { token } = userStore();
   const { setSocket } = webSocketStore();
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!token) {
       return;
     }
-    console.log("A abrir websocket...");
+    // console.log("A abrir websocket...");
 
-    const socket = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/message/" + token);
+    const ws = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" + token);
 
-    socket.onopen = function (e) {
+    ws.onopen = function (e) {
       tsuccess("Conexão WebSocket aberta");
-      console.log("Conexão WebSocket aberta", e);
+
+      console.log("Conexão WebSocket aberta");
     };
 
-    socket.onmessage = function (e) {
-      tsuccess("Mensagem recebida", e.data);
+    ws.onmessage = function (e) {
+      handleWebSocketJSON(e.data);
     };
 
-    socket.onerror = function (e) {
+    ws.onerror = function (e) {
       terror("Erro websocket");
-      console.log(`Erro websocket ${e.data}`);
+      // console.log(`Erro websocket ${e.data}`);
     };
 
-    socket.onclose = function (e) {
-      console.log("WebSocket connection closed:", e.reason);
+    ws.onclose = function (e) {
+      twarn("Conexão WebSocket fechada");
+      // userStore.getState().logout();
+      // Se a conexão foi fechada de forma não intencional, tente reconectar
+      if (e.code !== 1000) {
+        let times = 0;
+        setTimeout(() => {
+          console.log("Tentando reconectar: " + times++ + "'x");
+          setConnected(!connected);
+        }, 1000); // Tente reconectar a cada 5 segundos
+      }
     };
 
-    setSocket(socket);
+    setSocket(ws);
     // Limpeza ao desmontar
-    return () => socket.close();
-  }, [token, setSocket]); // Adicione o token como uma dependência
+    return () => ws.close();
+  }, [token, setSocket, connected]); // Adicione o token como uma dependência
 
   return children;
 }

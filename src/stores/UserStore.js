@@ -37,6 +37,20 @@ export const userStore = create(
       updateEmail: (email) => set({ email }), //new action
       updatePhone: (phone) => set({ phone }), //new action
       updateConfirm: (confirmed) => set({ confirmed }), //new action
+
+      logout: () =>
+        set({
+          username: "",
+          token: "",
+          role: "",
+          firstname: "",
+          lastname: "",
+          photourl: "",
+          email: "",
+          phone: "",
+          confirmed: "",
+          user: [],
+        }),
     }),
     {
       name: "userstore", //name of the storage

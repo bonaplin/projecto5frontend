@@ -1,4 +1,4 @@
-.dropdown {
+/* .dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -9,7 +9,7 @@
   padding: 12px 16px;
   border-radius: var(--border-radius);
   border: 1px solid #e5e5e5;
-}
+} */
 .dropdown-right {
   position: absolute;
   top: 100%;

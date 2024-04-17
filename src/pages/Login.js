@@ -10,6 +10,8 @@ import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import ResetForm from "../components/formInput/ResetFormInput";
 import LoginForm from "../components/formInput/LoginForm";
+import { webSocketStore } from "../stores/WebSocketStore";
+import { notificationStore } from "../stores/NotificationStore";
 
 function Login() {
   const [inputs, setInputs] = useState({
@@ -53,8 +55,9 @@ function Login() {
           updateUsername(data.username);
           updateRole(data.role);
           updateToken(data.token); // trigger create new websocket
-          console.log("Token apos login: ", data.token);
           updateConfirm(data.confirmed);
+          await getNotification();
+
           tsuccess("Login successful");
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
         } else {
@@ -95,6 +98,39 @@ function Login() {
       });
   };
 
+  async function getNotification() {
+    try {
+      const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/notifications", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: userStore.getState().token,
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Limpar as notificações existentes
+
+        notificationStore.getState().setNotifications(data);
+        data.map((notification) => {
+          if (!notification.read) {
+            notificationStore.getState().addNotificationCounter();
+          }
+        });
+        // // Adicionar cada notificação à lista apropriada
+        // data.forEach((notification) => {
+        //   notificationStore.getState().addNotification(notification);
+        // });
+
+        console.log("Notification counter: ", data.length);
+        return data;
+      }
+    } catch (error) {
+      console.error("There was an error: " + error.message);
+    }
+  }
+
   return (
     <Layout data-testid="login">
       <div className="login-outer-container">
@@ -110,7 +146,9 @@ function Login() {
           )}
 
           <div>
-            <button onClick={() => setIsResettingPassword(!isResettingPassword)}>{isResettingPassword ? "Back to Login" : "Reset Password"}</button>
+            <a href="#" onClick={() => setIsResettingPassword(!isResettingPassword)}>
+              {isResettingPassword ? "Back to Login" : "Reset Password"}
+            </a>
           </div>
         </div>
       </div>

@@ -2,55 +2,65 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ChatSidebar.css";
 import { userStore } from "../../stores/UserStore";
 import { webSocketStore } from "../../stores/WebSocketStore";
-import { tsuccess, twarn } from "../messages/Message";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import MessageBubble from "./MessageBubble";
+import MessageType from "../websockets/MessageType";
 function ChatSideBar({ onClose }) {
   const token = userStore.getState().token;
+  const username = userStore.getState().username;
   const { selectedUser } = useParams();
-  const [messages, setMessages] = useState([]);
   const [sendMessage, setSendMessage] = useState();
   const { socket } = webSocketStore();
 
   useEffect(() => {
-    if (socket) {
-      socket.onmessage = function (e) {
-        try {
-          let data = JSON.parse(e.data);
-          let message = data.message;
-          let timestamp = new Date(); // Adicione um timestamp para cada mensagem
-
-          let isOwnMessage = data.senderToken === token; // Verifique se a mensagem foi enviada pelo usuário atual
-
-          // Agora, cada "message" é um objeto com várias propriedades
-          setMessages((prevMessages) => [...prevMessages, { message, isOwnMessage, timestamp }]);
-          console.log(`Mensagem recebida do servidor: ${message}`);
-        } catch (error) {
-          console.log("Erro ao analisar a mensagem recebida: ", e.data);
+    fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/messages/${username}/${selectedUser}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao buscar mensagens");
         }
-      };
-    }
-    // return () => {
-    //   if (socket) {
-    //     socket.close();
-    //   }
-    // };
+        return response.json();
+      })
+      .then((data) => {
+        console.log("GET messages with user");
+        // Atualize a webSocketStore com as mensagens recebidas
+        webSocketStore.getState().setMessages(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar mensagens", error);
+      });
   }, [socket, token]);
 
+  //sempre que a lista de mensagens for atualizada, faz scroll para o final
+  useEffect(() => {
+    scrollToBottom("messages");
+  }, [webSocketStore.getState().messages]);
+
+  function scrollToBottom(elementId) {
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      element.scrollTop = element.scrollHeight;
+    }, 0);
+  }
+  // scroll to bottom ^^
   function handleSubmit(e) {
     e.preventDefault();
 
     if (socket && socket.readyState === WebSocket.OPEN) {
-      let messageObject = {
+      let messageToSend = {
         message: sendMessage,
-        senderToken: token,
-        receiverUsername: selectedUser,
-        type: 10,
+        // senderToken: token,
+        receiver: selectedUser,
+        type: MessageType.TYPE_10,
       };
 
-      let messageJSON = JSON.stringify(messageObject);
+      let messageJSON = JSON.stringify(messageToSend);
       socket.send(messageJSON);
     }
 
@@ -72,9 +82,19 @@ function ChatSideBar({ onClose }) {
         <div className="chat-title">
           <h3>{selectedUser}</h3> <CloseIcon onClick={handleOnClose} style={{ cursor: "pointer" }} />
         </div>
-        <div className="messages">
-          {messages.map((messageObj, index) => (
-            <MessageBubble key={index} messageObj={messageObj} />
+        <div className="messages" id="messages">
+          {webSocketStore.getState().messages.map((message, index) => (
+            <MessageBubble
+              id={message.id}
+              key={index}
+              message={message.message}
+              read={message.read}
+              receiver={message.receiver}
+              sender={message.sender}
+              time={message.time}
+              selectedUser={selectedUser}
+              isOwnMessage={message.sender === username}
+            />
           ))}
         </div>
         <form onSubmit={handleSubmit}>
