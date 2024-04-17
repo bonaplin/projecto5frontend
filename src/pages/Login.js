@@ -113,6 +113,11 @@ function Login() {
         // Limpar as notificações existentes
 
         notificationStore.getState().setNotifications(data);
+        data.map((notification) => {
+          if (!notification.read) {
+            notificationStore.getState().addNotificationCounter();
+          }
+        });
         // // Adicionar cada notificação à lista apropriada
         // data.forEach((notification) => {
         //   notificationStore.getState().addNotification(notification);

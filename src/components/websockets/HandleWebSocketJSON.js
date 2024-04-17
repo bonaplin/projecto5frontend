@@ -1,12 +1,12 @@
 import { webSocketStore } from "../../stores/WebSocketStore";
 import { notificationStore } from "../../stores/NotificationStore";
 import { userStore } from "../../stores/UserStore";
+import { taskStore } from "../../stores/TaskStore";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
 
 function handleWebSocketJSON(json) {
   const username = userStore.getState().username;
-  const { notifications, addNotification } = notificationStore.getState();
   let data;
 
   try {
@@ -23,6 +23,10 @@ function handleWebSocketJSON(json) {
       break;
     case MessageType.TYPE_20:
       // handleNotification(data);
+      break;
+    case MessageType.TASK_CREATE:
+      handleNewTask(data);
+      console.log("Mensagem recebida 21", data);
       break;
     case MessageType.LOGOUT:
       handleLogout(data);
@@ -52,6 +56,10 @@ function handleWebSocketJSON(json) {
   function handleLogout(data) {
     twarn("Time out, you are logged out!");
     userStore.getState().logout();
+  }
+  function handleNewTask(data) {
+    tinfo("New task created!");
+    taskStore.getState().addTask(data);
   }
 }
 export { handleWebSocketJSON };
