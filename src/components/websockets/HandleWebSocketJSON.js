@@ -31,6 +31,21 @@ function handleWebSocketJSON(json) {
     case MessageType.TASK_MOVE:
       handleMoveTask(data);
       break;
+    case MessageType.TASK_EDIT:
+      console.log("Mensagem recebida 23", data);
+      handleEditTask(data);
+      break;
+    case MessageType.TASK_EDIT_AND_MOVE:
+      console.log("Mensagem recebida 24", data);
+      handleMoveTask(data);
+      break;
+    case MessageType.TASK_DESACTIVATE:
+      console.log("Mensagem recebida 25 é para desactivar!", data);
+      handleDesactivateTask(data);
+      break;
+    case MessageType.TASK_DELETE:
+      console.log("Mensagem recebida 26 é para apagar!", data);
+      break;
     case MessageType.LOGOUT:
       handleLogout(data);
       break;
@@ -68,6 +83,17 @@ function handleWebSocketJSON(json) {
     console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
     taskStore.getState().removeTask(data.id, data.lastStatus);
     taskStore.getState().addTask(data, data.status);
+  }
+  // function handleEditTaskAndMove(data) {
+  //   console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
+  //   taskStore.getState().removeTask(data.id, data.lastStatus);
+  //   taskStore.getState().addTask(data, data.status);
+  // }
+  function handleEditTask(data) {
+    taskStore.getState().updateTask(data, data.status);
+  }
+  function handleDesactivateTask(data) {
+    taskStore.getState().removeTask(data.id, data.status);
   }
 }
 export { handleWebSocketJSON };
