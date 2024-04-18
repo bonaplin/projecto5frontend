@@ -28,6 +28,9 @@ function handleWebSocketJSON(json) {
       handleNewTask(data);
       console.log("Mensagem recebida 21", data);
       break;
+    case MessageType.TASK_MOVE:
+      handleMoveTask(data);
+      break;
     case MessageType.LOGOUT:
       handleLogout(data);
       break;
@@ -59,7 +62,12 @@ function handleWebSocketJSON(json) {
   }
   function handleNewTask(data) {
     tinfo("New task created!");
-    taskStore.getState().addTask(data);
+    taskStore.getState().addTask(data, data.status);
+  }
+  function handleMoveTask(data) {
+    console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
+    taskStore.getState().removeTask(data.id, data.lastStatus);
+    taskStore.getState().addTask(data, data.status);
   }
 }
 export { handleWebSocketJSON };

@@ -111,7 +111,7 @@ function Login() {
       const data = await response.json();
       if (response.ok) {
         // Limpar as notificações existentes
-
+        notificationStore.getState().clearNotifications();
         notificationStore.getState().setNotifications(data);
         data.map((notification) => {
           if (!notification.read) {

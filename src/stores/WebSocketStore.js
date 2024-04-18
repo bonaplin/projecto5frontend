@@ -8,6 +8,14 @@ export const webSocketStore = create(
       messages: [],
 
       setSocket: (socket) => set({ socket }),
+
+      send(message) {
+        const { socket } = get();
+        if (socket) {
+          socket.send(message);
+        }
+      },
+
       addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
       setMessages: (newMessages) => set({ messages: newMessages }),
 

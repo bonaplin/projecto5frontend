@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userStore } from "../stores/UserStore";
 import { categoriesStore } from "../stores/CategoriesStore";
+import { taskStore } from "../stores/TaskStore";
 import "./ScrumBoard.css";
 import "../App.css";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
@@ -18,16 +19,20 @@ import TaskViewModal from "../components/modal/TaskViewModal.js";
 import Dropdown from "../components/dropdown/Dropdown.js";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Tooltip from "@mui/material/Tooltip";
+import { webSocketStore } from "../stores/WebSocketStore.js";
+import MessageType from "../components/websockets/MessageType.js";
 
 export default function ScrumBoard() {
+  const { todo, doing, done, addTask, removeTask, updateTask } = taskStore((state) => state);
   const token = userStore.getState().token;
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState({});
   const role = userStore.getState().role;
   const [isChanged, setIsChanged] = useState(false);
-  const [todo, setTodo] = useState([]);
-  const [doing, setDoing] = useState([]);
-  const [done, setDone] = useState([]);
+  const { send } = webSocketStore();
+  // const [todo, setTodo] = useState([]);
+  // const [doing, setDoing] = useState([]);
+  // const [done, setDone] = useState([]);
   const navigate = useNavigate();
   const [usernameDD, setUsername] = useState(null);
   const [categoryDD, setCategory] = useState(null);
@@ -60,7 +65,8 @@ export default function ScrumBoard() {
     setIsAddTaskModal(true);
   }
   async function AddTask(task) {
-    console.log("task", task);
+    // task.owner = userStore.getState().username;
+    console.log("task enviada para o backend", task);
     const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/", {
       method: "POST",
       headers: {
@@ -73,8 +79,11 @@ export default function ScrumBoard() {
     const data = await response.json();
 
     if (response.ok) {
+      console.log(task);
       setIsAddTaskModal(false);
-      setIsChanged(!isChanged);
+
+      // addTask(task, 100);
+
       tsuccess("Task added successfully");
       return { success: true }; // Return success to close the modal/update the tasks/clean inputs
     } else {
@@ -229,9 +238,12 @@ export default function ScrumBoard() {
           const doing = data.filter((task) => task.status === 200);
           const done = data.filter((task) => task.status === 300);
 
-          setTodo(todo);
-          setDoing(doing);
-          setDone(done);
+          // setTodo(todo);
+          // setDoing(doing);
+          // setDone(done);
+          taskStore.getState().setTodo(todo);
+          taskStore.getState().setDoing(doing);
+          taskStore.getState().setDone(done);
         } else {
           terror("Failed to fetch tasks");
           //console.error("Failed to fetch tasks:", response.statusText);
@@ -241,7 +253,7 @@ export default function ScrumBoard() {
       }
     }
     fetchTasks();
-  }, [usernameDD, categoryDD, isChanged]);
+  }, [userStore.getState().username, userStore.getState().role]);
 
   const [users, setUsers] = useState([]);
 
@@ -290,64 +302,85 @@ export default function ScrumBoard() {
   }, [categoriesStore.getState().categories]);
   //------------------------------------------------------------------------dnd beautiful
 
-  function removeItemById(array, id) {
-    return array.filter((item) => String(item.id) !== id);
-  }
-  function findItemById(array, id) {
-    return array.find((item) => String(item.id) === id);
-  }
+  // function removeItemById(array, id) {
+  //   return array.filter((item) => String(item.id) !== id);
+  // }
+  // function findItemById(array, id) {
+  //   return array.find((item) => String(item.id) === id);
+  // }
+  // function handleDragEnd(result) {
+  //   if (!result.destination) {
+  //     return;
+  //   }
+  //   const { destination, source, draggableId } = result;
+
+  //   // Create new arrays for the tasks
+  //   let newTodo = [...todo];
+  //   let newDoing = [...doing];
+  //   let newDone = [...done];
+  //   // Find the task and remove it from its source column
+  //   const allTasks = [...newTodo, ...newDoing, ...newDone];
+  //   const task = findItemById(allTasks, draggableId);
+
+  //   // Remove the task from the source column
+  //   if (source.droppableId === "100") {
+  //     newTodo = removeItemById(newTodo, draggableId);
+  //   } else if (source.droppableId === "200") {
+  //     newDoing = removeItemById(newDoing, draggableId);
+  //   } else if (source.droppableId === "300") {
+  //     newDone = removeItemById(newDone, draggableId);
+  //   }
+
+  //   // Add the task to the destination column depending on the droppableId
+  //   if (destination.droppableId === "100") {
+  //     task.todo = true;
+  //     task.doing = false;
+  //     task.done = false;
+  //     task.status = 100;
+  //     // newTodo.splice(destination.index, 0, task);
+  //     updateStatus(result.draggableId, 100);
+  //   } else if (destination.droppableId === "200") {
+  //     task.todo = false;
+  //     task.done = true;
+  //     task.doing = false;
+  //     task.status = 200;
+  //     // newDoing.splice(destination.index, 0, task);
+  //     updateStatus(result.draggableId, 200);
+  //   } else if (destination.droppableId === "300") {
+  //     task.done = false;
+  //     task.todo = false;
+  //     task.doing = true;
+  //     task.status = 300;
+  //     // newDone.splice(destination.index, 0, task);
+  //     updateStatus(result.draggableId, 300);
+  //   }
+
+  //   // Update the state once with the new arrays
+  //   setSelectedTask(task);
+  //   taskStore.getState().setTodo(newTodo);
+  //   taskStore.getState().setDoing(newDoing);
+  //   taskStore.getState().setDone(newDone);
+  //   // setTodo(newTodo);
+  //   // setDoing(newDoing);
+  //   // setDone(newDone);
+  // }
+
   function handleDragEnd(result) {
     if (!result.destination) {
       return;
     }
     const { destination, source, draggableId } = result;
 
-    // Create new arrays for the tasks
-    let newTodo = [...todo];
-    let newDoing = [...doing];
-    let newDone = [...done];
-    // Find the task and remove it from its source column
-    const allTasks = [...newTodo, ...newDoing, ...newDone];
-    const task = findItemById(allTasks, draggableId);
+    let newStatus;
+    if (destination.droppableId === "100") newStatus = 100;
+    else if (destination.droppableId === "200") newStatus = 200;
+    else if (destination.droppableId === "300") newStatus = 300;
+    console.log("newStatus", newStatus);
+    console.log("draggableId", draggableId);
+    console.log("type", MessageType.TASK_MOVE);
 
-    // Remove the task from the source column
-    if (source.droppableId === "100") {
-      newTodo = removeItemById(newTodo, draggableId);
-    } else if (source.droppableId === "200") {
-      newDoing = removeItemById(newDoing, draggableId);
-    } else if (source.droppableId === "300") {
-      newDone = removeItemById(newDone, draggableId);
-    }
-
-    // Add the task to the destination column depending on the droppableId
-    if (destination.droppableId === "100") {
-      task.todo = true;
-      task.doing = false;
-      task.done = false;
-      task.status = 100;
-      newTodo.splice(destination.index, 0, task);
-      updateStatus(result.draggableId, 100);
-    } else if (destination.droppableId === "200") {
-      task.todo = false;
-      task.done = true;
-      task.doing = false;
-      task.status = 200;
-      newDoing.splice(destination.index, 0, task);
-      updateStatus(result.draggableId, 200);
-    } else if (destination.droppableId === "300") {
-      task.done = false;
-      task.todo = false;
-      task.doing = true;
-      newDone.splice(destination.index, 0, task);
-      task.status = 300;
-      updateStatus(result.draggableId, 300);
-    }
-
-    // Update the state once with the new arrays
-    setSelectedTask(task);
-    setTodo(newTodo);
-    setDoing(newDoing);
-    setDone(newDone);
+    const id = parseInt(draggableId);
+    send(JSON.stringify({ type: MessageType.TASK_MOVE, id: id, status: newStatus }));
   }
   //------------------------------------------------------------------------dnd beautiful
 
