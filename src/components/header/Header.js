@@ -7,6 +7,7 @@ import TasksButton from "../dropdown/buttons/TasksButton.js";
 import CategoriesButton from "../dropdown/buttons/CategoriesButton.js";
 import LogoutButton from "../dropdown/buttons/LogoutButton.js";
 import ProfileButton from "../dropdown/buttons/ProfileButton.js";
+import DashboardButton from "../dropdown/buttons/DashboardButton.js";
 import { userStore } from "../../stores/UserStore.js";
 import { webSocketStore } from "../../stores/WebSocketStore.js";
 import { notificationStore } from "../../stores/NotificationStore.js";
@@ -144,15 +145,21 @@ function Header() {
             <Dropdown.Item>
               <UsersButton />
             </Dropdown.Item>
-            {role === "po" ? (
-              <Dropdown.Item>
-                <CategoriesButton />
-              </Dropdown.Item>
-            ) : null}
+
             {role === "po" || role === "sm" ? (
               <Dropdown.Item onClick={handleTasksDeletedClick}>
                 <DeleteOutlineOutlinedIcon /> Deleted Tasks
               </Dropdown.Item>
+            ) : null}
+            {role === "po" ? (
+              <>
+                <Dropdown.Item>
+                  <CategoriesButton />
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <DashboardButton />
+                </Dropdown.Item>
+              </>
             ) : null}
           </Dropdown.Menu>
         </Dropdown>
@@ -182,9 +189,12 @@ function Header() {
             {notifications.length > 0 ? (
               <>
                 <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
-                  <div className="btn" role="group" aria-label="Basic outlined example">
+                  <div className="btn-group" role="group" aria-label="Basic outlined example">
                     <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
                       Mark All as Read
+                    </button>
+                    <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
+                      Clear All
                     </button>
                   </div>
                 </Dropdown.Item>
@@ -196,7 +206,15 @@ function Header() {
                       style={{ backgroundColor: notification.read ? "white" : "#9999" }}
                       // onClick={() => markNotificationAsRead(notification.id)}
                     >
-                      {notification.message}
+                      {"New message from " +
+                        notification.sender +
+                        ". (" +
+                        notification.time.substring(11, 16) +
+                        " " +
+                        notification.time.substring(8, 10) +
+                        "/" +
+                        notification.time.substring(5, 7) +
+                        ")"}
                     </Dropdown.Item>
                   ))}
               </>

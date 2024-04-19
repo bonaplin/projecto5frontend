@@ -111,17 +111,19 @@ function Login() {
       const data = await response.json();
       if (response.ok) {
         // Limpar as notificações existentes
+        notificationStore.getState().setNotificationCounter(0);
         notificationStore.getState().clearNotifications();
-        notificationStore.getState().setNotifications(data);
-        data.map((notification) => {
+
+        const unreadNotifications = data.filter((notification) => !notification.read);
+        const readNotifications = data.filter((notification) => notification.read);
+
+        notificationStore.getState().setNotifications([...unreadNotifications, ...readNotifications]);
+
+        unreadNotifications.forEach((notification) => {
           if (!notification.read) {
             notificationStore.getState().addNotificationCounter();
           }
         });
-        // // Adicionar cada notificação à lista apropriada
-        // data.forEach((notification) => {
-        //   notificationStore.getState().addNotification(notification);
-        // });
 
         console.log("Notification counter: ", data.length);
         return data;

@@ -1,5 +1,6 @@
 const MessageType = {
   TYPE_10: 10,
+  TYPE_11: 11,
   TYPE_20: 20,
   TASK_CREATE: 21, // Create a new task
   TASK_MOVE: 22,

@@ -6,7 +6,10 @@ export const webSocketStore = create(
     (set, get) => ({
       socket: null,
       messages: [],
+      selectedUser: "",
 
+      setSelectedUser: (selectedUser) => set({ selectedUser }),
+      clearSelectedUser: () => set({ selectedUser: "" }),
       setSocket: (socket) => set({ socket }),
 
       send(message) {
@@ -18,7 +21,6 @@ export const webSocketStore = create(
 
       addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
       setMessages: (newMessages) => set({ messages: newMessages }),
-
       clearMessages: () => set({ messages: [] }),
     }),
     {

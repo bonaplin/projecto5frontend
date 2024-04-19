@@ -47,10 +47,25 @@ function Profile() {
       });
   }, [selectedUser, token]); // Dependências
 
+  // const datatasks = [
+  //   { name: "To Do", value: inputs.todocount },
+  //   { name: "Doing", value: inputs.doingcount },
+  //   { name: "Done", value: inputs.donecount },
+  // ];
+
   const datatasks = [
-    { name: "To Do", value: inputs.todocount },
-    { name: "Doing", value: inputs.doingcount },
-    { name: "Done", value: inputs.donecount },
+    {
+      name: "To Do",
+      value: inputs.todocount,
+    },
+    {
+      name: "Doing",
+      value: inputs.doingcount,
+    },
+    {
+      name: "Done",
+      value: inputs.donecount,
+    },
   ];
 
   const COLORS = ["#ec9191", "#5f9ea0", "#4c59af"];

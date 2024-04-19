@@ -21,6 +21,10 @@ function handleWebSocketJSON(json) {
       console.log("Mensagem recebida 10", data);
       handleMessage(data);
       break;
+    case MessageType.TYPE_11:
+      console.log("Mensagem recebida 11", data);
+      handleMessageSender(data);
+      break;
     case MessageType.TYPE_20:
       // handleNotification(data);
       break;
@@ -61,12 +65,16 @@ function handleWebSocketJSON(json) {
   }
 
   function handleMessage(data) {
-    if (data.receiver === username) {
-      // Se o usuário for o destinatário da mensagem, exiba-a
+    const selectedUser = webSocketStore.getState().selectedUser;
+    if (data.sender === selectedUser) {
+      webSocketStore.getState().addMessage(data);
     }
-    // Adicione a nova mensagem à webSocketStore
+  }
+
+  function handleMessageSender(data) {
     webSocketStore.getState().addMessage(data);
   }
+
   function handleNotification(data) {
     notificationStore.getState().addNotification(data);
     notificationStore.getState().addNotificationCounter();

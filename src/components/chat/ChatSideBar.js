@@ -8,9 +8,14 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import MessageBubble from "./MessageBubble";
 import MessageType from "../websockets/MessageType";
 function ChatSideBar({ onClose }) {
+  const { selectedUser } = useParams();
+  useEffect(() => {
+    webSocketStore.getState().setSelectedUser(selectedUser);
+    console.log("selectedUser", selectedUser);
+  }, [selectedUser]);
+
   const token = userStore.getState().token;
   const username = userStore.getState().username;
-  const { selectedUser } = useParams();
   const [sendMessage, setSendMessage] = useState();
   const { socket } = webSocketStore();
 

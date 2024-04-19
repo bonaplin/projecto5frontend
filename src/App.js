@@ -23,6 +23,7 @@ import PrivateRoute from "./PrivateRoute";
 
 import { userStore } from "./stores/UserStore";
 import WebSocketProvider from "./WebSocketProvider";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const token = userStore((state) => state.token);
@@ -81,6 +82,14 @@ function App() {
               <PrivateRoute>
                 <DeletedTasks />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              // <PrivateRoute>
+              <Dashboard />
+              // </PrivateRoute>
             }
           />
           <Route path="/footer" element={<Footer />} />
