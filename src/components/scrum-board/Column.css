@@ -1,13 +1,17 @@
 .task-column {
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  /* padding: 10px; */
   border-radius: 5px;
   box-shadow: var(--box-shadow);
   margin: 5px;
   background-color: var(--primary-color);
 }
-
+@media screen and (max-width: 1100px) {
+  .task-column {
+    margin: 0;
+  }
+}
 .task-column h2 {
   margin-bottom: 20px;
 }

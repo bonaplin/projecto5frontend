@@ -1,11 +1,11 @@
 .scrum-board {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1rem;
 }
-
-.task-column {
-  flex: 1;
-  border: 1px solid white;
-  border-radius: 10px;
-  max-width: var(--max-width);
+@media screen and (max-width: 1024px) {
+  .scrum-board {
+    grid-template-columns: repeat(2, 2fr);
+  }
 }

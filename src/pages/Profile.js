@@ -8,6 +8,7 @@ import Header from "../components/header/Header";
 import { userStore } from "../stores/UserStore";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import ChatSidebar from "../components/chat/ChatSideBar";
+import AsideOffCanvas from "../components/chat/AsideOffCanvas";
 function Profile() {
   const { selectedUser } = useParams();
   const token = userStore.getState().token; // Get the token from the Zustand store
@@ -25,6 +26,17 @@ function Profile() {
     doingcount: "",
     donecount: "",
   });
+
+  const [showChat, setShowChat] = useState(false);
+
+  const handleChatClicks = () => {
+    setShowChat(true);
+  };
+
+  const handleCloseChat = () => {
+    setShowChat(false);
+  };
+
   const [isChatOpen, setIsChatOpen] = useState(false); // Chat visibility state
   const handleChatClick = () => {
     setIsChatOpen(!isChatOpen); // Toggle chat visibility
@@ -92,7 +104,7 @@ function Profile() {
             </div>
 
             <DisplayProfile name="email" value={inputs.email} />
-            <button className="yes-no yes" type="button" value="Chat" onClick={handleChatClick}>
+            <button className="yes-no yes" type="button" value="Chat" onClick={handleChatClicks}>
               Chat
             </button>
 
@@ -122,11 +134,13 @@ function Profile() {
               <button className="yes-no no" type="button" value="Cancel" onClick={() => navigate("/users")}>
                 Cancel
               </button>
+
+              <AsideOffCanvas show={showChat} handleClose={handleCloseChat} user={selectedUser} />
             </div>
           </div>
         </div>
       </Layout>
-      {isChatOpen && <ChatSidebar onClose={handleCloseSidebar} />}
+      {isChatOpen && <ChatSidebar onOpen={handleChatClick} onClose={handleCloseSidebar} />}
     </>
   );
 }

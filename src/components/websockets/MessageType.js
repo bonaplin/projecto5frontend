@@ -1,6 +1,6 @@
 const MessageType = {
-  TYPE_10: 10,
-  TYPE_11: 11,
+  MESSAGE_SENDER: 10,
+  MESSAGE_RECEIVER: 11,
   TYPE_20: 20,
   TASK_CREATE: 21, // Create a new task
   TASK_MOVE: 22,
@@ -9,7 +9,7 @@ const MessageType = {
   TASK_DESACTIVATE: 25,
   TASK_DELETE: 26,
   LOGOUT: 30,
-  TYPE_31: 31,
+  STATISTIC_USER: 31,
   TYPE_32: 32,
   TYPE_33: 33,
   TYPE_34: 34,

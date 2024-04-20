@@ -52,7 +52,7 @@ function DeletedTasks() {
 
   useEffect(() => {
     fetchInactiveTasks();
-  }, []); // Add dependencies here if any
+  }, []);
 
   /* ******* ******* *********************************** *****/
 

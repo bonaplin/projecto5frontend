@@ -7,14 +7,30 @@ export const taskStore = create(
       todo: [],
       doing: [],
       done: [],
-      addTask: (task, status) => {
+      usernameDD: null,
+      categoryDD: null,
+      setUsernameDD: (username) => set({ usernameDD: username }),
+      setCategoryDD: (category) => set({ categoryDD: category }),
+      clearDD: () => set({ usernameDD: "", categoryDD: "" }),
+      addTask: (task, status, index) => {
         set((state) => {
-          if (status === 100) {
-            return { todo: [task, ...state.todo] };
-          } else if (status === 200) {
-            return { doing: [task, ...state.doing] };
-          } else if (status === 300) {
-            return { done: [task, ...state.done] };
+          if ((!state.usernameDD || task.owner === state.usernameDD) && (!state.categoryDD || task.category === state.categoryDD)) {
+            if (status === 100) {
+              let newTodo = [...state.todo];
+              newTodo.splice(index, 0, task);
+              return { todo: newTodo };
+            } else if (status === 200) {
+              let newDoing = [...state.doing];
+              newDoing.splice(index, 0, task);
+              return { doing: newDoing };
+            } else if (status === 300) {
+              let newDone = [...state.done];
+              newDone.splice(index, 0, task);
+              return { done: newDone };
+            }
+          } else {
+            console.error("Task does not match current filters:", task);
+            return state;
           }
         });
       },
@@ -29,13 +45,19 @@ export const taskStore = create(
           }
         });
       },
-      updateTask: (updatedTask, status) => {
+      updateTask: (updatedTask, status, index) => {
         set((state) => {
           if (status === 100) {
+            let newTodo = [...state.todo];
+            newTodo.splice(index, 1, updatedTask);
             return { todo: state.todo.map((task) => (task.id === updatedTask.id ? updatedTask : task)) };
           } else if (status === 200) {
+            let newDoing = [...state.doing];
+            newDoing.splice(index, 1, updatedTask);
             return { doing: state.doing.map((task) => (task.id === updatedTask.id ? updatedTask : task)) };
           } else if (status === 300) {
+            let newDone = [...state.done];
+            newDone.splice(index, 1, updatedTask);
             return { done: state.done.map((task) => (task.id === updatedTask.id ? updatedTask : task)) };
           }
         });

@@ -36,6 +36,13 @@
   cursor: pointer;
   transition: transform 0.5 ease;
 }
+@media (max-width: 529px) {
+  .restore-button,
+  .add-some {
+    font-size: 1.5em; /* Aumenta o tamanho da fonte */
+  }
+}
+
 .restore-button:hover,
 .add-some:hover {
   opacity: 0.4;

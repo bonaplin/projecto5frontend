@@ -18,6 +18,14 @@ function ChatSideBar({ onClose }) {
   const username = userStore.getState().username;
   const [sendMessage, setSendMessage] = useState();
   const { socket } = webSocketStore();
+  const messagesEndRef = useRef(null);
+
+  // when the component is unmounted, set the selectedUser to null
+  useEffect(() => {
+    return () => {
+      webSocketStore.getState().selectedUser = null;
+    };
+  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/messages/${username}/${selectedUser}`, {
@@ -62,7 +70,7 @@ function ChatSideBar({ onClose }) {
         message: sendMessage,
         // senderToken: token,
         receiver: selectedUser,
-        type: MessageType.TYPE_10,
+        type: MessageType.MESSAGE_SENDER,
       };
 
       let messageJSON = JSON.stringify(messageToSend);
@@ -80,13 +88,13 @@ function ChatSideBar({ onClose }) {
   function handleOnClose(e) {
     onClose();
   }
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [webSocketStore.getState().messages]);
 
   return (
-    <div className="chat-main">
-      <div className="chat-sidebar">
-        <div className="chat-title">
-          <h3>{selectedUser}</h3> <CloseIcon onClick={handleOnClose} style={{ cursor: "pointer" }} />
-        </div>
+    <>
+      <div className="messages-container">
         <div className="messages" id="messages">
           {webSocketStore.getState().messages.map((message, index) => (
             <MessageBubble
@@ -101,17 +109,20 @@ function ChatSideBar({ onClose }) {
               isOwnMessage={message.sender === username}
             />
           ))}
+          <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="send">
-            <input type="text" name="message" placeholder="Type a message" onChange={handleOnChange} />
-            <button type="submit">
-              <SendRoundedIcon />
-            </button>
-          </div>
-        </form>
+        <div className="chat-footer">
+          <form onSubmit={handleSubmit}>
+            <div className="send">
+              <input type="text" name="message" placeholder="Type a message" onChange={handleOnChange} />
+              <button type="submit">
+                <SendRoundedIcon />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

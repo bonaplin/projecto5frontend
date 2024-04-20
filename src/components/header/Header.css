@@ -41,9 +41,16 @@ img {
   border-radius: 50%;
 }
 .header-name {
+  display: show;
   /* margin-right: 2rem; */
   font-weight: bold;
   text-shadow: #fff 0px 0px 1px;
+}
+
+@media screen and (max-width: 768px) {
+  .header-name {
+    display: none;
+  }
 }
 .profile-icon,
 #logo-menu {

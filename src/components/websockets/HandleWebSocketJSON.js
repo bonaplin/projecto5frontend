@@ -2,11 +2,11 @@ import { webSocketStore } from "../../stores/WebSocketStore";
 import { notificationStore } from "../../stores/NotificationStore";
 import { userStore } from "../../stores/UserStore";
 import { taskStore } from "../../stores/TaskStore";
+import { statisticsStore } from "../../stores/Statistics";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
 
 function handleWebSocketJSON(json) {
-  const username = userStore.getState().username;
   let data;
 
   try {
@@ -17,11 +17,11 @@ function handleWebSocketJSON(json) {
   }
 
   switch (data.type) {
-    case MessageType.TYPE_10:
+    case MessageType.MESSAGE_SENDER:
       console.log("Mensagem recebida 10", data);
       handleMessage(data);
       break;
-    case MessageType.TYPE_11:
+    case MessageType.MESSAGE_RECEIVER:
       console.log("Mensagem recebida 11", data);
       handleMessageSender(data);
       break;
@@ -56,6 +56,10 @@ function handleWebSocketJSON(json) {
     case MessageType.TYPE_40:
       handleNotification(data);
       break;
+    case MessageType.STATISTIC_USER:
+      console.log("Mensagem recebida 31", data);
+      handleStatisticUser(data);
+      break;
 
     case "error":
       console.error("Erro recebido", data);
@@ -76,8 +80,11 @@ function handleWebSocketJSON(json) {
   }
 
   function handleNotification(data) {
-    notificationStore.getState().addNotification(data);
-    notificationStore.getState().addNotificationCounter();
+    let selectedUser = webSocketStore.getState().selectedUser;
+    if (data.sender !== selectedUser) {
+      notificationStore.getState().addNotification(data);
+      notificationStore.getState().addNotificationCounter();
+    }
   }
   function handleLogout(data) {
     twarn("Time out, you are logged out!");
@@ -88,9 +95,11 @@ function handleWebSocketJSON(json) {
     taskStore.getState().addTask(data, data.status);
   }
   function handleMoveTask(data) {
-    console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
+    console.log(data);
     taskStore.getState().removeTask(data.id, data.lastStatus);
-    taskStore.getState().addTask(data, data.status);
+    taskStore.getState().addTask(data, data.status, data.index);
+
+    // taskStore.getState().moveTask(data);
   }
   // function handleEditTaskAndMove(data) {
   //   console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
@@ -98,10 +107,15 @@ function handleWebSocketJSON(json) {
   //   taskStore.getState().addTask(data, data.status);
   // }
   function handleEditTask(data) {
-    taskStore.getState().updateTask(data, data.status);
+    taskStore.getState().updateTask(data, data.statu, data.index);
   }
   function handleDesactivateTask(data) {
     taskStore.getState().removeTask(data.id, data.status);
+  }
+  function handleStatisticUser(data) {
+    statisticsStore.getState().setCountUsers(data.countUsers);
+    statisticsStore.getState().setConfirmedUsers(data.confirmedUsers);
+    statisticsStore.getState().setUnconfirmedUsers(data.unconfirmedUsers);
   }
 }
 export { handleWebSocketJSON };

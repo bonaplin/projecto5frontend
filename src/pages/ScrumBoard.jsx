@@ -23,7 +23,18 @@ import { webSocketStore } from "../stores/WebSocketStore.js";
 import MessageType from "../components/websockets/MessageType.js";
 
 export default function ScrumBoard() {
-  const { todo, doing, done, addTask, removeTask, updateTask } = taskStore((state) => state);
+  const setUsernameDD = taskStore.getState().setUsernameDD;
+  const setCategoryDD = taskStore.getState().setCategoryDD;
+  const { usernameDD, categoryDD } = taskStore.getState();
+  // useEffect(() => {
+  //   if (usernameDD !== null) {
+  //     setUsernameDD(usernameDD);
+  //   }
+  //   if (categoryDD !== null) {
+  //     setCategoryDD(categoryDD);
+  //   }
+  // }, [usernameDD, categoryDD]);
+  const { todo, doing, done, clearDD, addTask, removeTask, updateTask } = taskStore((state) => state);
   const token = userStore.getState().token;
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState({});
@@ -34,33 +45,31 @@ export default function ScrumBoard() {
   // const [doing, setDoing] = useState([]);
   // const [done, setDone] = useState([]);
   const navigate = useNavigate();
-  const [usernameDD, setUsername] = useState(null);
-  const [categoryDD, setCategory] = useState(null);
 
-  async function updateStatus(id, newStatus) {
-    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${id}/status/`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", token: token },
-      body: JSON.stringify({ status: newStatus }),
-    });
+  // async function updateStatus(id, newStatus) {
+  //   const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${id}/status/`, {
+  //     method: "PUT",
+  //     headers: { "Content-Type": "application/json", token: token },
+  //     body: JSON.stringify({ status: newStatus }),
+  //   });
 
-    const data = await response.json();
+  //   const data = await response.json();
 
-    if (response.ok) {
-      //console.log("resposta" + response.status);
-      //console.log("Task updated successfully");
-      // tsuccess("Task updated successfully");
-    } else {
-      switch (response.status) {
-        case 400:
-          twarn(data.message);
-          break;
-        default:
-          terror("An error occurred: " + data.message);
-          break;
-      }
-    }
-  }
+  //   if (response.ok) {
+  //     //console.log("resposta" + response.status);
+  //     //console.log("Task updated successfully");
+  //     // tsuccess("Task updated successfully");
+  //   } else {
+  //     switch (response.status) {
+  //       case 400:
+  //         twarn(data.message);
+  //         break;
+  //       default:
+  //         terror("An error occurred: " + data.message);
+  //         break;
+  //     }
+  //   }
+  // }
   function handleAddClick() {
     setIsAddTaskModal(true);
   }
@@ -234,9 +243,13 @@ export default function ScrumBoard() {
         //console.log(response.status);
         if (response.ok) {
           const data = await response.json();
-          const todo = data.filter((task) => task.status === 100);
-          const doing = data.filter((task) => task.status === 200);
-          const done = data.filter((task) => task.status === 300);
+          // const todo = data.filter((task) => task.status === 100);
+          // const doing = data.filter((task) => task.status === 200);
+          // const done = data.filter((task) => task.status === 300);
+
+          const todo = data.todoTasks;
+          const doing = data.doingTasks;
+          const done = data.doneTasks;
 
           // setTodo(todo);
           // setDoing(doing);
@@ -253,7 +266,7 @@ export default function ScrumBoard() {
       }
     }
     fetchTasks();
-  }, [userStore.getState().username, userStore.getState().role]);
+  }, [taskStore.getState().usernameDD, taskStore.getState().categoryDD]);
 
   const [users, setUsers] = useState([]);
 
@@ -372,15 +385,19 @@ export default function ScrumBoard() {
     const { destination, source, draggableId } = result;
 
     let newStatus;
-    if (destination.droppableId === "100") newStatus = 100;
-    else if (destination.droppableId === "200") newStatus = 200;
-    else if (destination.droppableId === "300") newStatus = 300;
-    console.log("newStatus", newStatus);
-    console.log("draggableId", draggableId);
-    console.log("type", MessageType.TASK_MOVE);
+    if (destination.droppableId === "100") {
+      newStatus = 100;
+      console.log(destination.index);
+    } else if (destination.droppableId === "200") {
+      newStatus = 200;
+      console.log(destination.index);
+    } else if (destination.droppableId === "300") {
+      newStatus = 300;
+      console.log(destination.index);
+    }
 
     const id = parseInt(draggableId);
-    send(JSON.stringify({ type: MessageType.TASK_MOVE, id: id, status: newStatus }));
+    send(JSON.stringify({ type: MessageType.TASK_MOVE, id: id, status: newStatus, index: destination.index }));
   }
   //------------------------------------------------------------------------dnd beautiful
 
@@ -390,11 +407,10 @@ export default function ScrumBoard() {
   }
 
   function handleClickMyTasks() {
-    setUsername(userStore.getState().username);
+    setUsernameDD(userStore.getState().username);
   }
   function handleResetFilter() {
-    setUsername("");
-    setCategory("");
+    clearDD();
   }
 
   return (
@@ -418,17 +434,17 @@ export default function ScrumBoard() {
                 <div className="filter-side">
                   <Dropdown
                     className="filter-dropdown"
-                    value={usernameDD}
+                    value={taskStore.getState().usernameDD}
                     data={users}
                     type={"Username"}
-                    onChange={(selectedValue) => setUsername(selectedValue)}
+                    onChange={(e) => setUsernameDD(e)}
                   />
                   <Dropdown
                     className="filter-dropdown"
-                    value={categoryDD}
+                    value={taskStore.getState().categoryDD}
                     data={categories}
                     type={"Category"}
-                    onChange={(selectedValue) => setCategory(selectedValue)}
+                    onChange={(e) => setCategoryDD(e)}
                   />
                 </div>
               </div>
@@ -468,10 +484,16 @@ export default function ScrumBoard() {
           {<TaskModal open={isAddTaskModal} title_modal="Add task" onClose={handleCloseAddModal} onSubmit={AddTask} task={selectedTask} />}
           <DragDropContext onDragEnd={handleDragEnd}>
             <div className="scrum-board">
-              <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
-              <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
-              <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
-            </div>{" "}
+              <div className="todo">
+                <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+              </div>
+              <div className="doing">
+                <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+              </div>
+              <div className="done">
+                <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
+              </div>
+            </div>
           </DragDropContext>
         </div>
         <Footer />

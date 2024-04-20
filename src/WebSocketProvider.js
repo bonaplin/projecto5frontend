@@ -17,7 +17,7 @@ function WebSocketProvider({ children, token }) {
     const ws = new WebSocket("ws://localhost:8080/demo-1.0-SNAPSHOT/websocket/notifier/" + token);
 
     ws.onopen = function (e) {
-      tsuccess("Conexão WebSocket aberta");
+      // tsuccess("Conexão WebSocket aberta");
 
       console.log("Conexão WebSocket aberta");
     };
@@ -32,7 +32,7 @@ function WebSocketProvider({ children, token }) {
     };
 
     ws.onclose = function (e) {
-      twarn("Conexão WebSocket fechada");
+      // twarn("Conexão WebSocket fechada");
       // userStore.getState().logout();
       // Se a conexão foi fechada de forma não intencional, tente reconectar
       if (e.code !== 1000) {

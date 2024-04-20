@@ -14,6 +14,7 @@ import { notificationStore } from "../../stores/NotificationStore.js";
 import { useNavigate } from "react-router-dom";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import MessageIcon from "@mui/icons-material/Message";
 import Dropdown from "react-bootstrap/Dropdown";
 
 function Header() {
@@ -79,11 +80,11 @@ function Header() {
     notificationStore.getState().setNotificationCounter(0);
   }
 
-  async function markNotificationAsRead() {
+  async function markNotificationAsRead(id) {
     let url = "http://localhost:8080/demo-1.0-SNAPSHOT/rest/notifications";
-    // if (id) {
-    //   url += `?id=${id}`;
-    // }
+    if (id) {
+      url += `?id=${id}`;
+    }
 
     try {
       const response = await fetch(url, {
@@ -96,21 +97,20 @@ function Header() {
 
       if (response.ok) {
         // Se a resposta for bem-sucedida, marque a notificação como lida no Zustand store
-        // const notifications = notificationStore.getState().notifications.map((notification) => {
-        // if (notification.id === id) {
-        //   notification.read = true;
-        // }
-        //   return notification;
-        // });
+        const notifications = notificationStore.getState().notifications.map((notification) => {
+          if (notification.id === id) {
+            notification.read = true;
+          }
+          return notification;
+        });
 
-        // notificationStore.getState().setNotifications(notifications);
+        notificationStore.getState().setNotifications(notifications);
 
-        // if (id) {
-        //   handleMarkAsRead(id);
-        // } else {
-        handleMarkAllAsRead();
-
-        // }
+        if (id) {
+          handleMarkAsRead(id);
+        } else {
+          handleMarkAllAsRead();
+        }
       } else {
         // Se a resposta falhar
         const errorMessage = await response.text();
@@ -168,6 +168,62 @@ function Header() {
       <div className="header__right dropdown-container">
         <label className="header-name">{username}</label>
 
+        {/* <Dropdown>
+          <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
+              {notifications.length > 0 ? (
+                <div className="btn btn-primary position-relative">
+                  <MessageIcon />
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
+                    {unreadCount}
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                </div>
+              ) : (
+                <MessageIcon />
+              )}
+            </div>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            {notifications.length > 0 ? (
+              <>
+                <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
+                  <div className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
+                      Mark All as Read
+                    </button>
+                    <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
+                      Clear All
+                    </button>
+                  </div>
+                </Dropdown.Item>
+                {notifications.length > 0 &&
+                  notifications.map((notification, index) => (
+                    <Dropdown.Item
+                      key={index}
+                      href={`/users/${notification.sender}`}
+                      style={{ backgroundColor: notification.read ? "white" : "#9999" }}
+                      // onClick={() => markNotificationAsRead(notification.id)}
+                    >
+                      {"New message from " +
+                        notification.sender +
+                        ". (" +
+                        notification.time.substring(11, 16) +
+                        " " +
+                        notification.time.substring(8, 10) +
+                        "/" +
+                        notification.time.substring(5, 7) +
+                        ")"}
+                    </Dropdown.Item>
+                  ))}
+              </>
+            ) : (
+              <Dropdown.Item>No Notifications to see</Dropdown.Item>
+            )}
+          </Dropdown.Menu>
+        </Dropdown> */}
+
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
             <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
@@ -180,7 +236,7 @@ function Header() {
                   </span>
                 </div>
               ) : (
-                <NotificationsNoneIcon />
+                <MessageIcon />
               )}
             </div>
           </Dropdown.Toggle>
