@@ -8,7 +8,7 @@ import MessageType from "./MessageType";
 
 function handleWebSocketJSON(json) {
   let data;
-
+  const state = statisticsStore.getState();
   try {
     data = JSON.parse(json);
   } catch (e) {
@@ -60,6 +60,14 @@ function handleWebSocketJSON(json) {
       console.log("Mensagem recebida 31", data);
       handleStatisticUser(data);
       break;
+    case MessageType.STATISTIC_TASK:
+      console.log("Mensagem recebida 32", data);
+      handleStatisticTask(data);
+      break;
+    case MessageType.STATISTIC_TASK_PER_STATUS:
+      console.log("Mensagem recebida 33", data);
+      handleStatisticTaskPerStatus(data);
+      break;
 
     case "error":
       console.error("Erro recebido", data);
@@ -107,7 +115,7 @@ function handleWebSocketJSON(json) {
   //   taskStore.getState().addTask(data, data.status);
   // }
   function handleEditTask(data) {
-    taskStore.getState().updateTask(data, data.statu, data.index);
+    taskStore.getState().updateTask(data, data.status, data.index);
   }
   function handleDesactivateTask(data) {
     taskStore.getState().removeTask(data.id, data.status);
@@ -116,6 +124,14 @@ function handleWebSocketJSON(json) {
     statisticsStore.getState().setCountUsers(data.countUsers);
     statisticsStore.getState().setConfirmedUsers(data.confirmedUsers);
     statisticsStore.getState().setUnconfirmedUsers(data.unconfirmedUsers);
+  }
+  function handleStatisticTask(data) {
+    statisticsStore.getState().setAvgTasksPerUser(data.avgTasksPerUser);
+  }
+  function handleStatisticTaskPerStatus(data) {
+    state.setTodoPerUser(data.todoPerUser);
+    state.setDoingPerUser(data.doingPerUser);
+    state.setDonePerUser(data.donePerUser);
   }
 }
 export { handleWebSocketJSON };

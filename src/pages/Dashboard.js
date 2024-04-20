@@ -6,11 +6,12 @@ import { userStore } from "../stores/UserStore";
 import { statisticsStore } from "../stores/Statistics";
 
 function Dashboard() {
-  const { setCountUsers, setConfirmedUsers, setUnconfirmedUsers } = statisticsStore();
+  const { setCountUsers, setConfirmedUsers, setUnconfirmedUsers, setAvgTasksPerUser, setTodoPerUser, setDoingPerUser, setDonePerUser } = statisticsStore();
   const token = userStore((state) => state.token);
 
   useEffect(() => {
     getUserStats();
+    getTaskStats();
   }, []);
   function getUserStats() {
     fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/statistic/user", {
@@ -35,6 +36,31 @@ function Dashboard() {
         console.error("Error:", error);
       });
   }
+  function getTaskStats() {
+    fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/statistic/tasks", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const avgTasks = data.avgTaskPerUser;
+        const tasksPerTodo = data.todoPerUser;
+        const tasksPerDoing = data.doingPerUser;
+        const tasksPerDone = data.donePerUser;
+
+        setAvgTasksPerUser(avgTasks);
+        setTodoPerUser(tasksPerTodo);
+        setDoingPerUser(tasksPerDoing);
+        setDonePerUser(tasksPerDone);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   return (
     <>
@@ -43,9 +69,12 @@ function Dashboard() {
       <div>Contagem do número de utilizadores confirmados: {statisticsStore.getState().confirmedUsers}</div>
       <div>Contagem do número de utilizadores não confirmados: {statisticsStore.getState().unconfirmedUsers} </div>
       <br />
-      <div>Contagem do número médio de tarefas por utilizador: {""}</div>
+      <div>Contagem do número médio de tarefas por utilizador: {statisticsStore.getState().avgTasksPerUser}</div>
       <br />
-      <div>Contagem do número de tarefas por estado (e.g. 5 em “DOING”, 2 em “DONE”, etc)</div>
+      <div>Contagem do número de tarefas por estado: {statisticsStore.getState().todoPerUser} </div>
+      <div>Contagem do número de tarefas por estado: {statisticsStore.getState().doingPerUser} </div>
+      <div>Contagem do número de tarefas por estado: {statisticsStore.getState().donePerUser} </div>
+      <br />
       <div>Tempo médio que uma tarefa demora até ser concluída .</div>
       <div>Gráfico que mostre o número de utilizadores registados ao longo do tempo (e.g. gráfico de linhas).</div>
       <div>Gráfico cumulativo que mostre o número total de tarefas concluídas ao longo do tempo.</div>

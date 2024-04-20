@@ -37,11 +37,11 @@ export const taskStore = create(
       removeTask: (taskId, status) => {
         set((state) => {
           if (status === 100) {
-            return { todo: state.todo.filter((task) => task.id !== taskId) };
+            return { ...state, todo: state.todo.filter((task) => task.id !== taskId) };
           } else if (status === 200) {
-            return { doing: state.doing.filter((task) => task.id !== taskId) };
+            return { ...state, doing: state.doing.filter((task) => task.id !== taskId) };
           } else if (status === 300) {
-            return { done: state.done.filter((task) => task.id !== taskId) };
+            return { ...state, done: state.done.filter((task) => task.id !== taskId) };
           }
         });
       },
