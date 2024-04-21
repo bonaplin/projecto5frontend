@@ -68,7 +68,14 @@ function handleWebSocketJSON(json) {
       console.log("Mensagem recebida 33", data);
       handleStatisticTaskPerStatus(data);
       break;
-
+    case MessageType.STATISTIC_REGISTRATION:
+      console.log("Mensagem recebida 34", data);
+      handleStatisticRegistration(data);
+      break;
+    case MessageType.STATISTIC_TASK_COMULATIVE:
+      console.log("Mensagem recebida 35", data);
+      handleStatisticTaskComulative(data);
+      break;
     case "error":
       console.error("Erro recebido", data);
       break;
@@ -126,12 +133,21 @@ function handleWebSocketJSON(json) {
     statisticsStore.getState().setUnconfirmedUsers(data.unconfirmedUsers);
   }
   function handleStatisticTask(data) {
-    statisticsStore.getState().setAvgTasksPerUser(data.avgTasksPerUser);
+    statisticsStore.getState().setAvgTasksPerUser(data.avgTaskPerUser);
   }
   function handleStatisticTaskPerStatus(data) {
     state.setTodoPerUser(data.todoPerUser);
     state.setDoingPerUser(data.doingPerUser);
     state.setDonePerUser(data.donePerUser);
+    state.setAvgTimeToBeDone(data.avgTimeToBeDone);
+  }
+  function handleStatisticRegistration(data) {
+    console.log(data);
+    state.setChartUserPerTime(data);
+  }
+  function handleStatisticTaskComulative(data) {
+    console.log(data);
+    state.setChartTaskComulative(data);
   }
 }
 export { handleWebSocketJSON };

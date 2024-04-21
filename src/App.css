@@ -250,3 +250,12 @@ p {
   height: auto;
   background-color: burlywood;
 }
+
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  height: 20rem;
+  background-color: bisque;
+}

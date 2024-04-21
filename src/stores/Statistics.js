@@ -11,11 +11,16 @@ export const statisticsStore = create(
       todoPerUser: 0,
       doingPerUser: 0,
       donePerUser: 0,
+      avgTimeToBeDone: 0,
+      chartUserPerTime: [],
+      chartTaskComulative: [],
 
+      setChartTaskComulative: (chartTaskComulative) => set({ chartTaskComulative }),
+      setAvgTimeToBeDone: (avgTimeToBeDone) => set({ avgTimeToBeDone }),
+      setChartUserPerTime: (chartUserPerTime) => set({ chartUserPerTime }),
       setTodoPerUser: (todoPerUser) => set({ todoPerUser }),
       setDoingPerUser: (doingPerUser) => set({ doingPerUser }),
       setDonePerUser: (donePerUser) => set({ donePerUser }),
-
       setCountUsers: (countUsers) => set({ countUsers }),
       setConfirmedUsers: (confirmedUsers) => set({ confirmedUsers }),
       setUnconfirmedUsers: (unconfirmedUsers) => set({ unconfirmedUsers }),
