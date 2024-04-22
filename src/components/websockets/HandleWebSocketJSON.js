@@ -5,6 +5,7 @@ import { taskStore } from "../../stores/TaskStore";
 import { statisticsStore } from "../../stores/Statistics";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
+import { Addchart } from "@mui/icons-material";
 
 function handleWebSocketJSON(json) {
   let data;
@@ -18,11 +19,11 @@ function handleWebSocketJSON(json) {
 
   switch (data.type) {
     case MessageType.MESSAGE_SENDER:
-      console.log("Mensagem recebida 10", data);
+      // console.log("Mensagem recebida 10", data);
       handleMessage(data);
       break;
     case MessageType.MESSAGE_RECEIVER:
-      console.log("Mensagem recebida 11", data);
+      // console.log("Mensagem recebida 11", data);
       handleMessageSender(data);
       break;
     case MessageType.TYPE_20:
@@ -30,25 +31,25 @@ function handleWebSocketJSON(json) {
       break;
     case MessageType.TASK_CREATE:
       handleNewTask(data);
-      console.log("Mensagem recebida 21", data);
+      // console.log("Mensagem recebida 21", data);
       break;
     case MessageType.TASK_MOVE:
       handleMoveTask(data);
       break;
     case MessageType.TASK_EDIT:
-      console.log("Mensagem recebida 23", data);
+      // console.log("Mensagem recebida 23", data);
       handleEditTask(data);
       break;
     case MessageType.TASK_EDIT_AND_MOVE:
-      console.log("Mensagem recebida 24", data);
+      // console.log("Mensagem recebida 24", data);
       handleMoveTask(data);
       break;
     case MessageType.TASK_DESACTIVATE:
-      console.log("Mensagem recebida 25 é para desactivar!", data);
+      // console.log("Mensagem recebida 25 é para desactivar!", data);
       handleDesactivateTask(data);
       break;
     case MessageType.TASK_DELETE:
-      console.log("Mensagem recebida 26 é para apagar!", data);
+      // console.log("Mensagem recebida 26 é para apagar!", data);
       break;
     case MessageType.LOGOUT:
       handleLogout(data);
@@ -57,23 +58,23 @@ function handleWebSocketJSON(json) {
       handleNotification(data);
       break;
     case MessageType.STATISTIC_USER:
-      console.log("Mensagem recebida 31", data);
+      // console.log("Mensagem recebida 31", data);
       handleStatisticUser(data);
       break;
     case MessageType.STATISTIC_TASK:
-      console.log("Mensagem recebida 32", data);
+      // console.log("Mensagem recebida 32", data);
       handleStatisticTask(data);
       break;
     case MessageType.STATISTIC_TASK_PER_STATUS:
-      console.log("Mensagem recebida 33", data);
+      // console.log("Mensagem recebida 33", data);
       handleStatisticTaskPerStatus(data);
       break;
     case MessageType.STATISTIC_REGISTRATION:
-      console.log("Mensagem recebida 34", data);
+      // console.log("Mensagem recebida 34", data);
       handleStatisticRegistration(data);
       break;
     case MessageType.STATISTIC_TASK_COMULATIVE:
-      console.log("Mensagem recebida 35", data);
+      // console.log("Mensagem recebida 35", data);
       handleStatisticTaskComulative(data);
       break;
     case "error":
@@ -131,6 +132,7 @@ function handleWebSocketJSON(json) {
     statisticsStore.getState().setCountUsers(data.countUsers);
     statisticsStore.getState().setConfirmedUsers(data.confirmedUsers);
     statisticsStore.getState().setUnconfirmedUsers(data.unconfirmedUsers);
+    state.addChartUserChange();
   }
   function handleStatisticTask(data) {
     statisticsStore.getState().setAvgTasksPerUser(data.avgTaskPerUser);
@@ -142,12 +144,13 @@ function handleWebSocketJSON(json) {
     state.setAvgTimeToBeDone(data.avgTimeToBeDone);
   }
   function handleStatisticRegistration(data) {
-    console.log(data);
+    // console.log(data);
     state.setChartUserPerTime(data);
   }
   function handleStatisticTaskComulative(data) {
-    console.log(data);
+    // console.log(data);
     state.setChartTaskComulative(data);
+    state.addChartTaskChange();
   }
 }
 export { handleWebSocketJSON };

@@ -229,7 +229,7 @@ function Header() {
             <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
               {notifications.length > 0 ? (
                 <div className="btn btn-primary position-relative">
-                  <NotificationsNoneIcon />
+                  <MessageIcon />
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
                     {unreadCount}
                     <span className="visually-hidden">unread messages</span>

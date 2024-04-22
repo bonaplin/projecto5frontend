@@ -14,6 +14,8 @@ export const statisticsStore = create(
       avgTimeToBeDone: 0,
       chartUserPerTime: [],
       chartTaskComulative: [],
+      chartTaskChange: 0,
+      chartUserChange: 0,
 
       setChartTaskComulative: (chartTaskComulative) => set({ chartTaskComulative }),
       setAvgTimeToBeDone: (avgTimeToBeDone) => set({ avgTimeToBeDone }),
@@ -25,7 +27,15 @@ export const statisticsStore = create(
       setConfirmedUsers: (confirmedUsers) => set({ confirmedUsers }),
       setUnconfirmedUsers: (unconfirmedUsers) => set({ unconfirmedUsers }),
 
+      addChartTaskChange: () => set((state) => ({ chartTaskChange: state.chartTaskChange + 1 })),
       setAvgTasksPerUser: (avgTasksPerUser) => set({ avgTasksPerUser }),
+
+      // setChartTaskComulative: (newData) =>
+      //   set((state) => ({
+      //     ...state,
+      //     chartTaskComulative: Array.isArray(newData) ? [...newData] : [],
+      //   })),
+
       // statistics: [],
       // setStatistics: (statistics) => set({ statistics }),
       // updateStatistic: (key, value) => set((state) => ({ statistics: { ...state.statistics, [key]: value } })),
