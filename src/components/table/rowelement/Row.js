@@ -3,26 +3,28 @@ import { userStore } from "../../../stores/UserStore.js";
 import Delete from "../../icon-buttons/delete.js";
 import Edit from "../../icon-buttons/edit.js";
 import Restore from "../../icon-buttons/restore.js";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import { Dropdown } from "react-bootstrap";
 const Row = ({ item, columns, handleEdit, handleDelete, type }) => {
   const role = userStore.getState().role; // Get the role from the store
   return (
     <tr>
       {columns.map((column) => (
-        <td
-          key={column}
-          style={column === "actions" ? { textAlign: "center" } : {}}
-        >
+        <td key={column} style={column === "actions" ? { textAlign: "center" } : {}}>
           {column === "actions" ? (
             <>
-              {type === "category" && role !== "sm" && (
-                <Edit onClick={() => handleEdit(item)}>Edit</Edit>
-              )}
-              {type === "deleted_tasks" && (role === "sm" || role === "po") && (
-                <Restore onClick={() => handleEdit(item)}>Restore</Restore>
-              )}
-              {role !== "sm" && (
-                <Delete onClick={() => handleDelete(item)}>Delete</Delete>
-              )}
+              <Dropdown>
+                <Dropdown.Toggle className="dots" id="dots-icon-task">
+                  <MoreVertIcon />
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  {type === "category" && role !== "sm" && <Dropdown.Item onClick={() => handleEdit(item)}>Edit</Dropdown.Item>}
+                  {type === "deleted_tasks" && (role === "sm" || role === "po") && <Dropdown.Item onClick={() => handleEdit(item)}>Restore</Dropdown.Item>}
+                  {role !== "sm" && <Dropdown.Item onClick={() => handleDelete(item)}>Delete</Dropdown.Item>}
+                </Dropdown.Menu>
+              </Dropdown>
             </>
           ) : (
             item[column]

@@ -9,6 +9,7 @@ import Footer from "../components/footer/Footer";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { userStore } from "../stores/UserStore";
+import { taskStore } from "../stores/TaskStore";
 import ModalYesNo from "../components/modal/ModalYesNo";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
@@ -19,7 +20,16 @@ function DeletedTasks() {
   const role = userStore.getState().role;
   const [deletedTasksData, setDeletedTasksData] = useState([]);
   const [taskselected, setTaskselected] = useState(null);
+  const [deleted, setDeletedTasks] = useState(taskStore.getState().deleted);
 
+  useEffect(() => {
+    const unsubscribe = taskStore.subscribe(() => {
+      setDeletedTasks(taskStore.getState().deleted);
+    });
+
+    // Clean up subscription on unmount
+    return () => unsubscribe();
+  }, []);
   const fetchInactiveTasks = async () => {
     const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false", {
       headers: {
@@ -31,6 +41,7 @@ function DeletedTasks() {
 
     if (response.ok) {
       setDeletedTasksData(data);
+      taskStore.getState().setDeleted(data);
     } else {
       switch (response.status) {
         case 401:
@@ -263,7 +274,7 @@ function DeletedTasks() {
               />
             )}
 
-            <Table class="table" type="deleted_tasks" data={deletedTasksData} columns={columns} handleDelete={handleDelete} handleEdit={handleRestore} />
+            <Table class="table" type="deleted_tasks" data={deleted} columns={columns} handleDelete={handleDelete} handleEdit={handleRestore} />
           </div>
           <Footer />
         </div>

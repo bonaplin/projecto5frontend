@@ -51,6 +51,10 @@ function handleWebSocketJSON(json) {
     case MessageType.TASK_DELETE:
       // console.log("Mensagem recebida 26 é para apagar!", data);
       break;
+    case MessageType.TASK_RESTORE:
+      // console.log("Mensagem recebida 27 é para apagar!", data);
+      handleRestoreTask(data);
+      break;
     case MessageType.LOGOUT:
       handleLogout(data);
       break;
@@ -124,6 +128,8 @@ function handleWebSocketJSON(json) {
   }
   function handleDesactivateTask(data) {
     taskStore.getState().removeTask(data.id, data.status);
+    console.log("para add nas deleted");
+    taskStore.getState().addDeletedTask(data);
   }
   function handleStatisticUser(data) {
     statisticsStore.getState().setCountUsers(data.countUsers);
@@ -152,6 +158,9 @@ function handleWebSocketJSON(json) {
   function handleStatisticCategoryCount(data) {
     state.setCategoryListOrdered(data);
     console.log(data);
+  }
+  function handleRestoreTask(data) {
+    taskStore.getState().addTask(data, data.status);
   }
 }
 export { handleWebSocketJSON };

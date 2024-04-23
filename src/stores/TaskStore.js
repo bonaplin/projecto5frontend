@@ -7,6 +7,7 @@ export const taskStore = create(
       todo: [],
       doing: [],
       done: [],
+      deleted: [],
       usernameDD: null,
       categoryDD: null,
       setUsernameDD: (username) => set({ usernameDD: username }),
@@ -66,6 +67,8 @@ export const taskStore = create(
       setTodo: (tasks) => set({ todo: tasks }),
       setDoing: (tasks) => set({ doing: tasks }),
       setDone: (tasks) => set({ done: tasks }),
+      setDeleted: (tasks) => set({ deleted: tasks }),
+      addDeletedTask: (task) => set((state) => ({ deleted: [...state.deleted, task] })),
     }),
     {
       name: "taskstore",
