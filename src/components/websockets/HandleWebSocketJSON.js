@@ -77,6 +77,9 @@ function handleWebSocketJSON(json) {
       // console.log("Mensagem recebida 35", data);
       handleStatisticTaskComulative(data);
       break;
+    case MessageType.STATISTIC_CATEGORY_COUNT:
+      handleStatisticCategoryCount(data);
+      break;
     case "error":
       console.error("Erro recebido", data);
       break;
@@ -151,6 +154,10 @@ function handleWebSocketJSON(json) {
     // console.log(data);
     state.setChartTaskComulative(data);
     state.addChartTaskChange();
+  }
+  function handleStatisticCategoryCount(data) {
+    state.setCategoryListOrdered(data);
+    console.log(data);
   }
 }
 export { handleWebSocketJSON };

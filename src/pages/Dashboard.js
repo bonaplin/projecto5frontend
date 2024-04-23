@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Offcanvas } from "react-bootstrap";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import { userStore } from "../stores/UserStore";
 import { statisticsStore } from "../stores/Statistics";
-import { taskStore } from "../stores/TaskStore";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, BarChart } from "recharts";
 
 function Dashboard() {
   const {
@@ -19,7 +17,9 @@ function Dashboard() {
     setAvgTimeToBeDone,
     setChartUserPerTime,
     setChartTaskComulative,
+    setCategoryListOrdered,
   } = statisticsStore();
+
   const token = userStore((state) => state.token);
   const statistics = statisticsStore((state) => state);
   // const users = userStore((state) => state.users);
@@ -30,11 +30,13 @@ function Dashboard() {
     getTaskStats();
     getRegistrationUserStats();
     getTaskComulative();
+    getCategoryCount();
   }, []);
 
   useEffect(() => {
     getTaskComulative();
-  }, [statistics.chartTaskChange]);
+    getCategoryCount();
+  }, [statistics.chartTaskChange, statistics.categoryListChange, statistics.chartTaskComulativeChange]);
 
   useEffect(() => {
     getRegistrationUserStats();
@@ -132,19 +134,48 @@ function Dashboard() {
       });
   }
 
-  const renderTaskStatusChart = (data) => {
-    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  function getCategoryCount() {
+    fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/statistic/orderCategories", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setCategoryListOrdered(data);
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  }
 
+  const renderBarChart = (data) => {
+    // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A0D468", "#AC92EC", "#4A89DC", "#967ADC", "#D770AD", "#F6BB42"];
     return (
-      <PieChart width={400} height={400}>
-        <Pie data={data} cx={200} cy={200} labelLine={false} outerRadius={80} fill="#8884d8" dataKey="count">
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-        <Legend />
-      </PieChart>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart
+          width={400}
+          height={250}
+          data={data}
+          layout="vertical"
+          margin={{
+            top: 5,
+            right: 0,
+            left: 40,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis type="number" />
+          <YAxis dataKey="category" type="category" />
+          <Tooltip />
+          {/* <Legend /> */}
+          <Bar dataKey="count" fill="#0088FE" />
+        </BarChart>
+      </ResponsiveContainer>
     );
   };
 
@@ -158,61 +189,129 @@ function Dashboard() {
       : [];
     return (
       <div className="chart">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            width={500}
-            height={300}
-            data={dataTaskComulative}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
+        <ResponsiveContainer width="100%" height={250}>
+          <AreaChart data={dataTaskComulative}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
-            <YAxis dataKey="count" />
+            <YAxis />
             <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="count" stroke="#8884d8" activeDot={{ r: 8 }} />
-          </LineChart>
+            <Area type="monotone" dataKey="count" stroke="#00C49F" fill="#00C49F" />
+            {/* <Area type="monotone" dataKey="anotherCount" stroke="#8884d8" fill="#8884d8" /> */}
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     );
   };
 
-  // const chartUserPerTime = statistics.chartUserPerTime;
-  // const data = Array.isArray(chartUserPerTime)
-  //   ? chartUserPerTime.map((item) => ({
-  //       ...item,
-  //       date: `${item.month}-${item.year < 10 ? "0" + item.year : item.year}`,
-  //     }))
-  //   : [];
+  const renderCardUsers = (data, title) => {
+    return (
+      <div className="col-lg-4 col-md-6 my-3">
+        <div className="card">
+          <div className="card-header text-center bg-secondary text-white">{title}</div>
+          <div className="card-body display-6 text-center">{data}</div>
+        </div>
+      </div>
+    );
+  };
+  const renderCardTasks = (data, title) => {
+    return (
+      <div className="col-lg-4 col-md-6 col-sm-12 my-3 ">
+        <div className="card">
+          <div className="card-header text-center bg-success text-white">{title}</div>
+          <div className="card-body text-center display-6">{data}</div>
+        </div>
+      </div>
+    );
+  };
+  const renderCardLineChart = (data, title) => {
+    return (
+      <div className="col-lg-6 my-3">
+        <div className="card">
+          <div className="card-header text-center bg-secondary text-white">{title}</div>
+          <div className="card-body">{renderChartLine(data)}</div>
+        </div>
+      </div>
+    );
+  };
+  const renderCardAvgTime = (data, title) => {
+    return (
+      <div className="col-lg-6 col-md-6 my-3">
+        <div className="card">
+          <div className="card-header text-center bg-primary text-white">{title}</div>
+          <div className="card-body text-center display-6">{data}</div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
       <Header />
-      <div>Contagem do número total de utilizadores: {statistics.countUsers}</div>
-      <div>Contagem do número de utilizadores confirmados: {statistics.confirmedUsers}</div>
-      <div>Contagem do número de utilizadores não confirmados: {statistics.unconfirmedUsers} </div>
-      {/* {renderTaskStatusChart()} */}
-      <br />
-      <div>Contagem do número médio de tarefas por utilizador: {statistics.avgTasksPerUser}</div>
-      <br />
-      <div>Contagem do número de tarefas por estado: {statistics.todoPerUser} </div>
-      <div>Contagem do número de tarefas por estado: {statistics.doingPerUser} </div>
-      <div>Contagem do número de tarefas por estado: {statistics.donePerUser} </div>
-      <br />
-      <div>Tempo médio que uma tarefa demora até ser concluída: {statistics.avgTimeToBeDone}</div>
-      <br />
+      <div className="container">
+        <div className="col-lg-12">
+          <h1>Dashboard</h1>
+        </div>
 
-      <div>Gráfico que mostre o número de utilizadores registados ao longo do tempo, agrupados por mês e ano:</div>
-      {renderChartLine(statistics.chartUserPerTime)}
-      <div>Gráfico cumulativo que mostre o número total de tarefas concluídas ao longo do tempo</div>
+        <main className="row">
+          <div className="col-lg-4 col-md-12 my-3">
+            <div className="card">
+              <div className="card-header text-center text-secondary">Total users</div>
+              <div className="card-body display-6 text-center">{statistics.countUsers}</div>
+            </div>
+          </div>
+          {renderCardUsers(statistics.confirmedUsers, "Confirmed users")}
+          {renderCardUsers(statistics.unconfirmedUsers, "Uncorfirmed users")}
 
-      {renderChartLine(statistics.chartTaskComulative)}
+          {renderCardAvgTime(statistics.avgTasksPerUser, "Task average per user")}
+          {renderCardAvgTime(statistics.avgTimeToBeDone, "Time average to task be done")}
+
+          {renderCardTasks(statistics.todoPerUser, "TODO tasks")}
+          {renderCardTasks(statistics.doingPerUser, "DOING tasks")}
+          {renderCardTasks(statistics.donePerUser, "DONE tasks")}
+
+          {renderCardLineChart(statistics.chartUserPerTime, "Registed users over time")}
+          {renderCardLineChart(statistics.chartTaskComulative, "Total tasks Done over time")}
+
+          <div className="col-lg-6 my-3">
+            <div className="card">
+              <div className="card-header text-center bg-info text-white">Categories</div>
+              <div className="card-body">{renderBarChart(statistics.categoryListOrdered)}</div>
+            </div>
+          </div>
+        </main>
+        <footer>
+          <h3>footer do dashboard</h3>
+        </footer>
+      </div>
       <Footer />
+      <div style={{ display: "none" }}>
+        <Header />
+        <div>
+          <div>xContagem do número total de utilizadores: {statistics.countUsers}</div>
+          <div>xContagem do número de utilizadores confirmados: {statistics.confirmedUsers}</div>
+          <div>xContagem do número de utilizadores não confirmados: {statistics.unconfirmedUsers} </div>
+          {/* {renderPieChart()} */}
+          {/* {renderTaskStatusChart()} */}
+          <br />
+          <div>xContagem do número médio de tarefas por utilizador: {statistics.avgTasksPerUser}</div>
+          <br />
+          <div>Contagem do número de tarefas por estado: {statistics.todoPerUser} </div>
+          <div>Contagem do número de tarefas por estado: {statistics.doingPerUser} </div>
+          <div>Contagem do número de tarefas por estado: {statistics.donePerUser} </div>
+          <br />
+          <div>Listagem das categorias, ordenada da mais frequente (mais tarefas) à menos frequente:</div>
+          {renderBarChart(statistics.categoryListOrdered)}
+          <br />
+          <div>Tempo médio que uma tarefa demora até ser concluída: {statistics.avgTimeToBeDone}</div>
+          <br />
+          <div>Gráfico que mostre o número de utilizadores registados ao longo do tempo, agrupados por mês e ano:</div>
+          {renderChartLine(statistics.chartUserPerTime)}
+          <br />
+          <div>Gráfico cumulativo que mostre o número total de tarefas concluídas ao longo do tempo</div>
+          {renderChartLine(statistics.chartTaskComulative)}
+          <Footer />
+        </div>
+      </div>
     </>
   );
 }
