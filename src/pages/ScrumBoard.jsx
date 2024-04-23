@@ -26,14 +26,7 @@ export default function ScrumBoard() {
   const setUsernameDD = taskStore.getState().setUsernameDD;
   const setCategoryDD = taskStore.getState().setCategoryDD;
   const { usernameDD, categoryDD } = taskStore.getState();
-  // useEffect(() => {
-  //   if (usernameDD !== null) {
-  //     setUsernameDD(usernameDD);
-  //   }
-  //   if (categoryDD !== null) {
-  //     setCategoryDD(categoryDD);
-  //   }
-  // }, [usernameDD, categoryDD]);
+
   const { todo, doing, done, clearDD, addTask, removeTask, updateTask } = taskStore((state) => state);
   const token = userStore.getState().token;
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
@@ -41,35 +34,7 @@ export default function ScrumBoard() {
   const role = userStore.getState().role;
   const [isChanged, setIsChanged] = useState(false);
   const { send } = webSocketStore();
-  // const [todo, setTodo] = useState([]);
-  // const [doing, setDoing] = useState([]);
-  // const [done, setDone] = useState([]);
-  const navigate = useNavigate();
 
-  // async function updateStatus(id, newStatus) {
-  //   const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/${id}/status/`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json", token: token },
-  //     body: JSON.stringify({ status: newStatus }),
-  //   });
-
-  //   const data = await response.json();
-
-  //   if (response.ok) {
-  //     //console.log("resposta" + response.status);
-  //     //console.log("Task updated successfully");
-  //     // tsuccess("Task updated successfully");
-  //   } else {
-  //     switch (response.status) {
-  //       case 400:
-  //         twarn(data.message);
-  //         break;
-  //       default:
-  //         terror("An error occurred: " + data.message);
-  //         break;
-  //     }
-  //   }
-  // }
   function handleAddClick() {
     setIsAddTaskModal(true);
   }
@@ -90,8 +55,6 @@ export default function ScrumBoard() {
     if (response.ok) {
       console.log(task);
       setIsAddTaskModal(false);
-
-      // addTask(task, 100);
 
       tsuccess("Task added successfully");
       return { success: true }; // Return success to close the modal/update the tasks/clean inputs
@@ -243,23 +206,16 @@ export default function ScrumBoard() {
         //console.log(response.status);
         if (response.ok) {
           const data = await response.json();
-          // const todo = data.filter((task) => task.status === 100);
-          // const doing = data.filter((task) => task.status === 200);
-          // const done = data.filter((task) => task.status === 300);
 
           const todo = data.todoTasks;
           const doing = data.doingTasks;
           const done = data.doneTasks;
 
-          // setTodo(todo);
-          // setDoing(doing);
-          // setDone(done);
           taskStore.getState().setTodo(todo);
           taskStore.getState().setDoing(doing);
           taskStore.getState().setDone(done);
         } else {
           terror("Failed to fetch tasks");
-          //console.error("Failed to fetch tasks:", response.statusText);
         }
       } catch (error) {
         terror("Failed to fetch tasks");
@@ -314,69 +270,6 @@ export default function ScrumBoard() {
     fetchCategories();
   }, [categoriesStore.getState().categories]);
   //------------------------------------------------------------------------dnd beautiful
-
-  // function removeItemById(array, id) {
-  //   return array.filter((item) => String(item.id) !== id);
-  // }
-  // function findItemById(array, id) {
-  //   return array.find((item) => String(item.id) === id);
-  // }
-  // function handleDragEnd(result) {
-  //   if (!result.destination) {
-  //     return;
-  //   }
-  //   const { destination, source, draggableId } = result;
-
-  //   // Create new arrays for the tasks
-  //   let newTodo = [...todo];
-  //   let newDoing = [...doing];
-  //   let newDone = [...done];
-  //   // Find the task and remove it from its source column
-  //   const allTasks = [...newTodo, ...newDoing, ...newDone];
-  //   const task = findItemById(allTasks, draggableId);
-
-  //   // Remove the task from the source column
-  //   if (source.droppableId === "100") {
-  //     newTodo = removeItemById(newTodo, draggableId);
-  //   } else if (source.droppableId === "200") {
-  //     newDoing = removeItemById(newDoing, draggableId);
-  //   } else if (source.droppableId === "300") {
-  //     newDone = removeItemById(newDone, draggableId);
-  //   }
-
-  //   // Add the task to the destination column depending on the droppableId
-  //   if (destination.droppableId === "100") {
-  //     task.todo = true;
-  //     task.doing = false;
-  //     task.done = false;
-  //     task.status = 100;
-  //     // newTodo.splice(destination.index, 0, task);
-  //     updateStatus(result.draggableId, 100);
-  //   } else if (destination.droppableId === "200") {
-  //     task.todo = false;
-  //     task.done = true;
-  //     task.doing = false;
-  //     task.status = 200;
-  //     // newDoing.splice(destination.index, 0, task);
-  //     updateStatus(result.draggableId, 200);
-  //   } else if (destination.droppableId === "300") {
-  //     task.done = false;
-  //     task.todo = false;
-  //     task.doing = true;
-  //     task.status = 300;
-  //     // newDone.splice(destination.index, 0, task);
-  //     updateStatus(result.draggableId, 300);
-  //   }
-
-  //   // Update the state once with the new arrays
-  //   setSelectedTask(task);
-  //   taskStore.getState().setTodo(newTodo);
-  //   taskStore.getState().setDoing(newDoing);
-  //   taskStore.getState().setDone(newDone);
-  //   // setTodo(newTodo);
-  //   // setDoing(newDoing);
-  //   // setDone(newDone);
-  // }
 
   function handleDragEnd(result) {
     if (!result.destination) {
@@ -483,15 +376,17 @@ export default function ScrumBoard() {
           )}
           {<TaskModal open={isAddTaskModal} title_modal="Add task" onClose={handleCloseAddModal} onSubmit={AddTask} task={selectedTask} />}
           <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="scrum-board">
-              <div className="todo">
-                <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
-              </div>
-              <div className="doing">
-                <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
-              </div>
-              <div className="done">
-                <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
+            <div className="scrum-board container">
+              <div className="row">
+                <div className="todo col-lg-4 col-md-6 my-2">
+                  <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+                </div>
+                <div className="doing col-lg-4 col-md-6 my-2">
+                  <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+                </div>
+                <div className="done col-lg-4 col-md-6 my-2">
+                  <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
+                </div>
               </div>
             </div>
           </DragDropContext>

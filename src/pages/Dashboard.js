@@ -4,6 +4,7 @@ import Footer from "../components/footer/Footer";
 import { userStore } from "../stores/UserStore";
 import { statisticsStore } from "../stores/Statistics";
 import { AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, BarChart } from "recharts";
+import { taskStore } from "../stores/TaskStore";
 
 function Dashboard() {
   const {
@@ -36,7 +37,7 @@ function Dashboard() {
   useEffect(() => {
     getTaskComulative();
     getCategoryCount();
-  }, [statistics.chartTaskChange, statistics.categoryListChange, statistics.chartTaskComulativeChange]);
+  }, [taskStore.getState().done, taskStore.getState().doing, taskStore.getState().todo]);
 
   useEffect(() => {
     getRegistrationUserStats();
@@ -153,7 +154,6 @@ function Dashboard() {
   }
 
   const renderBarChart = (data) => {
-    // const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A0D468", "#AC92EC", "#4A89DC", "#967ADC", "#D770AD", "#F6BB42"];
     return (
       <ResponsiveContainer width="100%" height={250}>
         <BarChart
@@ -173,7 +173,7 @@ function Dashboard() {
           <YAxis dataKey="category" type="category" />
           <Tooltip />
           {/* <Legend /> */}
-          <Bar dataKey="count" fill="#0088FE" />
+          <Bar dataKey="count" fill="cadetblue" />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -195,7 +195,7 @@ function Dashboard() {
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="count" stroke="#00C49F" fill="#00C49F" />
+            <Area type="monotone" dataKey="count" stroke="cadetblue" fill="cadetblue" />
             {/* <Area type="monotone" dataKey="anotherCount" stroke="#8884d8" fill="#8884d8" /> */}
           </AreaChart>
         </ResponsiveContainer>
@@ -217,7 +217,7 @@ function Dashboard() {
     return (
       <div className="col-lg-4 col-md-6 col-sm-12 my-3 ">
         <div className="card">
-          <div className="card-header text-center bg-success text-white">{title}</div>
+          <div className="card-header text-center ">{title}</div>
           <div className="card-body text-center display-6">{data}</div>
         </div>
       </div>
@@ -229,16 +229,18 @@ function Dashboard() {
         <div className="card">
           <div className="card-header text-center bg-secondary text-white">{title}</div>
           <div className="card-body">{renderChartLine(data)}</div>
+          <div className="card-footer text-center">Users registered over time</div>
         </div>
       </div>
     );
   };
-  const renderCardAvgTime = (data, title) => {
+  const renderCardAvgTime = (data, title, footer) => {
     return (
       <div className="col-lg-6 col-md-6 my-3">
         <div className="card">
           <div className="card-header text-center bg-primary text-white">{title}</div>
           <div className="card-body text-center display-6">{data}</div>
+          {footer && <div className="card-footer text-center">{footer}</div>}
         </div>
       </div>
     );
@@ -263,7 +265,7 @@ function Dashboard() {
           {renderCardUsers(statistics.unconfirmedUsers, "Uncorfirmed users")}
 
           {renderCardAvgTime(statistics.avgTasksPerUser, "Task average per user")}
-          {renderCardAvgTime(statistics.avgTimeToBeDone, "Time average to task be done")}
+          {renderCardAvgTime(statistics.avgTimeToBeDone, "Time average to task be done", "Hours")}
 
           {renderCardTasks(statistics.todoPerUser, "TODO tasks")}
           {renderCardTasks(statistics.doingPerUser, "DOING tasks")}
@@ -274,7 +276,7 @@ function Dashboard() {
 
           <div className="col-lg-6 my-3">
             <div className="card">
-              <div className="card-header text-center bg-info text-white">Categories</div>
+              <div className="card-header text-center bg-warning text-white">Categories</div>
               <div className="card-body">{renderBarChart(statistics.categoryListOrdered)}</div>
             </div>
           </div>

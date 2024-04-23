@@ -1,11 +1,18 @@
 import React from "react";
+import { Modal, Button } from "react-bootstrap";
 
-const Modal = ({ open, onClose, children, title }) => {
+const Modals = ({ open, onClose, children, title }) => {
   if (!open) return null;
 
   return (
     <>
-      <div className="modal-overlay" />
+      <Modal show={open} onHide={onClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{children}</Modal.Body>
+      </Modal>
+      {/* <div className="modal-overlay" />
       <div className="modal-content">
         <div className="header-profile">
           <h3 className="long-text">{title}</h3>
@@ -24,9 +31,9 @@ const Modal = ({ open, onClose, children, title }) => {
         >
           &times;
         </button>
-      </div>
+      </div> */}
     </>
   );
 };
 
-export default Modal;
+export default Modals;

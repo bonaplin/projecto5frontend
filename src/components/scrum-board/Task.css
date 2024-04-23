@@ -75,3 +75,10 @@
   border-top-right-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
 }
+
+#actions {
+  border: none;
+  background: none;
+  margin: 1rem;
+  cursor: pointer;
+}

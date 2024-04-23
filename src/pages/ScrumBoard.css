@@ -1,8 +1,8 @@
 .scrum-board {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin: 1rem;
+  margin: 1rem; */
 }
 @media screen and (max-width: 1024px) {
   .scrum-board {

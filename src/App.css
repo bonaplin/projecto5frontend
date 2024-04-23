@@ -123,7 +123,7 @@ select:hover {
   cursor: pointer;
 }
 
-.modal-overlay {
+/* .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -143,9 +143,8 @@ select:hover {
   z-index: 2;
   border-radius: 10px;
   width: 23rem;
-  /* border: 1px solid #000; */
-  /* max-width: 50%; */
-}
+ 
+} */
 
 .header-profile .long-text {
   margin: 0 0 0.5rem 0;
@@ -267,28 +266,20 @@ p {
 }
 
 .row {
-  /* border: 1px solid red; */
-  /* padding: 10px; */
   margin-bottom: 10px;
   border-radius: var(--border-radius);
-  /* box-shadow: var(--box-shadow); */
   gap: 0rem;
 }
 
 .col-lg-6,
 .col-lg-12 {
-  /* border: 1px solid #6a6a6a23; */
   border-radius: var(--border-radius);
-  /* padding: 5px; */
 }
 .col-lg-4,
 .col-lg-8 {
-  /* border: 1px solid #a88d48; */
   border-radius: var(--border-radius);
-  /* padding: 5px; */
 }
 .col-lg-3 {
-  /* border: 1px solid #ff0000; */
   border-radius: var(--border-radius);
 }
 .card {
@@ -297,5 +288,9 @@ p {
 .tasks-qt {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  /* background-color: bisque; */
+}
+
+.btn-success {
+  background-color: none;
+  color: var(--task-color);
 }

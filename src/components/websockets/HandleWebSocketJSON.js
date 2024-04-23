@@ -117,14 +117,8 @@ function handleWebSocketJSON(json) {
     console.log(data);
     taskStore.getState().removeTask(data.id, data.lastStatus);
     taskStore.getState().addTask(data, data.status, data.index);
-
-    // taskStore.getState().moveTask(data);
   }
-  // function handleEditTaskAndMove(data) {
-  //   console.log("retirar do array a task com id " + data.id + " e adicionar ao array com o status:" + data.status + " e remover do " + data.lastStatus);
-  //   taskStore.getState().removeTask(data.id, data.lastStatus);
-  //   taskStore.getState().addTask(data, data.status);
-  // }
+
   function handleEditTask(data) {
     taskStore.getState().updateTask(data, data.status, data.index);
   }
