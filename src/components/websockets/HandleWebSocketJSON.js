@@ -9,7 +9,11 @@ import { Addchart } from "@mui/icons-material";
 
 function handleWebSocketJSON(json) {
   let data;
-  const state = statisticsStore.getState();
+  const statistics = statisticsStore.getState();
+  const notifications = notificationStore.getState();
+  const tasks = taskStore.getState();
+  const users = userStore.getState();
+  const websockets = webSocketStore.getState();
   try {
     data = JSON.parse(json);
   } catch (e) {
@@ -49,6 +53,7 @@ function handleWebSocketJSON(json) {
       handleDesactivateTask(data);
       break;
     case MessageType.TASK_DELETE:
+      handleDeleteTask(data);
       // console.log("Mensagem recebida 26 é para apagar!", data);
       break;
     case MessageType.TASK_RESTORE:
@@ -94,69 +99,71 @@ function handleWebSocketJSON(json) {
   function handleMessage(data) {
     const selectedUser = webSocketStore.getState().selectedUser;
     if (data.sender === selectedUser) {
-      webSocketStore.getState().addMessage(data);
+      websockets.addMessage(data);
     }
   }
 
   function handleMessageSender(data) {
-    webSocketStore.getState().addMessage(data);
+    websockets.addMessage(data);
   }
 
   function handleNotification(data) {
     let selectedUser = webSocketStore.getState().selectedUser;
     if (data.sender !== selectedUser) {
-      notificationStore.getState().addNotification(data);
-      notificationStore.getState().addNotificationCounter();
+      notifications.addNotification(data);
+      notifications.addNotificationCounter();
     }
   }
   function handleLogout(data) {
     twarn("Time out, you are logged out!");
-    userStore.getState().logout();
+    users.logout();
   }
   function handleNewTask(data) {
     tinfo("New task created!");
-    taskStore.getState().addTask(data, data.status);
+    tasks.addTask(data, data.status);
   }
   function handleMoveTask(data) {
     console.log(data);
-    taskStore.getState().removeTask(data.id, data.lastStatus);
-    taskStore.getState().addTask(data, data.status, data.index);
+    tasks.removeTask(data.id, data.lastStatus);
+    tasks.addTask(data, data.status, data.index);
+  }
+  function handleDeleteTask(data) {
+    // tasks.removeTask(data.id, data.status);
   }
 
   function handleEditTask(data) {
-    taskStore.getState().updateTask(data, data.status, data.index);
+    tasks.updateTask(data, data.status, data.index);
   }
   function handleDesactivateTask(data) {
-    taskStore.getState().removeTask(data.id, data.status);
-    console.log("para add nas deleted");
-    taskStore.getState().addDeletedTask(data);
+    tasks.removeTask(data.id, data.status);
+    tasks.addDeletedTask(data);
   }
   function handleStatisticUser(data) {
-    statisticsStore.getState().setCountUsers(data.countUsers);
-    statisticsStore.getState().setConfirmedUsers(data.confirmedUsers);
-    statisticsStore.getState().setUnconfirmedUsers(data.unconfirmedUsers);
-    state.addChartUserChange();
+    statistics.setCountUsers(data.countUsers);
+    statistics.setConfirmedUsers(data.confirmedUsers);
+    statistics.setUnconfirmedUsers(data.unconfirmedUsers);
+    // state.addChartUserChange();
   }
   function handleStatisticTask(data) {
-    statisticsStore.getState().setAvgTasksPerUser(data.avgTaskPerUser);
+    statistics.setAvgTasksPerUser(data.avgTaskPerUser);
   }
   function handleStatisticTaskPerStatus(data) {
-    state.setTodoPerUser(data.todoPerUser);
-    state.setDoingPerUser(data.doingPerUser);
-    state.setDonePerUser(data.donePerUser);
-    state.setAvgTimeToBeDone(data.avgTimeToBeDone);
+    statistics.setTodoPerUser(data.todoPerUser);
+    statistics.setDoingPerUser(data.doingPerUser);
+    statistics.setDonePerUser(data.donePerUser);
+    statistics.setAvgTimeToBeDone(data.avgTimeToBeDone);
   }
   function handleStatisticRegistration(data) {
     // console.log(data);
-    state.setChartUserPerTime(data);
+    statistics.setChartUserPerTime(data.data);
   }
   function handleStatisticTaskComulative(data) {
     // console.log(data);
-    state.setChartTaskComulative(data);
-    state.addChartTaskChange();
+    statistics.setChartTaskComulative(data.data);
+    // state.addChartTaskChange();
   }
   function handleStatisticCategoryCount(data) {
-    state.setCategoryListOrdered(data);
+    statistics.setCategoryListOrdered(data.data);
     console.log(data);
   }
   function handleRestoreTask(data) {

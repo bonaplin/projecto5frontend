@@ -17,7 +17,9 @@ function Users() {
   const token = userStore.getState().token;
   // User selected
   const [editUser, setEditUser] = useState(null);
-  const [userData, setUserData] = useState([]);
+  // const [userData, setUserData] = useState([]);
+
+  const { users, setUsers } = userStore((state) => state);
 
   const fetchUsers = async () => {
     const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/", {
@@ -29,7 +31,7 @@ function Users() {
     const data = await response.json();
 
     if (response.ok) {
-      setUserData(data);
+      setUsers(data);
       userStore.getState().setUsers(data);
       // tsuccess("Users fetched successfully");
     } else {
@@ -247,7 +249,7 @@ function Users() {
 
   if (role === "sm" || role === "dev") {
     // Filter the userData array to exclude inactive users
-    userData.filter((user) => user.active);
+    users.filter((user) => user.active);
     // Find the index of the "actions" column
     const actionsIndex = columns.indexOf("actions");
     // If the "actions" column exists, remove it
@@ -322,7 +324,7 @@ function Users() {
           )}
           <Table
             class="table"
-            data={userData}
+            data={users}
             type="user"
             columns={columns}
             handleEdit={handleEdit}

@@ -22,9 +22,11 @@ export const userStore = create(
       email: "",
       phone: "",
       confirmed: "",
-      user: [],
+      users: [],
+      userNames: [],
 
-      setUsers: (user) => set({ user }),
+      setUsernames: (userNames) => set({ userNames }),
+      setUsers: (users) => set({ users }),
       getUsers: () => {
         return userStore.getState().user;
       },

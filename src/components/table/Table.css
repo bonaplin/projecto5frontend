@@ -9,7 +9,8 @@
 .table th,
 .table td {
   padding: 8px;
-  text-align: left;
+  /* text-align: left; */
+  justify-content: center;
   transition: transform 0.5s ease;
 }
 

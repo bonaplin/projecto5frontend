@@ -23,16 +23,17 @@ import { webSocketStore } from "../stores/WebSocketStore.js";
 import MessageType from "../components/websockets/MessageType.js";
 
 export default function ScrumBoard() {
-  const setUsernameDD = taskStore.getState().setUsernameDD;
-  const setCategoryDD = taskStore.getState().setCategoryDD;
-  const { usernameDD, categoryDD } = taskStore.getState();
-
-  const { todo, doing, done, clearDD, addTask, removeTask, updateTask } = taskStore((state) => state);
-  const token = userStore.getState().token;
+  const { todo, doing, done, clearDD, addTask, removeTask, updateTask, setUsernameDD, usernameDD, setCategoryDD, categoryDD } = taskStore(
+    (state) => state
+  );
+  const { categories, setCategories, categoriesNames, setCategoriesNames } = categoriesStore((state) => state);
+  const { users, userNames } = userStore((state) => state);
+  const { token, role } = userStore((state) => state);
+  // const token = userStore.getState().token;
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState({});
-  const role = userStore.getState().role;
-  const [isChanged, setIsChanged] = useState(false);
+  // const role = userStore.getState().role;
+  // const [isChanged, setIsChanged] = useState(false);
   const { send } = webSocketStore();
 
   function handleAddClick() {
@@ -96,7 +97,7 @@ export default function ScrumBoard() {
     if (response.ok) {
       //console.log("Task updated successfully");
       setIsEditModalOpen(false);
-      setIsChanged(!isChanged);
+      // setIsChanged(!isChanged);
       tsuccess("Task updated successfully");
     } else {
       switch (response.status) {
@@ -136,7 +137,7 @@ export default function ScrumBoard() {
     if (response.ok) {
       //console.log("Task deleted successfully");
       setIsDeleteModalOpen(false);
-      setIsChanged(!isChanged);
+      // setIsChanged(!isChanged);
       tsuccess("Task deleted successfully");
     } else {
       switch (response.status) {
@@ -222,9 +223,9 @@ export default function ScrumBoard() {
       }
     }
     fetchTasks();
-  }, [taskStore.getState().usernameDD, taskStore.getState().categoryDD]);
+  }, [usernameDD, categoryDD]);
 
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
 
   // Fetch users --------------------------------------------------------------------------------------------------------
   useEffect(() => {
@@ -238,16 +239,18 @@ export default function ScrumBoard() {
         terror("Failed to fetch users:", response.statusText);
         return;
       }
-      const users = await response.json();
-      const userNames = users.map((user) => user.username);
-      setUsers(userNames);
+      const data = await response.json();
+      const userNames = data.map((user) => user.username);
+      userStore.getState().setUsers(users);
+      userStore.getState().setUsernames(userNames);
+      // console.log("users", users);
+      console.log("usernames", userNames);
     }
     fetchUsers();
-  }, [userStore.getState().users]);
+  }, []);
 
   // Fetch categories -----------------------
 
-  const [categories, setCategories] = useState([]);
   useEffect(() => {
     async function fetchCategories() {
       const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/", {
@@ -264,11 +267,11 @@ export default function ScrumBoard() {
       }
       const categories = await response.json();
       const categoriesNames = categories.map((category) => category.title);
-      setCategories(categoriesNames);
+      setCategoriesNames(categoriesNames);
       // console.log("ver");
     }
     fetchCategories();
-  }, [categoriesStore.getState().categories]);
+  }, []);
   //------------------------------------------------------------------------dnd beautiful
 
   function handleDragEnd(result) {
@@ -327,17 +330,17 @@ export default function ScrumBoard() {
                 <div className="filter-side">
                   <Dropdown
                     className="filter-dropdown"
-                    value={taskStore.getState().usernameDD}
-                    data={users}
+                    value={usernameDD}
+                    data={userNames}
                     type={"Username"}
-                    onChange={(e) => setUsernameDD(e)}
+                    onChange={(e) => taskStore.getState().setUsernameDD(e)}
                   />
                   <Dropdown
                     className="filter-dropdown"
-                    value={taskStore.getState().categoryDD}
-                    data={categories}
+                    value={categoryDD}
+                    data={categoriesNames}
                     type={"Category"}
-                    onChange={(e) => setCategoryDD(e)}
+                    onChange={(e) => taskStore.getState().setCategoryDD(e)}
                   />
                 </div>
               </div>

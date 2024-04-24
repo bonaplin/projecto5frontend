@@ -18,8 +18,10 @@ function Categories() {
   const navigate = useNavigate();
   const token = userStore.getState().token;
   const username = userStore.getState().username;
+  const { categories, setCategories } = categoriesStore((state) => state);
+
   const role = userStore.getState().role;
-  const [categorieData, setCategorieData] = useState([]);
+  // const [categorieData, setCategorieData] = useState([]);
   const [editCategory, setEditCategory] = useState(null);
 
   console.log("Categories token", token);
@@ -33,7 +35,7 @@ function Categories() {
     const data = await response.json();
 
     if (response.ok) {
-      setCategorieData(data);
+      setCategories(data);
       categoriesStore.getState().setCategories(data);
       // tsuccess("Categories fetched successfully");
     } else {
@@ -53,7 +55,7 @@ function Categories() {
   const handleDelete = (category) => {
     setEditCategory(category);
     setIsDeleteModalOpen(true);
-    console.dir(category);
+    // console.dir(category);
   };
   async function handleDeleteCategory() {
     const category = editCategory;
@@ -217,7 +219,7 @@ function Categories() {
             </>
           )}
 
-          <Table class="table" type="category" data={categorieData} columns={columns} handleDelete={handleDelete} handleEdit={handleEdit} />
+          <Table class="table" type="category" data={categories} columns={columns} handleDelete={handleDelete} handleEdit={handleEdit} />
         </div>
         <Footer />
       </div>

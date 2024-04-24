@@ -5,7 +5,9 @@ export const categoriesStore = create(
   persist(
     (set) => ({
       categories: [],
+      categoriesNames: [],
 
+      setCategoriesNames: (categoriesNames) => set({ categoriesNames }),
       setCategories: (categories) => set({ categories }),
       getCategories: () => {
         return categoriesStore.getState().categories;
