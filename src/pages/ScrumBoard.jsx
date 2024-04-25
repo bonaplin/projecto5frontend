@@ -25,9 +25,8 @@ import { webSocketStore } from "../stores/WebSocketStore.js";
 import MessageType from "../components/websockets/MessageType.js";
 
 export default function ScrumBoard() {
-  // const { clearDD, addTask, removeTask, updateTask, setUsernameDD, usernameDD, setCategoryDD, categoryDD } = taskStore((state) => state);
   const { allTasks, usernameDD, setUsernameDD, categoryDD, setCategoryDD, clearDD } = useTaskStore((state) => state);
-  const { categories, setCategories, categoriesNames, setCategoriesNames } = categoriesStore((state) => state);
+  const { categoriesNames, setCategoriesNames } = categoriesStore((state) => state);
   const { users, userNames } = userStore((state) => state);
   const { token, role } = userStore((state) => state);
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
@@ -54,7 +53,6 @@ export default function ScrumBoard() {
     if (response.ok) {
       console.log(task);
       setIsAddTaskModal(false);
-
       tsuccess("Task added successfully");
       return { success: true }; // Return success to close the modal/update the tasks/clean inputs
     } else {
@@ -93,9 +91,7 @@ export default function ScrumBoard() {
     const data = await response.json();
 
     if (response.ok) {
-      //console.log("Task updated successfully");
       setIsEditModalOpen(false);
-      // setIsChanged(!isChanged);
       tsuccess("Task updated successfully");
     } else {
       switch (response.status) {
@@ -189,13 +185,13 @@ export default function ScrumBoard() {
     async function fetchTasks() {
       let url = "http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/";
 
-      if (usernameDD !== null && categoryDD !== null) {
-        url += `?username=${usernameDD}&category=${categoryDD}`;
-      } else if (usernameDD !== null) {
-        url += `?username=${usernameDD}`;
-      } else if (categoryDD !== null) {
-        url += `?category=${categoryDD}`;
-      }
+      // if (usernameDD !== null && categoryDD !== null) {
+      //   url += `?username=${usernameDD}&category=${categoryDD}`;
+      // } else if (usernameDD !== null) {
+      //   url += `?username=${usernameDD}`;
+      // } else if (categoryDD !== null) {
+      //   url += `?category=${categoryDD}`;
+      // }
       try {
         const response = await fetch(url, {
           headers: {
@@ -218,7 +214,7 @@ export default function ScrumBoard() {
       }
     }
     fetchTasks();
-  }, [usernameDD, categoryDD]);
+  }, [,]);
 
   // Fetch users --------------------------------------------------------------------------------------------------------
   useEffect(() => {
@@ -302,9 +298,15 @@ export default function ScrumBoard() {
     clearDD();
   }
 
-  const todo = allTasks.filter((task) => task.status === 100 && task.active === true);
-  const doing = allTasks.filter((task) => task.status === 200 && task.active === true);
-  const done = allTasks.filter((task) => task.status === 300 && task.active === true);
+  const todo = allTasks.filter(
+    (task) => task.status === 100 && task.active === true && (!usernameDD || task.owner === usernameDD) && (!categoryDD || task.category === categoryDD)
+  );
+  const doing = allTasks.filter(
+    (task) => task.status === 200 && task.active === true && (!usernameDD || task.owner === usernameDD) && (!categoryDD || task.category === categoryDD)
+  );
+  const done = allTasks.filter(
+    (task) => task.status === 300 && task.active === true && (!usernameDD || task.owner === usernameDD) && (!categoryDD || task.category === categoryDD)
+  );
 
   return (
     <>

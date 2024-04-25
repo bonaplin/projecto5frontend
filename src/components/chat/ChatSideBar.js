@@ -12,6 +12,10 @@ function ChatSideBar({ onClose }) {
   useEffect(() => {
     webSocketStore.getState().setSelectedUser(selectedUser);
     console.log("selectedUser", selectedUser);
+
+    return () => {
+      webSocketStore.getState().setSelectedUser(null);
+    };
   }, [selectedUser]);
 
   const token = userStore.getState().token;
@@ -19,19 +23,16 @@ function ChatSideBar({ onClose }) {
   const [sendMessage, setSendMessage] = useState();
   const { socket } = webSocketStore();
   const messagesEndRef = useRef(null);
+  const { messages } = webSocketStore((state) => state);
 
   // when the component is unmounted, set the selectedUser to null
-  useEffect(() => {
-    return () => {
-      webSocketStore.getState().selectedUser = null;
-    };
-  }, []);
 
   useEffect(() => {
     fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/messages/${username}/${selectedUser}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        token: token,
       },
     })
       .then((response) => {
@@ -53,7 +54,7 @@ function ChatSideBar({ onClose }) {
   //sempre que a lista de mensagens for atualizada, faz scroll para o final
   useEffect(() => {
     scrollToBottom("messages");
-  }, [webSocketStore.getState().messages]);
+  }, [messages]);
 
   function scrollToBottom(elementId) {
     setTimeout(() => {
@@ -68,7 +69,6 @@ function ChatSideBar({ onClose }) {
     if (socket && socket.readyState === WebSocket.OPEN) {
       let messageToSend = {
         message: sendMessage,
-        // senderToken: token,
         receiver: selectedUser,
         type: MessageType.MESSAGE_SENDER,
       };
@@ -85,18 +85,15 @@ function ChatSideBar({ onClose }) {
     setSendMessage(e.target.value);
   }
 
-  function handleOnClose(e) {
-    onClose();
-  }
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [webSocketStore.getState().messages]);
+  }, [messages]);
 
   return (
     <>
       <div className="messages-container">
         <div className="messages" id="messages">
-          {webSocketStore.getState().messages.map((message, index) => (
+          {messages.map((message, index) => (
             <MessageBubble
               id={message.id}
               key={index}

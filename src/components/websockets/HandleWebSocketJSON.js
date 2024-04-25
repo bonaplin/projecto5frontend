@@ -6,6 +6,7 @@ import { useTaskStore } from "../../stores/useTaskStore";
 import { statisticsStore } from "../../stores/Statistics";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
+import { South } from "@mui/icons-material";
 
 function handleWebSocketJSON(json) {
   let data;
@@ -30,6 +31,19 @@ function handleWebSocketJSON(json) {
     case MessageType.MESSAGE_RECEIVER:
       handleMessageSender(data);
       break;
+
+    case MessageType.MESSAGE_READ:
+      handleMessageRead();
+      break;
+    case MessageType.MESSAGE_READ_CONFIRMATION:
+      console.log("Message read confirmation", data);
+      console.log("vai marcar como lida nas mensagens!");
+      handleMessageMarkAsRead(data);
+      break;
+    // case MessageType.MESSAGE_MARK_AS_READ:
+    //   console.log("Message mark as read", data);
+    //   handleMessageMarkAsRead(data);
+    //   break;
 
     case MessageType.TYPE_20:
       break;
@@ -113,11 +127,16 @@ function handleWebSocketJSON(json) {
     const selectedUser = webSocketStore.getState().selectedUser;
     if (data.sender === selectedUser) {
       websockets.addMessage(data);
+      sendReadConfirmation(data);
     }
   }
 
   function handleMessageSender(data) {
     websockets.addMessage(data);
+  }
+
+  function handleMessageRead() {
+    websockets.markAsRead();
   }
 
   function handleNotification(data) {
@@ -203,6 +222,21 @@ function handleWebSocketJSON(json) {
     // taskStore.getState().addTask(data, data.status);
 
     allTasks.restoreTaskToAll(data.id);
+  }
+
+  function sendReadConfirmation(data) {
+    const readConfirmation = {
+      type: MessageType.MESSAGE_READ_CONFIRMATION,
+      receiver: data.sender,
+      id: data.id,
+    };
+    console.log("Sending read confirmation", readConfirmation);
+    let jsonString = JSON.stringify(readConfirmation);
+    websockets.send(jsonString);
+  }
+  function handleMessageMarkAsRead(data) {
+    websockets.markAsRead(data);
+    console.log("Message marked as read", data);
   }
 }
 export { handleWebSocketJSON };

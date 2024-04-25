@@ -17,20 +17,12 @@ import Tooltip from "@mui/material/Tooltip";
 
 function DeletedTasks() {
   const navigate = useNavigate();
-  const token = userStore.getState().token;
-  const role = userStore.getState().role;
+
+  const { role, token } = userStore((state) => state);
   const [taskselected, setTaskselected] = useState(null);
-  const { setAllTasks, addTasks } = useTaskStore();
+  const { addTasks } = useTaskStore();
   const allTasks = useTaskStore((state) => state.allTasks);
 
-  // useEffect(() => {
-  //   const unsubscribe = taskStore.subscribe(() => {
-  //     setDeletedTasks(taskStore.getState().deleted);
-  //   });
-
-  //   // Clean up subscription on unmount
-  //   return () => unsubscribe();
-  // }, []);
   useEffect(() => {
     const fetchInactiveTasks = async () => {
       const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false", {
@@ -44,19 +36,6 @@ function DeletedTasks() {
       if (response.ok) {
         addTasks(data);
         console.log(allTasks);
-        // setDeletedTasksData(data);
-        // setDeletedTasks(data);
-
-        // Add the fetched tasks to allTasks without repeating
-        // setAllTasks((currentTasks) => {
-        //   const newAllTasks = [...currentTasks];
-        //   data.forEach((task) => {
-        //     if (!newAllTasks.find((t) => t.id === task.id)) {
-        //       newAllTasks.push(task);
-        //     }
-        //   });
-        //   return newAllTasks;
-        // });
       } else {
         switch (response.status) {
           case 401:

@@ -12,10 +12,11 @@ function MessageBubble(props) {
       >
         <div
           style={{
+            color: props.isOwnMessage ? (props.read ? "black" : "white") : "black",
             backgroundColor: props.isOwnMessage ? "#ff88" : "#c6c6c6",
             alignSelf: props.isOwnMessage ? "flex-start" : "flex-end",
             fontSize: "15px",
-            color: "black",
+            // color: "black",
             textAlign: "right",
             padding: "10px",
             borderRadius: "10px",

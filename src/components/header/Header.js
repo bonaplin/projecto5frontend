@@ -9,11 +9,9 @@ import LogoutButton from "../dropdown/buttons/LogoutButton.js";
 import ProfileButton from "../dropdown/buttons/ProfileButton.js";
 import DashboardButton from "../dropdown/buttons/DashboardButton.js";
 import { userStore } from "../../stores/UserStore.js";
-import { webSocketStore } from "../../stores/WebSocketStore.js";
 import { notificationStore } from "../../stores/NotificationStore.js";
 import { useNavigate } from "react-router-dom";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import MessageIcon from "@mui/icons-material/Message";
 import Dropdown from "react-bootstrap/Dropdown";
 
@@ -22,10 +20,10 @@ function Header() {
   const role = userStore((state) => state.role);
   const username = userStore((state) => state.username);
   const userimg = userStore((state) => state.photoURL);
-  const token = userStore.getState().token; // Get the token from the store
+  const token = userStore((state) => state.token); // Get the token from the store
+
   const [user, setUser] = useState(userStore.getState()); // Get the user from the store
 
-  const count = notificationStore((state) => state.notifications.length);
   const notifications = notificationStore((state) => state.notifications);
   const unreadCount = notificationStore((state) => state.notificationCounter);
 
@@ -62,7 +60,7 @@ function Header() {
 
   function handleMarkAsRead(id) {
     notificationStore.getState().setNotifications(
-      notificationStore.getState().notifications.map((notification) => {
+      notifications.map((notification) => {
         if (notification.id === id) {
           notification.read = true;
         }
@@ -72,7 +70,7 @@ function Header() {
   }
   function handleMarkAllAsRead() {
     notificationStore.getState().setNotifications(
-      notificationStore.getState().notifications.map((notification) => {
+      notifications.map((notification) => {
         notification.read = true;
         return notification;
       })
@@ -97,7 +95,7 @@ function Header() {
 
       if (response.ok) {
         // Se a resposta for bem-sucedida, marque a notificação como lida no Zustand store
-        const notifications = notificationStore.getState().notifications.map((notification) => {
+        const notifications = notifications.map((notification) => {
           if (notification.id === id) {
             notification.read = true;
           }
@@ -167,62 +165,6 @@ function Header() {
 
       <div className="header__right dropdown-container">
         <label className="header-name">{username}</label>
-
-        {/* <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
-              {notifications.length > 0 ? (
-                <div className="btn btn-primary position-relative">
-                  <MessageIcon />
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
-                    {unreadCount}
-                    <span className="visually-hidden">unread messages</span>
-                  </span>
-                </div>
-              ) : (
-                <MessageIcon />
-              )}
-            </div>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            {notifications.length > 0 ? (
-              <>
-                <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
-                  <div className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
-                      Mark All as Read
-                    </button>
-                    <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
-                      Clear All
-                    </button>
-                  </div>
-                </Dropdown.Item>
-                {notifications.length > 0 &&
-                  notifications.map((notification, index) => (
-                    <Dropdown.Item
-                      key={index}
-                      href={`/users/${notification.sender}`}
-                      style={{ backgroundColor: notification.read ? "white" : "#9999" }}
-                      // onClick={() => markNotificationAsRead(notification.id)}
-                    >
-                      {"New message from " +
-                        notification.sender +
-                        ". (" +
-                        notification.time.substring(11, 16) +
-                        " " +
-                        notification.time.substring(8, 10) +
-                        "/" +
-                        notification.time.substring(5, 7) +
-                        ")"}
-                    </Dropdown.Item>
-                  ))}
-              </>
-            ) : (
-              <Dropdown.Item>No Notifications to see</Dropdown.Item>
-            )}
-          </Dropdown.Menu>
-        </Dropdown> */}
 
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -300,11 +242,3 @@ function Header() {
 }
 
 export default Header;
-
-/* 
-<SubDropdownMenu father="Delete">
-            <li onClick={handleTasksDeletedClick}>Tasks</li>
-            <li>Users</li>
-            <li>Categories</li>
-          </SubDropdownMenu>
-*/
