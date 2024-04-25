@@ -85,6 +85,9 @@ function ChatSideBar({ onClose }) {
     setSendMessage(e.target.value);
   }
 
+  function handleOnClose(e) {
+    onClose();
+  }
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
