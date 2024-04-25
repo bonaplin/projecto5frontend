@@ -6,11 +6,14 @@ import DisplayProfile from "../components/display/DisplayProfile";
 // import { Doughnut } from "react-chartjs-2";
 import Header from "../components/header/Header";
 import { userStore } from "../stores/UserStore";
+import { taskStore } from "../stores/TaskStore";
+import { useTaskStore } from "../stores/useTaskStore";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import ChatSidebar from "../components/chat/ChatSideBar";
 import AsideOffCanvas from "../components/chat/AsideOffCanvas";
 function Profile() {
   const { selectedUser } = useParams();
+  const username = userStore((state) => state.username); // Get the username from the Zustand store
   const token = userStore.getState().token; // Get the token from the Zustand store
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
@@ -21,11 +24,13 @@ function Profile() {
     phone: "",
     photoURL: "",
     role: "",
-    taskcount: "",
-    todocount: "",
-    doingcount: "",
-    donecount: "",
+    // taskcount: "",
+    // todocount: "",
+    // doingcount: "",
+    // donecount: "",
   });
+
+  const { allTasks } = useTaskStore((state) => state);
 
   const [showChat, setShowChat] = useState(false);
 
@@ -60,25 +65,45 @@ function Profile() {
   }, [selectedUser, token]); // Dependências
 
   // const datatasks = [
-  //   { name: "To Do", value: inputs.todocount },
-  //   { name: "Doing", value: inputs.doingcount },
-  //   { name: "Done", value: inputs.donecount },
+  //   {
+  //     name: "To Do",
+  //     value: inputs.todocount,
+  //   },
+  //   {
+  //     name: "Doing",
+  //     value: inputs.doingcount,
+  //   },
+  //   {
+  //     name: "Done",
+  //     value: inputs.donecount,
+  //   },
   // ];
 
-  const datatasks = [
-    {
-      name: "To Do",
-      value: inputs.todocount,
-    },
-    {
-      name: "Doing",
-      value: inputs.doingcount,
-    },
-    {
-      name: "Done",
-      value: inputs.donecount,
-    },
-  ];
+  const [datatasks, setDatatasks] = useState([]); // State to store the data for the chart
+  // Inside your component
+  useEffect(() => {
+    if (allTasks) {
+      const todotask = allTasks.filter((task) => task.status === 100 && task.owner === selectedUser && task.active === true).length;
+      const doingtask = allTasks.filter((task) => task.status === 200 && task.owner === selectedUser && task.active === true).length;
+      const donetask = allTasks.filter((task) => task.status === 300 && task.owner === selectedUser && task.active === true).length;
+
+      setDatatasks([
+        {
+          name: "To Do",
+          value: todotask,
+        },
+        {
+          name: "Doing",
+          value: doingtask,
+        },
+        {
+          name: "Done",
+          value: donetask,
+        },
+      ]);
+    }
+    // Update the state or props that the chart is based on
+  }, [allTasks]);
 
   const COLORS = ["#ec9191", "#5f9ea0", "#4c59af"];
   const renderLabel = ({ name, value }) => `${name}: ${value}`;
@@ -134,7 +159,6 @@ function Profile() {
               <button className="yes-no no" type="button" value="Cancel" onClick={() => navigate("/users")}>
                 Cancel
               </button>
-
               <AsideOffCanvas show={showChat} handleClose={handleCloseChat} user={selectedUser} />
             </div>
           </div>

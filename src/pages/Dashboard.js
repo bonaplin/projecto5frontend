@@ -7,24 +7,8 @@ import { AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveC
 // import { taskStore } from "../stores/TaskStore";
 
 function Dashboard() {
-  // const {
-  //   setCountUsers,
-  //   setConfirmedUsers,
-  //   setUnconfirmedUsers,
-  //   setAvgTasksPerUser,
-  //   setTodoPerUser,
-  //   setDoingPerUser,
-  //   setDonePerUser,
-  //   setAvgTimeToBeDone,
-  //   setChartUserPerTime,
-  //   setChartTaskComulative,
-  //   setCategoryListOrdered,
-  // } = statisticsStore();
-
   const token = userStore((state) => state.token);
   const statistics = statisticsStore((state) => state);
-  // const users = userStore((state) => state.users);
-  // const tasks = taskStore((state) => state.tasks);
 
   useEffect(() => {
     getUserStats();
@@ -33,15 +17,6 @@ function Dashboard() {
     getTaskComulative();
     getCategoryCount();
   }, []);
-
-  // useEffect(() => {
-  //   getTaskComulative();
-  //   getCategoryCount();
-  // }, [taskStore.getState().done, taskStore.getState().doing, taskStore.getState().todo]);
-
-  // useEffect(() => {
-  //   getRegistrationUserStats();
-  // }, [statistics.chartUserChange]);
 
   function getUserStats() {
     fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/statistic/user", {
@@ -197,7 +172,6 @@ function Dashboard() {
             <YAxis />
             <Tooltip />
             <Area type="monotone" dataKey="count" stroke="cadetblue" fill="cadetblue" />
-            {/* <Area type="monotone" dataKey="anotherCount" stroke="#8884d8" fill="#8884d8" /> */}
           </AreaChart>
         </ResponsiveContainer>
       </div>

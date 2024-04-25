@@ -9,7 +9,8 @@ import Footer from "../components/footer/Footer";
 import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { userStore } from "../stores/UserStore";
-import { taskStore } from "../stores/TaskStore";
+// import { taskStore } from "../stores/TaskStore";
+import { useTaskStore } from "../stores/useTaskStore";
 import ModalYesNo from "../components/modal/ModalYesNo";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
@@ -18,55 +19,61 @@ function DeletedTasks() {
   const navigate = useNavigate();
   const token = userStore.getState().token;
   const role = userStore.getState().role;
-  const [deletedTasksData, setDeletedTasksData] = useState([]);
   const [taskselected, setTaskselected] = useState(null);
-  const [deleted, setDeletedTasks] = useState(taskStore.getState().deleted);
+  const { setAllTasks, addTasks } = useTaskStore();
+  const allTasks = useTaskStore((state) => state.allTasks);
 
+  // useEffect(() => {
+  //   const unsubscribe = taskStore.subscribe(() => {
+  //     setDeletedTasks(taskStore.getState().deleted);
+  //   });
+
+  //   // Clean up subscription on unmount
+  //   return () => unsubscribe();
+  // }, []);
   useEffect(() => {
-    const unsubscribe = taskStore.subscribe(() => {
-      setDeletedTasks(taskStore.getState().deleted);
-    });
+    const fetchInactiveTasks = async () => {
+      const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false", {
+        headers: {
+          token: token,
+        },
+      });
 
-    // Clean up subscription on unmount
-    return () => unsubscribe();
-  }, []);
-  const fetchInactiveTasks = async () => {
-    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/tasks/?active=false", {
-      headers: {
-        token: token,
-      },
-    });
+      const data = await response.json();
 
-    const data = await response.json();
+      if (response.ok) {
+        addTasks(data);
+        console.log(allTasks);
+        // setDeletedTasksData(data);
+        // setDeletedTasks(data);
 
-    if (response.ok) {
-      setDeletedTasksData(data);
-      taskStore.getState().setDeleted(data);
-    } else {
-      switch (response.status) {
-        case 401:
-          terror(data.message); // Unauthorized
-          break;
-        case 403:
-          terror(data.message); // Forbidden
-          break;
-        default:
-          terror("An error occurred: " + data.message);
-          break;
+        // Add the fetched tasks to allTasks without repeating
+        // setAllTasks((currentTasks) => {
+        //   const newAllTasks = [...currentTasks];
+        //   data.forEach((task) => {
+        //     if (!newAllTasks.find((t) => t.id === task.id)) {
+        //       newAllTasks.push(task);
+        //     }
+        //   });
+        //   return newAllTasks;
+        // });
+      } else {
+        switch (response.status) {
+          case 401:
+            terror(data.message); // Unauthorized
+            break;
+          case 403:
+            terror(data.message); // Forbidden
+            break;
+          default:
+            terror("An error occurred: " + data.message);
+            break;
+        }
       }
-    }
-  };
-
-  /* ******* ******* *********************************** *****/
-
-  /* ******* ******* *********************************** *****/
-
-  useEffect(() => {
+    };
     fetchInactiveTasks();
   }, []);
-
-  /* ******* ******* *********************************** *****/
-
+  const deleted = allTasks.filter((task) => task.active === false);
   let columns = ["id", "title", "description", "owner", "actions"];
 
   const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
@@ -85,7 +92,7 @@ function DeletedTasks() {
     const data = await response.json();
 
     if (response.ok) {
-      fetchInactiveTasks();
+      // fetchInactiveTasks();
       setIsDeleteTaskModalOpen(false);
       tsuccess("Task deleted successfully.");
     } else {
@@ -121,7 +128,7 @@ function DeletedTasks() {
     const data = await response.json();
 
     if (response.ok) {
-      fetchInactiveTasks();
+      // fetchInactiveTasks();
       setIsRestoreTaskModalOpen(false);
       tsuccess("Task restored successfully.");
     } else {
@@ -156,7 +163,7 @@ function DeletedTasks() {
     const data = await response.json();
 
     if (response.ok) {
-      fetchInactiveTasks();
+      // fetchInactiveTasks();
       setIsDeleteAllTasksModalOpen(false);
       tsuccess("All tasks deleted successfully.");
     } else {
@@ -191,7 +198,7 @@ function DeletedTasks() {
     const data = await response.json();
 
     if (response.ok) {
-      fetchInactiveTasks();
+      // fetchInactiveTasks();
       setIsRestoreAllTaskModalOpen(false);
       tsuccess("All tasks restored successfully.");
     } else {

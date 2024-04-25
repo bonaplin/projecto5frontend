@@ -1,8 +1,5 @@
 import React from "react";
 import { userStore } from "../../../stores/UserStore.js";
-import Delete from "../../icon-buttons/delete.js";
-import Edit from "../../icon-buttons/edit.js";
-import Restore from "../../icon-buttons/restore.js";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { Dropdown } from "react-bootstrap";

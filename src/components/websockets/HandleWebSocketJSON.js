@@ -1,17 +1,18 @@
 import { webSocketStore } from "../../stores/WebSocketStore";
 import { notificationStore } from "../../stores/NotificationStore";
 import { userStore } from "../../stores/UserStore";
-import { taskStore } from "../../stores/TaskStore";
+// import { taskStore } from "../../stores/TaskStore";
+import { useTaskStore } from "../../stores/useTaskStore";
 import { statisticsStore } from "../../stores/Statistics";
 import { tsuccess, twarn, tinfo, tdefault } from "../messages/Message";
 import MessageType from "./MessageType";
-import { Addchart } from "@mui/icons-material";
 
 function handleWebSocketJSON(json) {
   let data;
   const statistics = statisticsStore.getState();
   const notifications = notificationStore.getState();
-  const tasks = taskStore.getState();
+  // const tasks = taskStore.getState();
+  const allTasks = useTaskStore.getState();
   const users = userStore.getState();
   const websockets = webSocketStore.getState();
   try {
@@ -23,72 +24,84 @@ function handleWebSocketJSON(json) {
 
   switch (data.type) {
     case MessageType.MESSAGE_SENDER:
-      // console.log("Mensagem recebida 10", data);
       handleMessage(data);
       break;
+
     case MessageType.MESSAGE_RECEIVER:
-      // console.log("Mensagem recebida 11", data);
       handleMessageSender(data);
       break;
+
     case MessageType.TYPE_20:
-      // handleNotification(data);
       break;
+
     case MessageType.TASK_CREATE:
       handleNewTask(data);
-      // console.log("Mensagem recebida 21", data);
       break;
+
     case MessageType.TASK_MOVE:
       handleMoveTask(data);
       break;
+
     case MessageType.TASK_EDIT:
-      // console.log("Mensagem recebida 23", data);
       handleEditTask(data);
       break;
+
     case MessageType.TASK_EDIT_AND_MOVE:
-      // console.log("Mensagem recebida 24", data);
       handleMoveTask(data);
       break;
+
     case MessageType.TASK_DESACTIVATE:
-      // console.log("Mensagem recebida 25 é para desactivar!", data);
       handleDesactivateTask(data);
       break;
+
     case MessageType.TASK_DELETE:
       handleDeleteTask(data);
-      // console.log("Mensagem recebida 26 é para apagar!", data);
       break;
+
     case MessageType.TASK_RESTORE:
-      // console.log("Mensagem recebida 27 é para apagar!", data);
       handleRestoreTask(data);
       break;
+
+    case MessageType.TASK_RESTORE_ALL:
+      handleRestoreAllTask(data);
+      break;
+
+    case MessageType.TASK_DELETE_ALL:
+      handleDeleteAllTask();
+      break;
+
     case MessageType.LOGOUT:
       handleLogout(data);
       break;
+
     case MessageType.TYPE_40:
       handleNotification(data);
       break;
+
     case MessageType.STATISTIC_USER:
-      // console.log("Mensagem recebida 31", data);
       handleStatisticUser(data);
       break;
+
     case MessageType.STATISTIC_TASK:
-      // console.log("Mensagem recebida 32", data);
       handleStatisticTask(data);
       break;
+
     case MessageType.STATISTIC_TASK_PER_STATUS:
-      // console.log("Mensagem recebida 33", data);
       handleStatisticTaskPerStatus(data);
       break;
+
     case MessageType.STATISTIC_REGISTRATION:
-      // console.log("Mensagem recebida 34", data);
       handleStatisticRegistration(data);
       break;
+
     case MessageType.STATISTIC_TASK_COMULATIVE:
-      // console.log("Mensagem recebida 35", data);
       handleStatisticTaskComulative(data);
       break;
+
     case MessageType.STATISTIC_CATEGORY_COUNT:
       handleStatisticCategoryCount(data);
       break;
+
     case "error":
       console.error("Erro recebido", data);
       break;
@@ -120,23 +133,43 @@ function handleWebSocketJSON(json) {
   }
   function handleNewTask(data) {
     tinfo("New task created!");
-    tasks.addTask(data, data.status);
+    // tasks.addTask(data, data.status);
+    allTasks.addTaskToAll(data);
   }
   function handleMoveTask(data) {
     console.log(data);
-    tasks.removeTask(data.id, data.lastStatus);
-    tasks.addTask(data, data.status, data.index);
+    // tasks.removeTask(data.id, data.lastStatus);
+    // tasks.addTask(data, data.status, data.index);
+
+    allTasks.updateTaskToAll(data);
   }
   function handleDeleteTask(data) {
     // tasks.removeTask(data.id, data.status);
+    allTasks.deleteTaskToAll(data.id);
+  }
+  function handleRestoreAllTask(data) {
+    // tasks.restoreAllTask(data);
+    allTasks.restoreAllTasks();
+  }
+
+  function handleDeleteAllTask() {
+    // tasks.deleteAllTask();
+    allTasks.deleteAllTasks();
   }
 
   function handleEditTask(data) {
-    tasks.updateTask(data, data.status, data.index);
+    // tasks.updateTask(data, data.status, data.index);
+
+    allTasks.updateTaskToAll(data);
   }
   function handleDesactivateTask(data) {
-    tasks.removeTask(data.id, data.status);
-    tasks.addDeletedTask(data);
+    // tasks.removeTask(data.id, data.status);
+
+    // tasks.addDeletedTask(data);
+
+    // allTasks.addDeletedTask(data);
+
+    allTasks.updateTaskToAll(data);
   }
   function handleStatisticUser(data) {
     statistics.setCountUsers(data.countUsers);
@@ -167,7 +200,9 @@ function handleWebSocketJSON(json) {
     console.log(data);
   }
   function handleRestoreTask(data) {
-    taskStore.getState().addTask(data, data.status);
+    // taskStore.getState().addTask(data, data.status);
+
+    allTasks.restoreTaskToAll(data.id);
   }
 }
 export { handleWebSocketJSON };

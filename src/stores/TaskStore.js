@@ -10,6 +10,7 @@ export const taskStore = create(
       deleted: [],
       usernameDD: null,
       categoryDD: null,
+      deleteAllTask: () => set({ delete: [] }),
       setUsernameDD: (username) => set({ usernameDD: username }),
       setCategoryDD: (category) => set({ categoryDD: category }),
       clearDD: () => set({ usernameDD: "", categoryDD: "" }),
@@ -69,6 +70,13 @@ export const taskStore = create(
       setDone: (tasks) => set({ done: tasks }),
       setDeleted: (tasks) => set({ deleted: tasks }),
       addDeletedTask: (task) => set((state) => ({ deleted: [...state.deleted, task] })),
+      //TESTESSSS
+      addTaskToAll: (task) => set((state) => ({ allTasks: [...state.allTasks, task] })),
+      updateTaskToAll: (updatedTask) =>
+        set((state) => ({
+          allTasks: state.allTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+        })),
+      delteAll: (taskId) => set((state) => ({ allTasks: state.allTasks.filter((task) => task.id !== taskId) })),
     }),
     {
       name: "taskstore",

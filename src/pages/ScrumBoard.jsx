@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userStore } from "../stores/UserStore";
 import { categoriesStore } from "../stores/CategoriesStore";
-import { taskStore } from "../stores/TaskStore";
+// import { taskStore } from "../stores/TaskStore";
+import { useTaskStore } from "../stores/useTaskStore.js";
+
 import "./ScrumBoard.css";
 import "../App.css";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
@@ -23,17 +25,13 @@ import { webSocketStore } from "../stores/WebSocketStore.js";
 import MessageType from "../components/websockets/MessageType.js";
 
 export default function ScrumBoard() {
-  const { todo, doing, done, clearDD, addTask, removeTask, updateTask, setUsernameDD, usernameDD, setCategoryDD, categoryDD } = taskStore(
-    (state) => state
-  );
+  // const { clearDD, addTask, removeTask, updateTask, setUsernameDD, usernameDD, setCategoryDD, categoryDD } = taskStore((state) => state);
+  const { allTasks, usernameDD, setUsernameDD, categoryDD, setCategoryDD, clearDD } = useTaskStore((state) => state);
   const { categories, setCategories, categoriesNames, setCategoriesNames } = categoriesStore((state) => state);
   const { users, userNames } = userStore((state) => state);
   const { token, role } = userStore((state) => state);
-  // const token = userStore.getState().token;
   const [isAddTaskModal, setIsAddTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState({});
-  // const role = userStore.getState().role;
-  // const [isChanged, setIsChanged] = useState(false);
   const { send } = webSocketStore();
 
   function handleAddClick() {
@@ -208,24 +206,19 @@ export default function ScrumBoard() {
         if (response.ok) {
           const data = await response.json();
 
-          const todo = data.todoTasks;
-          const doing = data.doingTasks;
-          const done = data.doneTasks;
-
-          taskStore.getState().setTodo(todo);
-          taskStore.getState().setDoing(doing);
-          taskStore.getState().setDone(done);
+          useTaskStore.getState().setAllTasks(data.todoTasks.concat(data.doingTasks, data.doneTasks));
+          console.log("tasks", allTasks);
         } else {
           terror("Failed to fetch tasks");
+          console.log(response.statusText);
         }
       } catch (error) {
         terror("Failed to fetch tasks");
+        console.error(error);
       }
     }
     fetchTasks();
   }, [usernameDD, categoryDD]);
-
-  // const [users, setUsers] = useState([]);
 
   // Fetch users --------------------------------------------------------------------------------------------------------
   useEffect(() => {
@@ -303,11 +296,15 @@ export default function ScrumBoard() {
   }
 
   function handleClickMyTasks() {
-    setUsernameDD(userStore.getState().username);
+    setUsernameDD(usernameDD === userStore.getState().username ? "" : userStore.getState().username);
   }
   function handleResetFilter() {
     clearDD();
   }
+
+  const todo = allTasks.filter((task) => task.status === 100 && task.active === true);
+  const doing = allTasks.filter((task) => task.status === 200 && task.active === true);
+  const done = allTasks.filter((task) => task.status === 300 && task.active === true);
 
   return (
     <>
@@ -328,20 +325,8 @@ export default function ScrumBoard() {
             {(role === "sm" || role === "po") && (
               <div className="filter-container">
                 <div className="filter-side">
-                  <Dropdown
-                    className="filter-dropdown"
-                    value={usernameDD}
-                    data={userNames}
-                    type={"Username"}
-                    onChange={(e) => taskStore.getState().setUsernameDD(e)}
-                  />
-                  <Dropdown
-                    className="filter-dropdown"
-                    value={categoryDD}
-                    data={categoriesNames}
-                    type={"Category"}
-                    onChange={(e) => taskStore.getState().setCategoryDD(e)}
-                  />
+                  <Dropdown className="filter-dropdown" value={usernameDD} data={userNames} type={"Username"} onChange={(e) => setUsernameDD(e)} />
+                  <Dropdown className="filter-dropdown" value={categoryDD} data={categoriesNames} type={"Category"} onChange={(e) => setCategoryDD(e)} />
                 </div>
               </div>
             )}
