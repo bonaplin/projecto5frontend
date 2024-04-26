@@ -1,26 +1,24 @@
 import { userStore } from "../../../stores/UserStore.js";
 import { useNavigate } from "react-router-dom";
 import { tsuccess, twarn, terror } from "../../messages/Message";
-
+import { useTranslation } from "react-i18next";
 export default function SaveButton({ inputs }) {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   async function handleClick() {
     // console.log("SaveButton click");
     const token = userStore.getState().token;
     const selectedUser = userStore.getState().username;
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update",
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-          selectedUser: selectedUser,
-        },
-        body: JSON.stringify(inputs), // Send the inputs as the request body
-      }
-    );
+
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/user/update", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+        selectedUser: selectedUser,
+      },
+      body: JSON.stringify(inputs), // Send the inputs as the request body
+    });
 
     const data = await response.json();
     if (response.ok) {
@@ -50,5 +48,5 @@ export default function SaveButton({ inputs }) {
     }
   }
 
-  return <button onClick={handleClick}>Save</button>;
+  return <button onClick={handleClick}>{t("Save")}</button>;
 }

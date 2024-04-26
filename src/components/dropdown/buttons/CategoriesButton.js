@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import { useTranslation } from "react-i18next";
 export default function CategoriesButton() {
+  const { t } = useTranslation();
   function handleClick() {
     // console.log("CategoriesButton click");
     navigate("/categories");
@@ -11,7 +13,7 @@ export default function CategoriesButton() {
   // console.log("CategoriesButton");
   return (
     <div onClick={handleClick} className="dropdown-button">
-      <CategoryOutlinedIcon /> Categories
+      <CategoryOutlinedIcon /> {t("Categories")}
     </div>
   );
 }

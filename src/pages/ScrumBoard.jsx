@@ -23,6 +23,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Tooltip from "@mui/material/Tooltip";
 import { webSocketStore } from "../stores/WebSocketStore.js";
 import MessageType from "../components/websockets/MessageType.js";
+import { useTranslation } from "react-i18next";
 
 export default function ScrumBoard() {
   const { allTasks, usernameDD, setUsernameDD, categoryDD, setCategoryDD, clearDD } = useTaskStore((state) => state);
@@ -33,6 +34,16 @@ export default function ScrumBoard() {
   const [selectedTask, setSelectedTask] = useState({});
   const { send } = webSocketStore();
 
+  const locale = userStore((state) => state.locale);
+  const updateLocale = userStore((state) => state.updateLocale);
+
+  const { t, i18n } = useTranslation();
+  console.log("locale", locale);
+  console.log(i18n.language);
+
+  // const handleSelect = (e) => {
+  //   updateLocale(e.target.value);
+  // };
   function handleAddClick() {
     setIsAddTaskModal(true);
   }
@@ -308,27 +319,44 @@ export default function ScrumBoard() {
     (task) => task.status === 300 && task.active === true && (!usernameDD || task.owner === usernameDD) && (!categoryDD || task.category === categoryDD)
   );
 
+  const addTask = t("Add task");
+  const myTasks = t("My Tasks");
+  const resetFilter = t("Reset Filter / Order");
+  const deleteTask = t("Delete task");
+  const editTask = t("Edit task");
+
   return (
     <>
       <Header />
       <div className="Home">
         <div className="page-wrap">
-          <h2>Tasks</h2>
+          <h2>{t("tasks")}</h2>
           <div>
-            <Tooltip title="Add task">
+            <Tooltip title={addTask}>
               <AddCircleIcon onClick={handleAddClick} className="add-some" fontSize="large" />
             </Tooltip>
-            <Tooltip title="My Tasks">
+            <Tooltip title={myTasks}>
               <FilterAltIcon onClick={handleClickMyTasks} className="restore-button" fontSize="large" />
             </Tooltip>
-            <Tooltip title="Reset Filter / Order">
+            <Tooltip title={resetFilter}>
               <RestoreIcon className="restore-button" onClick={handleResetFilter} fontSize="large" />
             </Tooltip>
             {(role === "sm" || role === "po") && (
               <div className="filter-container">
                 <div className="filter-side">
-                  <Dropdown className="filter-dropdown" value={usernameDD} data={userNames} type={"Username"} onChange={(e) => setUsernameDD(e)} />
-                  <Dropdown className="filter-dropdown" value={categoryDD} data={categoriesNames} type={"Category"} onChange={(e) => setCategoryDD(e)} />
+                  <Dropdown className="filter-dropdown" value={usernameDD} data={userNames} type={t("Username")} onChange={(e) => setUsernameDD(e)} />
+                  <Dropdown
+                    className="filter-dropdown"
+                    value={categoryDD}
+                    data={categoriesNames}
+                    type={t("Category")}
+                    onChange={(e) => setCategoryDD(e)}
+                  />
+                  {/* <select onChange={handleSelect} defaultValue={locale}>
+                    {["en", "pt", "fr"].map((lang) => (
+                      <option key={lang}>{lang}</option>
+                    ))}
+                  </select> */}
                 </div>
               </div>
             )}
@@ -337,8 +365,8 @@ export default function ScrumBoard() {
             <ModalYesNo
               open={isDeleteModalOpen}
               onClose={() => setIsDeleteModalOpen(false)}
-              title={"Delete task"}
-              message={"Are you sure you want to delete this task?"}
+              title={deleteTask}
+              message={t("Are you sure you want to delete this task?")}
               onYes={() => {
                 setIsDeleteModalOpen(false);
                 handleDeleteTask(selectedTask);
@@ -350,7 +378,7 @@ export default function ScrumBoard() {
             <TaskModal
               open={isEditModalOpen}
               onClose={() => setIsEditModalOpen(false)}
-              title_modal="Edit task"
+              title_modal={editTask}
               onSubmit={handleEditTask}
               task={selectedTask}
             />
@@ -359,23 +387,23 @@ export default function ScrumBoard() {
             <TaskViewModal
               open={isViewModalOpen}
               onClose={() => setIsViewModalOpen(false)}
-              title_modal="View task"
+              title_modal={t("View task")}
               onSubmit={handleViewTask}
               task={selectedTask}
             />
           )}
-          {<TaskModal open={isAddTaskModal} title_modal="Add task" onClose={handleCloseAddModal} onSubmit={AddTask} task={selectedTask} />}
+          <TaskModal open={isAddTaskModal} title_modal={t("Add task")} onClose={handleCloseAddModal} onSubmit={AddTask} task={selectedTask} />{" "}
           <DragDropContext onDragEnd={handleDragEnd}>
             <div className="scrum-board container">
               <div className="row">
                 <div className="todo col-lg-4 col-md-6 my-2">
-                  <Column title={"TO DO"} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+                  <Column title={t("TO DO")} tasks={todo} id={"100"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
                 </div>
                 <div className="doing col-lg-4 col-md-6 my-2">
-                  <Column title={"DOING"} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
+                  <Column title={t("DOING")} tasks={doing} id={"200"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />
                 </div>
                 <div className="done col-lg-4 col-md-6 my-2">
-                  <Column title={"DONE"} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
+                  <Column title={t("DONE")} tasks={done} id={"300"} handleDelete={handleDelete} handleEdit={handleEdit} handleView={handleView} />{" "}
                 </div>
               </div>
             </div>

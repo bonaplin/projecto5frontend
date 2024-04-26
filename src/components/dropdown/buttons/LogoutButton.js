@@ -3,22 +3,20 @@ import { userStore } from "../../../stores/UserStore.js";
 import { useNavigate } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { tsuccess, terror } from "../../messages/Message";
+import { useTranslation } from "react-i18next";
 export default function LogoutButton() {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   async function handleClick() {
     // console.log("LogoutButton click");
     const token = userStore.getState().token;
-    const response = await fetch(
-      "http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/logout",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    });
 
     const data = await response.json();
 
@@ -48,7 +46,7 @@ export default function LogoutButton() {
   return (
     <div onClick={handleClick} className="dropdown-button">
       <LogoutOutlinedIcon />
-      Logout
+      {t("Logout")}
     </div>
   );
 }

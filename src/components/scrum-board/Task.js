@@ -7,8 +7,9 @@ import Edit from "../icon-buttons/edit";
 import View from "../icon-buttons/view";
 import { Dropdown } from "react-bootstrap";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
+import { useTranslation } from "react-i18next";
 export default function Task({ task, index, handleDelete, handleEdit, handleView }) {
+  const { t } = useTranslation();
   const role = userStore.getState().role;
   const username = userStore.getState().username;
 
@@ -44,11 +45,11 @@ export default function Task({ task, index, handleDelete, handleEdit, handleView
               <Dropdown.Menu>
                 {(role === "admin" || role === "po" || username === task.owner) && (
                   <>
-                    <Dropdown.Item onClick={() => handleEdit(task)}>Edit</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleDelete(task)}>Delete</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleEdit(task)}>{t("Edit")}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleDelete(task)}>{t("Delete")}</Dropdown.Item>
                   </>
                 )}
-                <Dropdown.Item onClick={() => handleView(task)}>View</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleView(task)}>{t("View")}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>

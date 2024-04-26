@@ -6,7 +6,9 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { userStore } from "../../../stores/UserStore.js";
 import { Dropdown } from "react-bootstrap";
 import "./Slider.css";
+import { useTranslation } from "react-i18next";
 const UserRow = ({ item, columns, handleEdit, handleDelete, handleDeleteTasks, handleActiveChange, handleUserClick }) => {
+  const { t } = useTranslation();
   let color = "";
   let fontcolor = "";
   const role = userStore((state) => state.role);
@@ -50,7 +52,7 @@ const UserRow = ({ item, columns, handleEdit, handleDelete, handleDeleteTasks, h
                     handleEdit(item);
                   }}
                 >
-                  Edit
+                  {t("Edit")}
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={(e) => {
@@ -58,7 +60,7 @@ const UserRow = ({ item, columns, handleEdit, handleDelete, handleDeleteTasks, h
                     handleDelete(item);
                   }}
                 >
-                  Delete
+                  {t("Delete")}
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={(e) => {
@@ -66,7 +68,7 @@ const UserRow = ({ item, columns, handleEdit, handleDelete, handleDeleteTasks, h
                     handleDeleteTasks(item);
                   }}
                 >
-                  Delete Tasks
+                  {t("Delete Tasks")}
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

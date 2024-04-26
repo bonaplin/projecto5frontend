@@ -1,16 +1,17 @@
 import React from "react";
 import Modal from "./Modal";
-
+import { useTranslation } from "react-i18next";
 function ModalYesNo({ open, onClose, title, message, onYes, onNo }) {
+  const { t } = useTranslation();
   return (
     <Modal open={open} onClose={onClose} title={title} center>
       <p>{message}</p>
       <div className="button-container">
         <button className="yes-no yes" onClick={onYes}>
-          Yes
+          {t("Yes")}
         </button>
         <button className="yes-no no" onClick={onNo}>
-          No
+          {t("No")}
         </button>
       </div>
     </Modal>

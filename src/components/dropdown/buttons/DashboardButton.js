@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import { useTranslation } from "react-i18next";
 export default function DashboardButton() {
+  const { t } = useTranslation();
   function handleClick() {
     // console.log("CategoriesButton click");
     navigate("/dashboard");
@@ -11,7 +13,7 @@ export default function DashboardButton() {
   // console.log("CategoriesButton");
   return (
     <div onClick={handleClick} className="dropdown-button">
-      <DashboardIcon /> Dashboard
+      <DashboardIcon /> {t("Dashboard")}
     </div>
   );
 }

@@ -7,9 +7,11 @@ import ArrowDropUpRoundedIcon from "@mui/icons-material/ArrowDropUpRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import { useTranslation } from "react-i18next";
 import FormInput from "../formInput/FormInput";
 function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, handleActiveChange, handleUserClick, type }) {
   // react - table acessores (obrigatorio em react-table)
+  const { t } = useTranslation();
   const tableConfig = React.useMemo(
     () => ({
       columns: columns.map((column) => ({
@@ -38,7 +40,7 @@ function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, han
     return (
       <div className="main-board">
         <div className="table-board">
-          <p>No data available</p>
+          <p>{t("No data available")}</p>
         </div>
       </div>
     );
@@ -48,7 +50,7 @@ function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, han
     <>
       <div className="main-board">
         <div className="center">
-          <FormInput value={globalFilter || ""} onChange={(e) => setGlobalFilter(e.target.value || undefined)} placeholder={`Search`} name="search" />
+          <FormInput value={globalFilter || ""} onChange={(e) => setGlobalFilter(e.target.value || undefined)} placeholder={t("Search")} name="search" />
         </div>
 
         <div className="table-board">
@@ -96,7 +98,7 @@ function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, han
             {<ChevronRightRoundedIcon />}
           </button>
           <span>
-            Page <strong className="page-number">{pageIndex + 1}</strong>{" "}
+            {t("Page")} <strong className="page-number">{pageIndex + 1}</strong>{" "}
           </span>
         </div>
       </div>

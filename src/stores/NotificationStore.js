@@ -10,7 +10,6 @@ export const notificationStore = create(
       addNotification: (notification) => {
         set((state) => ({
           notifications: [notification, ...state.notifications],
-          unreadNotifications: [notification, ...state.unreadNotifications],
         }));
       },
       setNotifications: (notifications) => set({ notifications }),

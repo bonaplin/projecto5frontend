@@ -24,6 +24,7 @@ import PrivateRoute from "./PrivateRoute";
 import { userStore } from "./stores/UserStore";
 import WebSocketProvider from "./WebSocketProvider";
 import Dashboard from "./pages/Dashboard";
+import "./translations/i18n"; // importa o arquivo i18n que você acabou de criar
 
 function App() {
   const token = userStore((state) => state.token);

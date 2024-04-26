@@ -14,8 +14,9 @@ import { useTaskStore } from "../stores/useTaskStore";
 import ModalYesNo from "../components/modal/ModalYesNo";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
-
+import { useTranslation } from "react-i18next";
 function DeletedTasks() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { role, token } = userStore((state) => state);
@@ -197,6 +198,10 @@ function DeletedTasks() {
       }
     }
   }
+  const deleteAllTasks = t("Delete All Tasks");
+  const restoreAllTasks = t("Restore All Tasks");
+  const deleteTask = t("Delete Task");
+  const restoreTask = t("Restore Task");
 
   return (
     <>
@@ -204,16 +209,16 @@ function DeletedTasks() {
       {(role === "po" || role === "sm") && (
         <div className="Home users">
           <div className="page-wrap">
-            <h2>Deleted Tasks List</h2>
+            <h2>{t("Deleted Tasks List")}</h2>
             {role === "po" && (
               <div className="top-buttons">
                 <div>
-                  <Tooltip title="Delete All Tasks">
+                  <Tooltip title={deleteAllTasks}>
                     <DeleteForeverIcon onClick={handleDeleteAll} className="add-some" fontSize="large" />
                   </Tooltip>
                 </div>
                 <div>
-                  <Tooltip title="Restore All Tasks">
+                  <Tooltip title={restoreAllTasks}>
                     <RestoreFromTrashIcon onClick={handleRestoreAll} className="restore-some" fontSize="large" />
                   </Tooltip>
                 </div>
@@ -221,8 +226,7 @@ function DeletedTasks() {
             )}
             {isDeleteAllTasksModalOpen && (
               <ModalYesNo
-                title="Delete All Tasks"
-                message="Are you sure you want to delete all tasks?"
+                title={deleteAllTasks}
                 open={isDeleteAllTasksModalOpen}
                 onClose={() => setIsDeleteAllTasksModalOpen(false)}
                 onYes={handleDeleteAllTasks}
@@ -231,8 +235,8 @@ function DeletedTasks() {
             )}
             {isRestoreAllTaskModalOpen && (
               <ModalYesNo
-                title="Restore All Tasks"
-                message="Are you sure you want to restore all tasks?"
+                title={restoreAllTasks}
+                message={t("Are you sure you want to restore all tasks?")}
                 open={isRestoreAllTaskModalOpen}
                 onClose={() => setIsRestoreAllTaskModalOpen(false)}
                 onYes={handleRestoreAllTask}
@@ -241,8 +245,8 @@ function DeletedTasks() {
             )}
             {isDeleteTaskModalOpen && (
               <ModalYesNo
-                title="Delete Task"
-                message="Are you sure you want to delete this task?"
+                title={deleteTask}
+                message={t("Are you sure you want to delete this task?")}
                 open={isDeleteTaskModalOpen}
                 onClose={() => setIsDeleteTaskModalOpen(false)}
                 onYes={handleDeleteTask}
@@ -251,8 +255,8 @@ function DeletedTasks() {
             )}
             {isRestoreTaskModalOpen && (
               <ModalYesNo
-                title="Restore Task"
-                message="Are you sure you want to Restore this task?"
+                title={restoreTask}
+                message={t("Are you sure you want to Restore this task?")}
                 open={isRestoreTaskModalOpen}
                 onClose={() => setIsRestoreTaskModalOpen(false)}
                 onYes={handleRestoreTask}

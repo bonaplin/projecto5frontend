@@ -12,8 +12,9 @@ import ResetForm from "../components/formInput/ResetFormInput";
 import LoginForm from "../components/formInput/LoginForm";
 import { webSocketStore } from "../stores/WebSocketStore";
 import { notificationStore } from "../stores/NotificationStore";
-
+import { useTranslation } from "react-i18next";
 function Login() {
+  const { t } = useTranslation();
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -58,7 +59,7 @@ function Login() {
           updateConfirm(data.confirmed);
           await getNotification();
 
-          tsuccess("Login successful");
+          tsuccess(t("Login successful"));
           navigate("/scrum-board", { replace: true }); // Cant go back in browser.
         } else {
           switch (response.status) {
@@ -90,7 +91,7 @@ function Login() {
     })
       .then(async (response) => {
         if (response.ok) {
-          tsuccess("Password reset email sent");
+          tsuccess(t("Password reset email sent"));
         }
       })
       .catch((error) => {

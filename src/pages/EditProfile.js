@@ -11,7 +11,10 @@ import "react-responsive-modal/styles.css";
 // import { Modal } from "react-responsive-modal";
 import Modal from "../components/modal/Modal";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
+import { useTranslation } from "react-i18next";
+
 function EditProfile() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const onOpenModal = () => setOpen(true);
@@ -50,36 +53,32 @@ function EditProfile() {
     const selectedUser = userStore.getState().username; // Get the username from the Zustand store
 
     // console.log("inputs", JSON.stringify(inputs));
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${selectedUser}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
-        },
-        body: JSON.stringify(inputs), // Send the inputs as the body of the request
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${selectedUser}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify(inputs), // Send the inputs as the body of the request
+    });
 
     const data = await response.json();
 
     if (response.ok) {
-      // If the response is successful, update the user details in the Zustand store
-      tsuccess("Profile updated successfully");
+      tsuccess(t("Profile updated successfully"));
     } else {
       switch (response.status) {
         case 400:
-          twarn(data.message); // Invalid email format, Invalid phone number format, Invalid URL format
+          twarn(t(data.message));
           break;
         case 401:
-          twarn(data.message); // Unauthorized
+          twarn(t(data.message));
           break;
         case 409:
-          twarn(data.message); // Email already exists
+          twarn(t(data.message));
           break;
         default:
-          terror("An error occurred: " + data.message);
+          terror(t("An error occurred: ") + t(data.message));
           break;
       }
     }
@@ -103,42 +102,39 @@ function EditProfile() {
   const handleClickSavePassword = async () => {
     if (newPassword !== confirmPassword) {
       //console.log(newPassword + " new " + confirmPassword + " confirm");
-      twarn("New password and confirmation password do not match.");
+      twarn(t("New password and confirmation password do not match."));
       return;
     }
     //console.log(oldPassword + " old " + newPassword + " new");
     // Send the old password and new password to the backend
     const selectedUser = userStore.getState().username; // Get the username from the Zustand store
-    const response = await fetch(
-      `http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${selectedUser}/password`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          token: userStore.getState().token,
-        },
-        body: JSON.stringify({
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-        }),
-      }
-    );
+    const response = await fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/${selectedUser}/password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: userStore.getState().token,
+      },
+      body: JSON.stringify({
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      }),
+    });
 
     const data = await response.json();
 
     if (response.ok) {
-      tsuccess("Password changed successfully.");
+      tsuccess(t("Password changed successfully."));
       onCloseModal();
     } else {
       switch (response.status) {
         case 400:
-          twarn(data.message); // Old password is incorrect, Invalid Parameters
+          twarn(t(data.message));
           break;
         case 401:
-          terror(data.message); // Unauthorized
+          terror(t(data.message));
           break;
         default:
-          terror("An error occurred: " + data.message);
+          terror(t("An error occurred: ") + t(data.message));
           break;
       }
     }
@@ -150,12 +146,8 @@ function EditProfile() {
         <div className="edit-profile-outer-container">
           <div className="edit-profile-page-wrap">
             <div className="header-profile">
-              <h1>Edit Profile</h1>
-              <img
-                src={inputs.photoURL}
-                alt="Profile"
-                className="edit-profile-img"
-              />{" "}
+              <h1>{t("Edit Profile")}</h1>
+              <img src={inputs.photoURL} alt="Profile" className="edit-profile-img" />{" "}
             </div>
             <form onSubmit={handleSubmit}>
               {inputs.role === "po" && (
@@ -164,62 +156,26 @@ function EditProfile() {
                   value={inputs.role}
                   onChange={handleChange}
                   options={[
-                    { value: "po", label: "Product Owner" },
-                    { value: "sm", label: "Scrum Master" },
-                    { value: "dev", label: "Developer" },
+                    { value: "po", label: t("Product Owner") },
+                    { value: "sm", label: t("Scrum Master") },
+                    { value: "dev", label: t("Developer") },
                   ]}
                 />
               )}
-              <FormInput
-                placeholder="Enter your email address"
-                type="email"
-                name="email"
-                value={inputs.email}
-                onChange={handleChange}
-              />
-              <FormInput
-                placeholder="Enter your first name"
-                type="text"
-                name="firstname"
-                value={inputs.firstname}
-                onChange={handleChange}
-              />
-              <FormInput
-                placeholder="Enter your last name"
-                type="text"
-                name="lastname"
-                value={inputs.lastname}
-                onChange={handleChange}
-              />
-              <FormInput
-                placeholder="Enter your phone number"
-                type="tel"
-                name="phone"
-                value={inputs.phone}
-                onChange={handleChange}
-              />
-              <FormInput
-                placeholder="Enter your photo URL"
-                type="url"
-                name="photoURL"
-                value={inputs.photoURL}
-                onChange={handleChange}
-              />
-
+              <FormInput placeholder={t("Enter your email address")} type="email" name="email" value={inputs.email} onChange={handleChange} />
+              <FormInput placeholder={t("Enter your first name")} type="text" name="firstname" value={inputs.firstname} onChange={handleChange} />
+              <FormInput placeholder={t("Enter your last name")} type="text" name="lastname" value={inputs.lastname} onChange={handleChange} />
+              <FormInput placeholder={t("Enter your phone number")} type="tel" name="phone" value={inputs.phone} onChange={handleChange} />
+              <FormInput placeholder={t("Enter your photo URL")} type="url" name="photoURL" value={inputs.photoURL} onChange={handleChange} />
               <div className="button-group">
-                <input type="submit" value="Save" className="yes-no yes" />
-                <input
-                  className="yes-no no"
-                  type="button"
-                  value="Cancel"
-                  onClick={() => navigate("/scrum-board")}
-                />
+                <input type="submit" value={t("Save")} className="yes-no yes" />
+                <input className="yes-no no" type="button" value={t("Cancel")} onClick={() => navigate("/scrum-board")} />
               </div>
             </form>
 
             <button
               type="submit"
-              value="Change Password"
+              value={t("Change Password")}
               onClick={onOpenModal}
               style={{
                 color: "blue",
@@ -229,51 +185,30 @@ function EditProfile() {
                 cursor: "pointer",
               }}
             >
-              Change Password
+              {t("Change Password")}
             </button>
-            <Modal
-              open={open}
-              onClose={onCloseModal}
-              center
-              title="Change Password"
-            >
+            <Modal open={open} onClose={onCloseModal} center title={t("Change Password")}>
+              <FormInput placeholder={t("Enter your old password")} type="password" name="password" value={oldPassword} onChange={handlePasswordChange} />
               <FormInput
-                placeholder="Enter your old password"
-                type="password"
-                name="password"
-                value={oldPassword}
-                onChange={handlePasswordChange}
-              />
-              <FormInput
-                placeholder="Enter your new password"
+                placeholder={t("Enter your new password")}
                 type="password"
                 name="password-new"
                 value={newPassword}
                 onChange={handlePasswordChange}
               />
               <FormInput
-                placeholder="Enter your new password again"
+                placeholder={t("Enter your new password again")}
                 type="password"
                 name="password-again"
                 value={confirmPassword}
                 onChange={handlePasswordChange}
               />
               <div className="button-group">
-                <button
-                  type="submit"
-                  value="Change Password"
-                  onClick={handleClickSavePassword}
-                  className="yes-no yes"
-                >
-                  Save
+                <button type="submit" value={t("Change Password")} onClick={handleClickSavePassword} className="yes-no yes">
+                  {t("Save")}
                 </button>
-                <button
-                  className="yes-no no"
-                  type="button"
-                  value="Cancel"
-                  onClick={onCloseModal}
-                >
-                  Cancel
+                <button className="yes-no no" type="button" value={t("Cancel")} onClick={onCloseModal}>
+                  {t("Cancel")}
                 </button>
               </div>
             </Modal>

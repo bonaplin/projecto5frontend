@@ -6,8 +6,9 @@ import { statisticsStore } from "../stores/Statistics";
 import { tsuccess } from "../components/messages/Message";
 import { AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, BarChart } from "recharts";
 // import { taskStore } from "../stores/TaskStore";
-
+import { useTranslation } from "react-i18next";
 function Dashboard() {
+  const { t } = useTranslation();
   const token = userStore((state) => state.token);
   const statistics = statisticsStore((state) => state);
   const [expirationTime, setExpirationTime] = useState(0);
@@ -159,7 +160,7 @@ function Dashboard() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        tsuccess("Token expiration time updated");
+        tsuccess(t("Token expiration time updated"));
       })
       .catch((error) => {
         console.log("Error:", error);
@@ -285,18 +286,18 @@ function Dashboard() {
           <div className="card-header text-center bg-primary text-white">{title}</div>
           <div className="card-body text-center">
             <select value={expirationTime} onChange={handleSelectChange}>
-              <option value="">Select token expiration time</option>
-              <option value="5">5 minutes</option>
-              <option value="10">10 minutes</option>
-              <option value="15">15 minutes</option>
-              <option value="20">20 minutes</option>
-              <option value="30">30 minutes</option>
-              <option value="60">60 minutes</option>
+              <option value="">{t("Select token expiration time")}</option>
+              <option value="5">{5 + t("minutes")}</option>
+              <option value="10">{10 + t("minutes")}</option>
+              <option value="15">{15 + t("minutes")}</option>
+              <option value="20">{20 + t("minutes")}</option>
+              <option value="30">{30 + t("minutes")}</option>
+              <option value="60">{60 + t("minutes")}</option>
             </select>
           </div>
           <div className="card-footer text-center">
             <button type="button" className="btn btn-light" onClick={handlePutNewTokenTime}>
-              Save
+              {t("Save")}
             </button>
           </div>
         </div>
@@ -309,34 +310,34 @@ function Dashboard() {
       <Header />
       <div className="container">
         <div className="col-lg-12">
-          <h1 className="text-center">Dashboard</h1>
+          <h1 className="text-center">{t("Dashboard")}</h1>
         </div>
 
         <main className="row">
           <div className="col-lg-8 col-md-8 col-sm-8 my-3">
             <div className="card">
-              <div className="card-header text-center text-secondary">Total users</div>
+              <div className="card-header text-center text-secondary">{t("Total users")}</div>
               <div className="card-body display-6 text-center">{statistics.countUsers}</div>
             </div>
           </div>
-          {dropdown(1, "Token expiration time: ", "Minutes")}
+          {dropdown(1, t("Token expiration time: "), t("Minutes"))}
 
-          {renderCardUsers(statistics.confirmedUsers, "Confirmed users", `Total users: ${statistics.countUsers}`)}
-          {renderCardUsers(statistics.unconfirmedUsers, "Uncorfirmed users", `Total users: ${statistics.countUsers}`)}
+          {renderCardUsers(statistics.confirmedUsers, t("Confirmed users"), `${t("Total users: ")}${statistics.countUsers}`)}
+          {renderCardUsers(statistics.unconfirmedUsers, t("Uncorfirmed users"), `${t("Total users: ")}${statistics.countUsers}`)}
 
-          {renderCardAvgTime(statistics.avgTasksPerUser, "Task average per user", "Tasks")}
-          {renderCardAvgTime(statistics.avgTimeToBeDone, "Time average to task be done", "Hours")}
+          {renderCardAvgTime(statistics.avgTasksPerUser, t("Task average per user"), t("Tasks"))}
+          {renderCardAvgTime(statistics.avgTimeToBeDone, t("Time average to task be done"), t("Hours"))}
 
-          {renderCardTasks(statistics.todoPerUser, "TODO tasks")}
-          {renderCardTasks(statistics.doingPerUser, "DOING tasks")}
-          {renderCardTasks(statistics.donePerUser, "DONE tasks")}
+          {renderCardTasks(statistics.todoPerUser, t("TODO tasks"))}
+          {renderCardTasks(statistics.doingPerUser, t("DOING tasks"))}
+          {renderCardTasks(statistics.donePerUser, t("DONE tasks"))}
 
-          {renderCardLineChart(statistics.chartUserPerTime, "Registed users over time")}
-          {renderCardLineChart(statistics.chartTaskComulative, "Total tasks Done over time")}
+          {renderCardLineChart(statistics.chartUserPerTime, t("Registed users over time"))}
+          {renderCardLineChart(statistics.chartTaskComulative, t("Total tasks Done over time"))}
 
           <div className="col-lg-6 my-3">
             <div className="card">
-              <div className="card-header text-center bg-warning text-white">Categories</div>
+              <div className="card-header text-center bg-warning text-white">{t("Categories")}</div>
               <div className="card-body">{renderBarChart(statistics.categoryListOrdered)}</div>
             </div>
           </div>

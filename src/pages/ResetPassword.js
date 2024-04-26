@@ -9,13 +9,14 @@ import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import { useParams } from "react-router-dom";
 import ResetPasswordInput from "../components/formInput/ResetPasswordInput";
-
+import { useTranslation } from "react-i18next";
 function ResetPassword() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-    const { token } = useParams();
-    const [inputs, setInputs] = useState({
+  const { token } = useParams();
+  const [inputs, setInputs] = useState({
     password: "",
-    passwordAgain:"",
+    passwordAgain: "",
   });
 
   const handleChange = (event) => {
@@ -26,7 +27,7 @@ function ResetPassword() {
   };
 
   function validatePassword(pw1, pw2) {
-    if(pw1 === pw2) {
+    if (pw1 === pw2) {
       return true;
     }
     return false;
@@ -35,24 +36,25 @@ function ResetPassword() {
   const handlePasswordReset = (event) => {
     event.preventDefault();
 
-    if(validatePassword(inputs.password, inputs.passwordAgain)) {
-        fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password/${token}`, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            password: inputs.password
-            },            
-    }).then(async (response) => {
-    if(response.ok) {
-      tsuccess("Password reset sucessful. Please login to continue.");
-      navigate("/login");
+    if (validatePassword(inputs.password, inputs.passwordAgain)) {
+      fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/password/${token}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          password: inputs.password,
+        },
+      })
+        .then(async (response) => {
+          if (response.ok) {
+            tsuccess("Password reset sucessful. Please login to continue.");
+            navigate("/login");
+          }
+        })
+        .catch((error) => {
+          console.error("There was an error: " + error.message);
+        });
     }
-  }).catch((error) => {
-    console.error("There was an error: " + error.message);
-  });
   };
-    }
-
 
   return (
     <Layout data-testid="login">
@@ -62,7 +64,7 @@ function ResetPassword() {
             <h1>Reset Password</h1>
             <img src={tcicon} alt="" />
           </div>
-            <ResetPasswordInput inputs={inputs} handleChange={handleChange} handlePasswordReset={handlePasswordReset} />
+          <ResetPasswordInput inputs={inputs} handleChange={handleChange} handlePasswordReset={handlePasswordReset} />
         </div>
       </div>
     </Layout>

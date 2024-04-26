@@ -8,13 +8,16 @@ import "react-notifications/lib/notifications.css";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import { useParams } from "react-router-dom";
 import ConfirmUser from "../components/formInput/ConfirmUser";
+import { useTranslation } from "react-i18next";
 
 function ConfirmAccount() {
-    const navigate = useNavigate();
-    const { token } = useParams();
-    const [inputs, setInputs] = useState({
+  const { t } = useTranslation();
+
+  const navigate = useNavigate();
+  const { token } = useParams();
+  const [inputs, setInputs] = useState({
     password: "",
-    passwordAgain:"",
+    passwordAgain: "",
   });
 
   const handleChange = (event) => {
@@ -25,7 +28,7 @@ function ConfirmAccount() {
   };
 
   function validatePassword(pw1, pw2) {
-    if(pw1 === pw2) {
+    if (pw1 === pw2) {
       return true;
     }
     return false;
@@ -34,34 +37,34 @@ function ConfirmAccount() {
   const handleChangePassword = (event) => {
     event.preventDefault();
 
-    if(validatePassword(inputs.password, inputs.passwordAgain)) {
-        fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/confirm/${token}`, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            password: inputs.password
-            },            
-    }).then(async (response) => {
-    if(response.ok) {
-      tsuccess("You are sucessfully confirmed your account. Please login to continue.");
-      navigate("/login");
+    if (validatePassword(inputs.password, inputs.passwordAgain)) {
+      fetch(`http://localhost:8080/demo-1.0-SNAPSHOT/rest/users/confirm/${token}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          password: inputs.password,
+        },
+      })
+        .then(async (response) => {
+          if (response.ok) {
+            tsuccess(t("You are successfully confirmed your account. Please login to continue."));
+            navigate("/login");
+          }
+        })
+        .catch((error) => {
+          console.error("There was an error: " + error.message);
+        });
     }
-  }).catch((error) => {
-    console.error("There was an error: " + error.message);
-  });
   };
-    }
-
 
   return (
     <Layout data-testid="login">
       <div className="login-outer-container">
         <div className="login-page-wrap">
           <div className="header-profile">
-            <h1>New Password</h1>
-            <img src={tcicon} alt="" />
+            <h1>{t("New Password")}</h1> <img src={tcicon} alt="" />
           </div>
-            <ConfirmUser inputs={inputs} handleChange={handleChange} handlePasswordReset={handleChangePassword} />
+          <ConfirmUser inputs={inputs} handleChange={handleChange} handlePasswordReset={handleChangePassword} />
         </div>
       </div>
     </Layout>

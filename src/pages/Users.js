@@ -9,8 +9,10 @@ import UserModal from "../components/modal/UserModal";
 import { tsuccess, terror, twarn } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Users() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isChange, setIsChange] = useState(false); //to change the fetch
   const role = userStore.getState().role;
@@ -273,16 +275,21 @@ function Users() {
 
     navigate(`/users/${username}`);
   }
+  const createUser = t("Create User");
+  const editUsers = t("Edit User");
+  const deleteUser = t("Delete User");
+  const deleteTasks = t("Delete Tasks");
+  const deleteUserTasks = t("Delete User Tasks");
 
   return (
     <>
       <Header />
       <div className="Home users">
         <div className="page-wrap">
-          <h2>All Users</h2>
+          <h2>{t("All Users")}</h2>
           {role === "po" && (
             <>
-              <Tooltip title="Add User">
+              <Tooltip title={t("Add User")}>
                 <AddCircleIcon className="add-some" onClick={handleAddUserButton} fontSize="large" />
               </Tooltip>
 
@@ -290,7 +297,7 @@ function Users() {
                 open={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleCreateUser}
-                title="Create User"
+                title={createUser}
                 user={{}} // Pass an empty user object to the UserModal
               />
             </>
@@ -298,7 +305,7 @@ function Users() {
           {isEditModalOpen && (
             <UserModal
               open={isEditModalOpen}
-              title="Edit User"
+              title={editUsers}
               onClose={() => setIsEditModalOpen(false)}
               onSubmit={handleUpdateUser} // You need to define this function to handle the user update
               user={editUser}
@@ -307,7 +314,7 @@ function Users() {
           {isDeleteModalOpen && (
             <UserModal
               open={isDeleteModalOpen}
-              title="Delete User"
+              title={deleteUser}
               onClose={() => setIsDeleteModalOpen(false)}
               onSubmit={handleDeleteUser}
               user={editUser}
@@ -316,7 +323,7 @@ function Users() {
           {isDeleteTasksModalOpen && (
             <UserModal
               open={isDeleteTasksModalOpen}
-              title="Delete User Tasks"
+              title={deleteUserTasks}
               onClose={() => setIsDeleteModalTasksOpen(false)}
               onSubmit={handleDeleteTasksUser}
               user={editUser}

@@ -13,8 +13,10 @@ import { categoriesStore } from "../stores/CategoriesStore";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
 import { South } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 function Categories() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const token = userStore.getState().token;
   const username = userStore.getState().username;
@@ -174,17 +176,19 @@ function Categories() {
   /* ******* ******* *********************************** *****/
 
   let columns = ["id", "title", "description", "owner", "actions"];
-
+  const editCategoryy = t("Edit Category");
+  const createCategory = t("Create Category");
+  const deleteCategory = t("Delete Category");
   return (
     <>
       <Header />
 
       <div className="Home users">
         <div className="page-wrap">
-          <h2>All Category</h2>
+          <h2>{t("All Category")}</h2>
           {role === "po" && (
             <>
-              <Tooltip title="Add Category">
+              <Tooltip title={createCategory}>
                 <AddCircleIcon className="add-some" onClick={handleAddCategoryButton} fontSize="large" />
               </Tooltip>
 
@@ -192,7 +196,7 @@ function Categories() {
                 open={isModalOpen}
                 onClose={handleCloseModal}
                 onSubmit={handleCreateCategory}
-                title_modal="Create Category"
+                title_modal={t("Create Category")}
                 user={{}} // Pass an empty user object to the UserModal
               />
             </>
@@ -200,7 +204,7 @@ function Categories() {
           {isEditModalOpen && (
             <CategoryModal
               open={isEditModalOpen}
-              title_modal="Edit Category"
+              title_modal={editCategoryy}
               onClose={() => setIsEditModalOpen(false)}
               onSubmit={handleEditCategory}
               category={editCategory}
@@ -209,8 +213,8 @@ function Categories() {
           {isDeleteModalOpen && (
             <>
               <ModalYesNo
-                title="Delete Category"
-                message="Are you sure you want to delete this category?"
+                title={deleteCategory}
+                message={t("Are you sure you want to delete this category?")}
                 open={isDeleteModalOpen}
                 onClose={() => setIsDeleteModalOpen(false)}
                 onYes={handleDeleteCategory}

@@ -6,6 +6,7 @@
 //Persist is imported from zustand/middleware.
 //In this example, we selected sessionStorage as the place to persist the store.
 
+import { updateLocale } from "moment";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -24,6 +25,9 @@ export const userStore = create(
       confirmed: "",
       users: [],
       userNames: [],
+
+      locale: "en",
+      updateLocale: (locale) => set({ locale }),
 
       setUsernames: (userNames) => set({ userNames }),
       setUsers: (users) => set({ users }),

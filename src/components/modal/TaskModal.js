@@ -3,19 +3,14 @@ import Modal from "./Modal";
 import FormInput from "../formInput/FormInput";
 import { userStore } from "../../stores/UserStore";
 import FormSelect from "../formInput/FormSelect";
-
+import { useTranslation } from "react-i18next";
 const TaskModal = ({ open, onClose, onSubmit, title_modal, task = {} }) => {
+  const { t } = useTranslation();
   const today = new Date().toISOString();
   const [title, setTitle] = useState(task.title || "");
   const [description, setDescription] = useState(task.description || "");
-  const [initialDate, setStartDate] = useState(
-    task.initialDate
-      ? new Date(task.initialDate).toISOString().split("T")[0]
-      : today.split("T")[0]
-  );
-  const [finalDate, setEndDate] = useState(
-    task.finalDate ? new Date(task.finalDate).toISOString().split("T")[0] : ""
-  );
+  const [initialDate, setStartDate] = useState(task.initialDate ? new Date(task.initialDate).toISOString().split("T")[0] : today.split("T")[0]);
+  const [finalDate, setEndDate] = useState(task.finalDate ? new Date(task.finalDate).toISOString().split("T")[0] : "");
   const [priority, setPriority] = useState(task.priority || "");
   const [status, setStatus] = useState(task.status || "100");
   const [category, setCategory] = useState(task.category || "");
@@ -74,16 +69,10 @@ const TaskModal = ({ open, onClose, onSubmit, title_modal, task = {} }) => {
       <Modal open={open} onClose={handleClose} title={title_modal}>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <FormInput
-              placeholder={"Enter task title"}
-              label="Title"
-              name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+            <FormInput placeholder={t("Enter task title")} label="Title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
 
             <FormInput
-              placeholder={"Enter task description"}
+              placeholder={t("Enter task description")}
               name="description"
               label="Description"
               value={description}
@@ -108,9 +97,9 @@ const TaskModal = ({ open, onClose, onSubmit, title_modal, task = {} }) => {
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
               options={[
-                { value: 100, label: "Low" },
-                { value: 200, label: "Medium" },
-                { value: 300, label: "High" },
+                { value: 100, label: t("Low") },
+                { value: 200, label: t("Medium") },
+                { value: 300, label: t("High") },
               ]}
             />
             {title_modal === "Edit task" ? (
@@ -119,29 +108,16 @@ const TaskModal = ({ open, onClose, onSubmit, title_modal, task = {} }) => {
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 options={[
-                  { value: 100, label: "Todo" },
-                  { value: 200, label: "Doing" },
-                  { value: 300, label: "Done" },
+                  { value: 100, label: t("Todo") },
+                  { value: 200, label: t("Doing") },
+                  { value: 300, label: t("Done") },
                 ]}
               />
             ) : null}
-            <FormInput
-              type="date"
-              name="date"
-              label="Start Date"
-              value={initialDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <FormInput
-              type="date"
-              name="finaldate"
-              label="End Date"
-              value={finalDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-
+            <FormInput type="date" name="date" label={t("Start Date")} value={initialDate} onChange={(e) => setStartDate(e.target.value)} />
+            <FormInput type="date" name="finaldate" label={t("End Date")} value={finalDate} onChange={(e) => setEndDate(e.target.value)} />
             <button className="submit-button" type="submit">
-              Submit
+              {t("Submit")}
             </button>
           </div>
         </form>

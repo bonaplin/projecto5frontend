@@ -14,14 +14,15 @@ import { useNavigate } from "react-router-dom";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import MessageIcon from "@mui/icons-material/Message";
 import Dropdown from "react-bootstrap/Dropdown";
-
+import LanguageSwitcher from "../../translations/LanguageSwitcher.js";
+import { useTranslation } from "react-i18next";
 function Header() {
   const navigate = useNavigate();
   const role = userStore((state) => state.role);
   const username = userStore((state) => state.username);
   const userimg = userStore((state) => state.photoURL);
   const token = userStore((state) => state.token); // Get the token from the store
-
+  const { t } = useTranslation();
   const [user, setUser] = useState(userStore.getState()); // Get the user from the store
 
   const notifications = notificationStore((state) => state.notifications);
@@ -146,7 +147,7 @@ function Header() {
 
             {role === "po" || role === "sm" ? (
               <Dropdown.Item onClick={handleTasksDeletedClick}>
-                <DeleteOutlineOutlinedIcon /> Deleted Tasks
+                <DeleteOutlineOutlinedIcon /> {t("Deleted Tasks")}
               </Dropdown.Item>
             ) : null}
             {role === "po" ? (
@@ -164,6 +165,8 @@ function Header() {
       </div>
 
       <div className="header__right dropdown-container">
+        <LanguageSwitcher />
+        <label className="header-role">{role}</label>
         <label className="header-name">{username}</label>
 
         <Dropdown>
@@ -174,7 +177,7 @@ function Header() {
                   <MessageIcon />
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
                     {unreadCount}
-                    <span className="visually-hidden">unread messages</span>
+                    <span className="visually-hidden">{t("unread messages")}</span>
                   </span>
                 </div>
               ) : (
@@ -189,10 +192,10 @@ function Header() {
                 <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
                   <div className="btn-group" role="group" aria-label="Basic outlined example">
                     <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
-                      Mark All as Read
+                      {t("Mark All as Read")}
                     </button>
                     <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
-                      Clear All
+                      {t("Clear All")}
                     </button>
                   </div>
                 </Dropdown.Item>
@@ -204,7 +207,7 @@ function Header() {
                       style={{ backgroundColor: notification.read ? "white" : "#9999" }}
                       // onClick={() => markNotificationAsRead(notification.id)}
                     >
-                      {"New message from " +
+                      {t("New message from ") +
                         notification.sender +
                         ". (" +
                         notification.time.substring(11, 16) +
@@ -217,7 +220,7 @@ function Header() {
                   ))}
               </>
             ) : (
-              <Dropdown.Item>No Notifications to see</Dropdown.Item>
+              <Dropdown.Item>{t("No Notifications to see")}</Dropdown.Item>
             )}
           </Dropdown.Menu>
         </Dropdown>

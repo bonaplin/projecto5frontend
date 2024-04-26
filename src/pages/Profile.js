@@ -11,7 +11,9 @@ import { useTaskStore } from "../stores/useTaskStore";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import ChatSidebar from "../components/chat/ChatSideBar";
 import AsideOffCanvas from "../components/chat/AsideOffCanvas";
+import { useTranslation } from "react-i18next";
 function Profile() {
+  const { t } = useTranslation();
   const { selectedUser } = useParams();
   const username = userStore((state) => state.username); // Get the username from the Zustand store
   const token = userStore.getState().token; // Get the token from the Zustand store
@@ -125,12 +127,12 @@ function Profile() {
                   ({inputs.firstname} {inputs.lastname})
                 </h3>
               </div>
-              <img src={inputs.photoURL} alt="Profile" className="edit-profile-img" />
+              <img src={inputs.photoURL} alt={t("Profile")} className="edit-profile-img" />
             </div>
 
-            <DisplayProfile name="email" value={inputs.email} />
-            <button className="yes-no yes" type="button" value="Chat" onClick={handleChatClicks}>
-              Chat
+            <DisplayProfile name={t("email")} value={inputs.email} />
+            <button className="yes-no yes" type="button" value={t("Chat")} onClick={handleChatClicks}>
+              {t("Chat")}
             </button>
 
             <div
@@ -142,7 +144,7 @@ function Profile() {
               }}
             >
               {inputs.taskcount === 0 ? (
-                <h1>No tasks</h1>
+                <h1>{t("No tasks")}</h1>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart width={300} height={300}>
@@ -156,8 +158,8 @@ function Profile() {
               )}
             </div>
             <div className="button-group">
-              <button className="yes-no no" type="button" value="Cancel" onClick={() => navigate("/users")}>
-                Cancel
+              <button className="yes-no no" type="button" value={t("Cancel")} onClick={() => navigate("/users")}>
+                {t("Cancel")}
               </button>
               <AsideOffCanvas show={showChat} handleClose={handleCloseChat} user={selectedUser} />
             </div>
