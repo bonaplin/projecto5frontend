@@ -3,19 +3,29 @@ import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import { userStore } from "../stores/UserStore";
 import { statisticsStore } from "../stores/Statistics";
+import { tsuccess } from "../components/messages/Message";
 import { AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, BarChart } from "recharts";
 // import { taskStore } from "../stores/TaskStore";
 
 function Dashboard() {
   const token = userStore((state) => state.token);
   const statistics = statisticsStore((state) => state);
-
+  const [expirationTime, setExpirationTime] = useState(0);
   useEffect(() => {
     getUserStats();
     getTaskStats();
     getRegistrationUserStats();
     getTaskComulative();
     getCategoryCount();
+  }, []);
+
+  useEffect(() => {
+    async function fetchExpirationTime() {
+      const time = await getExpirationTime();
+      setExpirationTime(time);
+    }
+
+    fetchExpirationTime();
   }, []);
 
   function getUserStats() {
@@ -122,7 +132,51 @@ function Dashboard() {
       .then((data) => {
         console.log(data);
         statisticsStore.getState().setCategoryListOrdered(data);
-        statisticsStore((state) => state.setCategoryListOrdered(data));
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  }
+
+  const handleSelectChange = (event) => {
+    setExpirationTime(event.target.value);
+  };
+
+  const handlePutNewTokenTime = () => {
+    putExpirationTime(expirationTime);
+  };
+  function putExpirationTime() {
+    fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/admin/token-expiration", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+      body: JSON.stringify({
+        defaultTokenExpirationMinutes: expirationTime,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        tsuccess("Token expiration time updated");
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  }
+
+  function getExpirationTime() {
+    fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/admin/token-expiration", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        token: token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setExpirationTime(data.expirationTime);
       })
       .catch((error) => {
         console.log("Error:", error);
@@ -178,16 +232,19 @@ function Dashboard() {
     );
   };
 
-  const renderCardUsers = (data, title) => {
+  //cinza
+  const renderCardUsers = (data, title, footer) => {
     return (
-      <div className="col-lg-4 col-md-6 my-3">
+      <div className="col-lg-6 col-md-6 my-3">
         <div className="card">
           <div className="card-header text-center bg-secondary text-white">{title}</div>
           <div className="card-body display-6 text-center">{data}</div>
+          {footer && <div className="card-footer text-center">{footer}</div>}
         </div>
       </div>
     );
   };
+  //blue
   const renderCardTasks = (data, title) => {
     return (
       <div className="col-lg-4 col-md-6 col-sm-12 my-3 ">
@@ -221,23 +278,51 @@ function Dashboard() {
     );
   };
 
+  const dropdown = (data, title, footer) => {
+    return (
+      <div className="col-lg-4 col-md-4 col-sm-4 my-3">
+        <div className="card">
+          <div className="card-header text-center bg-primary text-white">{title}</div>
+          <div className="card-body text-center">
+            <select value={expirationTime} onChange={handleSelectChange}>
+              <option value="">Select token expiration time</option>
+              <option value="5">5 minutes</option>
+              <option value="10">10 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="20">20 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="60">60 minutes</option>
+            </select>
+          </div>
+          <div className="card-footer text-center">
+            <button type="button" className="btn btn-light" onClick={handlePutNewTokenTime}>
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Header />
       <div className="container">
         <div className="col-lg-12">
-          <h1>Dashboard</h1>
+          <h1 className="text-center">Dashboard</h1>
         </div>
 
         <main className="row">
-          <div className="col-lg-4 col-md-12 my-3">
+          <div className="col-lg-8 col-md-8 col-sm-8 my-3">
             <div className="card">
               <div className="card-header text-center text-secondary">Total users</div>
               <div className="card-body display-6 text-center">{statistics.countUsers}</div>
             </div>
           </div>
-          {renderCardUsers(statistics.confirmedUsers, "Confirmed users")}
-          {renderCardUsers(statistics.unconfirmedUsers, "Uncorfirmed users")}
+          {dropdown(1, "Token expiration time: ", "Minutes")}
+
+          {renderCardUsers(statistics.confirmedUsers, "Confirmed users", `Total users: ${statistics.countUsers}`)}
+          {renderCardUsers(statistics.unconfirmedUsers, "Uncorfirmed users", `Total users: ${statistics.countUsers}`)}
 
           {renderCardAvgTime(statistics.avgTasksPerUser, "Task average per user", "Tasks")}
           {renderCardAvgTime(statistics.avgTimeToBeDone, "Time average to task be done", "Hours")}
@@ -256,9 +341,7 @@ function Dashboard() {
             </div>
           </div>
         </main>
-        <footer>
-          <h3>footer do dashboard</h3>
-        </footer>
+        <footer></footer>
       </div>
       <Footer />
     </>

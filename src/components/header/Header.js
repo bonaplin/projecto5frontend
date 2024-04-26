@@ -95,14 +95,14 @@ function Header() {
 
       if (response.ok) {
         // Se a resposta for bem-sucedida, marque a notificação como lida no Zustand store
-        const notifications = notifications.map((notification) => {
+        const notificationss = notifications.map((notification) => {
           if (notification.id === id) {
             notification.read = true;
           }
           return notification;
         });
 
-        notificationStore.getState().setNotifications(notifications);
+        notificationStore.getState().setNotifications(notificationss);
 
         if (id) {
           handleMarkAsRead(id);

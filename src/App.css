@@ -294,3 +294,7 @@ p {
   background-color: none;
   color: var(--task-color);
 }
+
+.table > tbody {
+  vertical-align: middle;
+}

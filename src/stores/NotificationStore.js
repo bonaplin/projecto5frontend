@@ -15,7 +15,7 @@ export const notificationStore = create(
       },
       setNotifications: (notifications) => set({ notifications }),
       addNotificationCounter: () => set((state) => ({ notificationCounter: state.notificationCounter + 1 })),
-      clearNotifications: () => set({ notifications: [], unreadNotifications: [], readNotifications: [] }),
+      clearNotifications: () => set({ notifications: [] }),
       setNotificationCounter: (counter) => set({ notificationCounter: counter }),
     }),
     {
