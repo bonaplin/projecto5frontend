@@ -48,13 +48,7 @@ function Header() {
         },
       });
       const data = await response.json();
-      userStore.getState().updatePhotoUrl(data.photoURL);
-      userStore.getState().updateUsername(data.username);
-      userStore.getState().updateFirstname(data.firstname);
-      userStore.getState().updateLastname(data.lastname);
-      userStore.getState().updateEmail(data.email);
-      userStore.getState().updatePhone(data.phone);
-      userStore.getState().updateRole(data.role);
+      userStore.getState().updateUser(data);
     }
     fetchData();
   }, [token]);
@@ -95,7 +89,6 @@ function Header() {
       });
 
       if (response.ok) {
-        // Se a resposta for bem-sucedida, marque a notificação como lida no Zustand store
         const notificationss = notifications.map((notification) => {
           if (notification.id === id) {
             notification.read = true;
@@ -162,11 +155,22 @@ function Header() {
             ) : null}
           </Dropdown.Menu>
         </Dropdown>
+        <LanguageSwitcher />
       </div>
 
       <div className="header__right dropdown-container">
-        <LanguageSwitcher />
-        <label className="header-role">{role}</label>
+        <label className="header-role">
+          {role === "po"
+            ? t("Product Owner")
+            : role === "sm"
+            ? t("Scrum Master")
+            : role === "dev"
+            ? t("Developer")
+            : role === "qa"
+            ? t("Quality Assurance")
+            : t("User")}
+        </label>
+
         <label className="header-name">{username}</label>
 
         <Dropdown>

@@ -9,18 +9,18 @@ import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useTranslation } from "react-i18next";
 import FormInput from "../formInput/FormInput";
-function Table({ data, columns, handleEdit, handleDelete, handleDeleteTasks, handleActiveChange, handleUserClick, type }) {
+function Table({ data, columns, columnMapping, handleEdit, handleDelete, handleDeleteTasks, handleActiveChange, handleUserClick, type }) {
   // react - table acessores (obrigatorio em react-table)
   const { t } = useTranslation();
   const tableConfig = React.useMemo(
     () => ({
       columns: columns.map((column) => ({
-        Header: column,
+        Header: columnMapping[column],
         accessor: column,
       })),
       data,
     }),
-    [data, columns]
+    [data, columns, columnMapping]
   );
   const {
     getTableProps,

@@ -176,6 +176,14 @@ function Categories() {
   /* ******* ******* *********************************** *****/
 
   let columns = ["id", "title", "description", "owner", "actions"];
+  let columnMapping = {
+    id: t("ID"),
+    title: t("Title"),
+    description: t("Description"),
+    owner: t("Owner"),
+    actions: t("Actions"),
+  };
+
   const editCategoryy = t("Edit Category");
   const createCategory = t("Create Category");
   const deleteCategory = t("Delete Category");
@@ -223,7 +231,15 @@ function Categories() {
             </>
           )}
 
-          <Table class="table" type="category" data={categories} columns={columns} handleDelete={handleDelete} handleEdit={handleEdit} />
+          <Table
+            class="table"
+            type="category"
+            data={categories}
+            columns={columns}
+            columnMapping={columnMapping}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+          />
         </div>
         <Footer />
       </div>

@@ -48,6 +48,7 @@ img {
 }
 
 @media screen and (max-width: 768px) {
+  .header-role,
   .header-name {
     display: none;
   }

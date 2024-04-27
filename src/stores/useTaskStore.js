@@ -4,8 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export const useTaskStore = create(
   persist(
     (set, get) => ({
-      allTasks: [], //é para testar o filtro do Profile
-      // deletedTasks: [],
+      allTasks: [],
 
       usernameDD: null,
       categoryDD: null,
@@ -63,8 +62,23 @@ export const useTaskStore = create(
             return state;
           }
           return {
-            allTasks: state.allTasks.filter((task) => task.id !== taskId), // Remove the task with the given taskId
+            allTasks: state.allTasks.filter((task) => task.id !== taskId),
           };
+        }),
+      sortTasks: () =>
+        set((state) => {
+          const sortedTasks = [...state.allTasks];
+          sortedTasks.sort((a, b) => {
+            // Sort by priority
+            if (a.priority !== b.priority) {
+              return b.priority - a.priority;
+            }
+            if (a.startDate !== b.startDate) {
+              return new Date(a.startDate) - new Date(b.startDate);
+            }
+            return new Date(a.endDate) - new Date(b.endDate);
+          });
+          return { allTasks: sortedTasks };
         }),
     }),
     {

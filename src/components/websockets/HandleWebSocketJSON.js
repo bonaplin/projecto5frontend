@@ -35,15 +35,10 @@ function handleWebSocketJSON(json) {
     case MessageType.MESSAGE_READ:
       handleMessageRead();
       break;
+
     case MessageType.MESSAGE_READ_CONFIRMATION:
-      console.log("Message read confirmation", data);
-      console.log("vai marcar como lida nas mensagens!");
       handleMessageMarkAsRead(data);
       break;
-    // case MessageType.MESSAGE_MARK_AS_READ:
-    //   console.log("Message mark as read", data);
-    //   handleMessageMarkAsRead(data);
-    //   break;
 
     case MessageType.TYPE_20:
       break;
@@ -116,6 +111,10 @@ function handleWebSocketJSON(json) {
       handleStatisticCategoryCount(data);
       break;
 
+    case MessageType.STATISTIC_ACTIVE_USERS:
+      handleStatisticActiveUsers(data);
+      break;
+
     case "error":
       console.error("Erro recebido", data);
       break;
@@ -156,10 +155,6 @@ function handleWebSocketJSON(json) {
     allTasks.addTaskToAll(data);
   }
   function handleMoveTask(data) {
-    console.log(data);
-    // tasks.removeTask(data.id, data.lastStatus);
-    // tasks.addTask(data, data.status, data.index);
-
     allTasks.updateTaskToAll(data);
   }
   function handleDeleteTask(data) {
@@ -237,6 +232,11 @@ function handleWebSocketJSON(json) {
   function handleMessageMarkAsRead(data) {
     websockets.markAsRead(data);
     console.log("Message marked as read", data);
+  }
+  function handleStatisticActiveUsers(data) {
+    statistics.setActiveUsers(data.activeUsers);
+    statistics.setInactiveUsers(data.inactiveUsers);
+    console.log(data);
   }
 }
 export { handleWebSocketJSON };

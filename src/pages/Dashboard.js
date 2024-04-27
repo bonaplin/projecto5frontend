@@ -29,6 +29,7 @@ function Dashboard() {
     fetchExpirationTime();
   }, []);
 
+  //TODO users ativos e inactivos
   function getUserStats() {
     fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/statistic/user", {
       method: "GET",
@@ -45,10 +46,11 @@ function Dashboard() {
         statisticsStore.getState().setConfirmedUsers(confirmed);
         const unconfirmed = data.unconfirmedUsers;
         statisticsStore.getState().setUnconfirmedUsers(unconfirmed);
-
+        const active = data.activeUsers;
+        statisticsStore.getState().setActiveUsers(active);
+        const inactive = data.inactiveUsers;
+        statisticsStore.getState().setInactiveUsers(inactive);
         console.log("all", unconfirmed);
-
-        // console.log(data);
       })
       .catch((error) => {
         console.log("Error:", error);
@@ -70,8 +72,7 @@ function Dashboard() {
         const tasksPerTodo = data.todoPerUser;
         const tasksPerDoing = data.doingPerUser;
         const tasksPerDone = data.donePerUser;
-        const avgDone = data.avgTimeToBeDone;
-        // const userPerTime = data.data;
+        const avgDone = parseFloat(data.avgTimeToBeDone).toFixed(2); // only 2 decimal places
 
         statisticsStore.getState().setAvgTasksPerUser(avgTasks);
         statisticsStore.getState().setTodoPerUser(tasksPerTodo);
@@ -236,9 +237,20 @@ function Dashboard() {
   //cinza
   const renderCardUsers = (data, title, footer) => {
     return (
-      <div className="col-lg-6 col-md-6 my-3">
+      <div className="col-lg-3 col-md-6 col-sm-6 my-3">
         <div className="card">
           <div className="card-header text-center bg-secondary text-white">{title}</div>
+          <div className="card-body display-6 text-center">{data}</div>
+          {footer && <div className="card-footer text-center">{footer}</div>}
+        </div>
+      </div>
+    );
+  };
+  const renderCardUsersActivity = (data, title, footer) => {
+    return (
+      <div className="col-lg-3 col-md-6 col-sm-6 my-3">
+        <div className="card">
+          <div className="card-header text-center bg-warning text-white">{title}</div>
           <div className="card-body display-6 text-center">{data}</div>
           {footer && <div className="card-footer text-center">{footer}</div>}
         </div>
@@ -322,8 +334,11 @@ function Dashboard() {
           </div>
           {dropdown(1, t("Token expiration time: "), t("Minutes"))}
 
-          {renderCardUsers(statistics.confirmedUsers, t("Confirmed users"), `${t("Total users: ")}${statistics.countUsers}`)}
-          {renderCardUsers(statistics.unconfirmedUsers, t("Uncorfirmed users"), `${t("Total users: ")}${statistics.countUsers}`)}
+          {renderCardUsers(statistics.confirmedUsers, t("Confirmed users"))}
+          {renderCardUsers(statistics.unconfirmedUsers, t("Uncorfirmed users"))}
+
+          {renderCardUsersActivity(statistics.activeUsers, t("Active users"))}
+          {renderCardUsersActivity(statistics.inactiveUsers, t("Inactive users"))}
 
           {renderCardAvgTime(statistics.avgTasksPerUser, t("Task average per user"), t("Tasks"))}
           {renderCardAvgTime(statistics.avgTimeToBeDone, t("Time average to task be done"), t("Hours"))}

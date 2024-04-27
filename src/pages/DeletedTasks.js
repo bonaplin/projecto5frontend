@@ -55,6 +55,13 @@ function DeletedTasks() {
   }, []);
   const deleted = allTasks.filter((task) => task.active === false);
   let columns = ["id", "title", "description", "owner", "actions"];
+  let columnMapping = {
+    id: t("ID"),
+    title: t("Title"),
+    description: t("Description"),
+    owner: t("Owner"),
+    actions: t("Actions"),
+  };
 
   const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
   function handleDelete(task) {
@@ -264,7 +271,15 @@ function DeletedTasks() {
               />
             )}
 
-            <Table class="table" type="deleted_tasks" data={deleted} columns={columns} handleDelete={handleDelete} handleEdit={handleRestore} />
+            <Table
+              class="table"
+              type="deleted_tasks"
+              data={deleted}
+              columns={columns}
+              columnMapping={columnMapping}
+              handleDelete={handleDelete}
+              handleEdit={handleRestore}
+            />
           </div>
           <Footer />
         </div>

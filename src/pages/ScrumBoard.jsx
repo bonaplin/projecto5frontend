@@ -26,7 +26,7 @@ import MessageType from "../components/websockets/MessageType.js";
 import { useTranslation } from "react-i18next";
 
 export default function ScrumBoard() {
-  const { allTasks, usernameDD, setUsernameDD, categoryDD, setCategoryDD, clearDD } = useTaskStore((state) => state);
+  const { allTasks, usernameDD, setUsernameDD, categoryDD, setCategoryDD, clearDD, sortTasks } = useTaskStore((state) => state);
   const { categoriesNames, setCategoriesNames } = categoriesStore((state) => state);
   const { users, userNames } = userStore((state) => state);
   const { token, role } = userStore((state) => state);
@@ -307,6 +307,7 @@ export default function ScrumBoard() {
   }
   function handleResetFilter() {
     clearDD();
+    sortTasks();
   }
 
   const todo = allTasks.filter(
@@ -352,11 +353,6 @@ export default function ScrumBoard() {
                     type={t("Category")}
                     onChange={(e) => setCategoryDD(e)}
                   />
-                  {/* <select onChange={handleSelect} defaultValue={locale}>
-                    {["en", "pt", "fr"].map((lang) => (
-                      <option key={lang}>{lang}</option>
-                    ))}
-                  </select> */}
                 </div>
               </div>
             )}

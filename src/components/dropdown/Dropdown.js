@@ -4,9 +4,7 @@ const Dropdown = ({ data, onChange, type, value }) => {
   const handleChange = (e) => {
     onChange(e.target.value);
   };
-  console.log(data);
-  console.log(data.value);
-  console.log(data.username);
+
   return (
     <select value={value || ""} onChange={handleChange} style={{ width: "100%" }}>
       <option value="" disabled>

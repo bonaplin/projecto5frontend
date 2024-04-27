@@ -246,7 +246,17 @@ function Users() {
     //console.log("User Active Edited", data);
   }
   /* ******* ******* *********************************** *****/
-
+  let columnMapping = {
+    photoURL: t("photoURL"),
+    username: t("username"),
+    firstname: t("firstname"),
+    lastname: t("lastname"),
+    email: t("Email"),
+    phone: t("phone"),
+    role: t("role"),
+    active: t("active"),
+    actions: t("actions"),
+  };
   let columns = ["photoURL", "username", "firstname", "lastname", "email", "phone", "role", "active", "actions"];
 
   if (role === "sm" || role === "dev") {
@@ -334,6 +344,7 @@ function Users() {
             data={users}
             type="user"
             columns={columns}
+            columnMapping={columnMapping}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleDeleteTasks={handleDeleteTasks}
