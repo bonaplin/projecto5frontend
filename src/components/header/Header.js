@@ -123,128 +123,131 @@ function Header() {
 
   function handleClickNotifications() {}
 
+  console.log("Header render");
   return (
-    <header className="header">
-      <div className="header__left dropdown-container">
-        <Dropdown>
-          <Dropdown.Toggle id="dropdown-basic">
-            <img id="logo-menu" className="icon" src={icon} alt="Icon" draggable="false" />
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item>
-              <TasksButton />
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <UsersButton />
-            </Dropdown.Item>
-
-            {role === "po" || role === "sm" ? (
-              <Dropdown.Item onClick={handleTasksDeletedClick}>
-                <DeleteOutlineOutlinedIcon /> {t("Deleted Tasks")}
+    <>
+      <header className="header">
+        <div className="header__left dropdown-container">
+          <Dropdown>
+            <Dropdown.Toggle id="dropdown-basic">
+              <img id="logo-menu" className="icon" src={icon} alt="Icon" draggable="false" />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item>
+                <TasksButton />
               </Dropdown.Item>
-            ) : null}
-            {role === "po" ? (
-              <>
-                <Dropdown.Item>
-                  <CategoriesButton />
+              <Dropdown.Item>
+                <UsersButton />
+              </Dropdown.Item>
+
+              {role === "po" || role === "sm" ? (
+                <Dropdown.Item onClick={handleTasksDeletedClick}>
+                  <DeleteOutlineOutlinedIcon /> {t("Deleted Tasks")}
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <DashboardButton />
-                </Dropdown.Item>
-              </>
-            ) : null}
-          </Dropdown.Menu>
-        </Dropdown>
-        <LanguageSwitcher />
-      </div>
+              ) : null}
+              {role === "po" ? (
+                <>
+                  <Dropdown.Item>
+                    <CategoriesButton />
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <DashboardButton />
+                  </Dropdown.Item>
+                </>
+              ) : null}
+            </Dropdown.Menu>
+          </Dropdown>
+          <LanguageSwitcher />
+        </div>
 
-      <div className="header__right dropdown-container">
-        <label className="header-role">
-          {role === "po"
-            ? t("Product Owner")
-            : role === "sm"
-            ? t("Scrum Master")
-            : role === "dev"
-            ? t("Developer")
-            : role === "qa"
-            ? t("Quality Assurance")
-            : t("User")}
-        </label>
+        <div className="header__right dropdown-container">
+          <label className="header-role">
+            {role === "po"
+              ? t("Product Owner")
+              : role === "sm"
+              ? t("Scrum Master")
+              : role === "dev"
+              ? t("Developer")
+              : role === "qa"
+              ? t("Quality Assurance")
+              : t("User")}
+          </label>
 
-        <label className="header-name">{username}</label>
+          <label className="header-name">{username}</label>
 
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
-              {notifications.length > 0 ? (
-                <div className="btn btn-primary position-relative">
-                  <MessageIcon />
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
-                    {unreadCount}
-                    <span className="visually-hidden">{t("unread messages")}</span>
-                  </span>
-                </div>
-              ) : (
-                <MessageIcon />
-              )}
-            </div>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            {notifications.length > 0 ? (
-              <>
-                <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
-                  <div className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
-                      {t("Mark All as Read")}
-                    </button>
-                    <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
-                      {t("Clear All")}
-                    </button>
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <div onClick={handleClickNotifications} style={{ cursor: "pointer" }}>
+                {notifications.length > 0 ? (
+                  <div className="btn btn-primary position-relative">
+                    <MessageIcon />
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ backgroundColor: "none" }}>
+                      {unreadCount}
+                      <span className="visually-hidden">{t("unread messages")}</span>
+                    </span>
                   </div>
-                </Dropdown.Item>
-                {notifications.length > 0 &&
-                  notifications.map((notification, index) => (
-                    <Dropdown.Item
-                      key={index}
-                      href={`/users/${notification.sender}`}
-                      style={{ backgroundColor: notification.read ? "white" : "#9999" }}
-                      // onClick={() => markNotificationAsRead(notification.id)}
-                    >
-                      {t("New message from ") +
-                        notification.sender +
-                        ". (" +
-                        notification.time.substring(11, 16) +
-                        " " +
-                        notification.time.substring(8, 10) +
-                        "/" +
-                        notification.time.substring(5, 7) +
-                        ")"}
-                    </Dropdown.Item>
-                  ))}
-              </>
-            ) : (
-              <Dropdown.Item>{t("No Notifications to see")}</Dropdown.Item>
-            )}
-          </Dropdown.Menu>
-        </Dropdown>
+                ) : (
+                  <MessageIcon />
+                )}
+              </div>
+            </Dropdown.Toggle>
 
-        <Dropdown>
-          <Dropdown.Toggle variant="success" id="dropdown-basic">
-            <img className="profile-icon" src={userimg} alt="Profile" />
-          </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {notifications.length > 0 ? (
+                <>
+                  <Dropdown.Item style={{ display: "flex", justifyContent: "center" }}>
+                    <div className="btn-group" role="group" aria-label="Basic outlined example">
+                      <button type="button" className="btn btn-outline-primary" style={{ padding: "0.5rem" }} onClick={() => markNotificationAsRead()}>
+                        {t("Mark All as Read")}
+                      </button>
+                      <button type="button" className="btn btn-outline-warning" style={{ padding: "0.5rem" }} onClick={handleClearAll}>
+                        {t("Clear All")}
+                      </button>
+                    </div>
+                  </Dropdown.Item>
+                  {notifications.length > 0 &&
+                    notifications.map((notification, index) => (
+                      <Dropdown.Item
+                        key={index}
+                        href={`/users/${notification.sender}`}
+                        style={{ backgroundColor: notification.read ? "white" : "#9999" }}
+                        // onClick={() => markNotificationAsRead(notification.id)}
+                      >
+                        {t("New message from ") +
+                          notification.sender +
+                          ". (" +
+                          notification.time.substring(11, 16) +
+                          " " +
+                          notification.time.substring(8, 10) +
+                          "/" +
+                          notification.time.substring(5, 7) +
+                          ")"}
+                      </Dropdown.Item>
+                    ))}
+                </>
+              ) : (
+                <Dropdown.Item>{t("No Notifications to see")}</Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
 
-          <Dropdown.Menu>
-            <Dropdown.Item>
-              <ProfileButton />
-            </Dropdown.Item>
-            <Dropdown.Item>
-              <LogoutButton />
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-    </header>
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <img className="profile-icon" src={userimg} alt="Profile" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item>
+                <ProfileButton />
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <LogoutButton />
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      </header>
+    </>
   );
 }
 

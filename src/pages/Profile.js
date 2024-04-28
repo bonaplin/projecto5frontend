@@ -3,10 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import DisplayProfile from "../components/display/DisplayProfile";
-// import { Doughnut } from "react-chartjs-2";
-import Header from "../components/header/Header";
 import { userStore } from "../stores/UserStore";
-import { taskStore } from "../stores/TaskStore";
 import { useTaskStore } from "../stores/useTaskStore";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import ChatSidebar from "../components/chat/ChatSideBar";
@@ -15,7 +12,6 @@ import { useTranslation } from "react-i18next";
 function Profile() {
   const { t } = useTranslation();
   const { selectedUser } = useParams();
-  const username = userStore((state) => state.username); // Get the username from the Zustand store
   const token = userStore.getState().token; // Get the token from the Zustand store
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
@@ -64,22 +60,7 @@ function Profile() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [selectedUser, token]); // Dependências
-
-  // const datatasks = [
-  //   {
-  //     name: "To Do",
-  //     value: inputs.todocount,
-  //   },
-  //   {
-  //     name: "Doing",
-  //     value: inputs.doingcount,
-  //   },
-  //   {
-  //     name: "Done",
-  //     value: inputs.donecount,
-  //   },
-  // ];
+  }, [selectedUser, token]);
 
   const [datatasks, setDatatasks] = useState([]); // State to store the data for the chart
   // Inside your component
@@ -116,7 +97,7 @@ function Profile() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Layout>
         <div className="edit-profile-outer-container">
           <div className="edit-profile-page-wrap">

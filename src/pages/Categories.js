@@ -12,7 +12,6 @@ import ModalYesNo from "../components/modal/ModalYesNo";
 import { categoriesStore } from "../stores/CategoriesStore";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import Tooltip from "@mui/material/Tooltip";
-import { South } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
 function Categories() {
@@ -189,7 +188,7 @@ function Categories() {
   const deleteCategory = t("Delete Category");
   return (
     <>
-      <Header />
+      {/* <Header /> */}
 
       <div className="Home users">
         <div className="page-wrap">
@@ -241,7 +240,7 @@ function Categories() {
             handleEdit={handleEdit}
           />
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   );

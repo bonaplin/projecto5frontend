@@ -18,7 +18,7 @@ export const userStore = create(
       role: "",
       firstname: "",
       lastname: "",
-      photourl: "",
+      photoURL: "",
       email: "",
       phone: "",
       confirmed: "",

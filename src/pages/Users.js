@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/header/Header";
+// import Header from "../components/header/Header";
 import Table from "../components/table/Table";
 import Footer from "../components/footer/Footer";
 import "./Users.css";
@@ -293,7 +293,7 @@ function Users() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="Home users">
         <div className="page-wrap">
           <h2>{t("All Users")}</h2>
@@ -352,7 +352,7 @@ function Users() {
             handleUserClick={handleUserClick}
           />
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   );

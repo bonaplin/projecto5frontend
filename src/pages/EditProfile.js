@@ -19,22 +19,21 @@ function EditProfile() {
 
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
-
+  const { username, token, role, firstname, lastname, photoURL, email, phone, updateUser } = userStore((state) => state);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const location = useLocation();
-  //const userDetails = userStore.getState().userDetails; // Adicione esta linha
-  // console.log(JSON.stringify(userDetails) + "user details");
+
   const navigate = useNavigate();
+
   const [inputs, setInputs] = useState({
-    username: userStore.getState().username,
-    email: userStore.getState().email,
-    firstname: userStore.getState().firstname,
-    lastname: userStore.getState().lastname,
-    phone: userStore.getState().phone,
-    photoURL: userStore.getState().photoURL,
-    role: userStore.getState().role,
+    username: username,
+    email: email,
+    firstname: firstname,
+    lastname: lastname,
+    phone: phone,
+    photoURL: photoURL,
+    role: role,
   });
 
   // console.log("inputs", JSON.stringify(inputs));
@@ -49,7 +48,6 @@ function EditProfile() {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const token = userStore.getState().token; // Get the token from the Zustand store
     const selectedUser = userStore.getState().username; // Get the username from the Zustand store
 
     // console.log("inputs", JSON.stringify(inputs));
@@ -66,6 +64,7 @@ function EditProfile() {
 
     if (response.ok) {
       tsuccess(t("Profile updated successfully"));
+      updateUser(inputs); // Update the user in the Zustand store
     } else {
       switch (response.status) {
         case 400:
@@ -141,7 +140,7 @@ function EditProfile() {
   };
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <Layout>
         <div className="edit-profile-outer-container">
           <div className="edit-profile-page-wrap">

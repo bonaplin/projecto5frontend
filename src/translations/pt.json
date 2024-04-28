@@ -1,7 +1,7 @@
 {
   "translations": {
     "tasks": "Tarefas",
-    "TO DO": "A FAZER",
+    "TO DO": "POR FAZER",
     "DOING": "A DECORRER",
     "DONE": "TERMINADO",
     "Yes": "Sim",
@@ -119,6 +119,8 @@
     "active": "Ativo",
     "actions": "Ações",
     "View": "Ver",
-    "Page": "Página"
+    "Page": "Página",
+    "Title": "Título",
+    "Actions": "Ações"
   }
 }

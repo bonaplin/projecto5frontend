@@ -10,8 +10,6 @@ import "../App.css";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "../components/scrum-board/Column";
-import Header from "../components/header/Header";
-import Footer from "../components/footer/Footer";
 import "react-toastify/dist/ReactToastify.css";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RestoreIcon from "@mui/icons-material/Restore";
@@ -34,16 +32,8 @@ export default function ScrumBoard() {
   const [selectedTask, setSelectedTask] = useState({});
   const { send } = webSocketStore();
 
-  const locale = userStore((state) => state.locale);
-  const updateLocale = userStore((state) => state.updateLocale);
-
   const { t, i18n } = useTranslation();
-  console.log("locale", locale);
-  console.log(i18n.language);
 
-  // const handleSelect = (e) => {
-  //   updateLocale(e.target.value);
-  // };
   function handleAddClick() {
     setIsAddTaskModal(true);
   }
@@ -225,7 +215,7 @@ export default function ScrumBoard() {
       }
     }
     fetchTasks();
-  }, [,]);
+  }, []);
 
   // Fetch users --------------------------------------------------------------------------------------------------------
   useEffect(() => {
@@ -328,7 +318,7 @@ export default function ScrumBoard() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="Home">
         <div className="page-wrap">
           <h2>{t("tasks")}</h2>
@@ -405,7 +395,7 @@ export default function ScrumBoard() {
             </div>
           </DragDropContext>
         </div>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </>
   );

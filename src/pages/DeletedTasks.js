@@ -212,7 +212,7 @@ function DeletedTasks() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {(role === "po" || role === "sm") && (
         <div className="Home users">
           <div className="page-wrap">
@@ -281,7 +281,7 @@ function DeletedTasks() {
               handleEdit={handleRestore}
             />
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       )}
     </>

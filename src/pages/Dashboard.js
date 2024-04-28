@@ -68,7 +68,7 @@ function Dashboard() {
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
-        const avgTasks = data.avgTaskPerUser;
+        const avgTasks = parseFloat(data.avgTaskPerUser).toFixed(0);
         const tasksPerTodo = data.todoPerUser;
         const tasksPerDoing = data.doingPerUser;
         const tasksPerDone = data.donePerUser;
@@ -319,7 +319,7 @@ function Dashboard() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <div className="container">
         <div className="col-lg-12">
           <h1 className="text-center">{t("Dashboard")}</h1>
@@ -359,7 +359,7 @@ function Dashboard() {
         </main>
         <footer></footer>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

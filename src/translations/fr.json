@@ -95,7 +95,7 @@
     "Chat": "Discussion",
     "No tasks": "Aucune tâche",
 
-    "Description": "Description :",
+    "Description": "Description",
     "Owner": "Propriétaire",
     "Start Date": "Date de Début",
     "End Date": "Date de Fin",
@@ -119,6 +119,8 @@
     "active": "Actif",
     "actions": "Actions",
     "View": "Voir",
-    "Page": "Page"
+    "Page": "Page",
+    "Title": "Titre",
+    "Actions": "Actions"
   }
 }

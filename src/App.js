@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { BrowserRouter as Router, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-import Singup from "./pages/Singup";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import Categories from "./pages/Categories";
@@ -31,19 +30,11 @@ function App() {
   return (
     <WebSocketProvider token={token}>
       <Router>
+        {token && <Header />}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/singup" element={<Singup />} />
           <Route path="/forbidden" element={<Forbidden />} />
-          <Route
-            path="/header"
-            element={
-              <PrivateRoute>
-                <Header />
-              </PrivateRoute>
-            }
-          />
           <Route
             path="/scrum-board"
             element={
@@ -93,13 +84,13 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/footer" element={<Footer />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/confirm-account/:token" element={<ConfirmAccount />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <ToastContainer />
       </Router>
+      <Footer />
     </WebSocketProvider>
   );
 }

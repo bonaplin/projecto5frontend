@@ -8,7 +8,7 @@ function Footer() {
 
   return (
     <footer>
-      <p>&copy; {year()} Scrum Board. Projeto 4 - Ricardo Carvalho.</p>
+      <p>&copy; {year()} Scrum Board. Final - Ricardo Carvalho.</p>
     </footer>
   );
 }
