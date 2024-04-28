@@ -274,7 +274,7 @@ function Dashboard() {
         <div className="card">
           <div className="card-header text-center bg-secondary text-white">{title}</div>
           <div className="card-body">{renderChartLine(data)}</div>
-          <div className="card-footer text-center">Users registered over time</div>
+          {/* <div className="card-footer text-center">Users registered over time</div> */}
         </div>
       </div>
     );
@@ -340,8 +340,8 @@ function Dashboard() {
           {renderCardUsersActivity(statistics.activeUsers, t("Active users"))}
           {renderCardUsersActivity(statistics.inactiveUsers, t("Inactive users"))}
 
-          {renderCardAvgTime(statistics.avgTasksPerUser, t("Task average per user"), t("Tasks"))}
-          {renderCardAvgTime(statistics.avgTimeToBeDone, t("Time average to task be done"), t("Hours"))}
+          {renderCardAvgTime(parseFloat(statistics.avgTasksPerUser).toFixed(0), t("Task average per user"), t("Tasks"))}
+          {renderCardAvgTime(parseFloat(statistics.avgTimeToBeDone).toFixed(2), t("Time average to task be done"), t("Hours"))}
 
           {renderCardTasks(statistics.todoPerUser, t("TODO tasks"))}
           {renderCardTasks(statistics.doingPerUser, t("DOING tasks"))}

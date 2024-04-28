@@ -4,7 +4,8 @@ import { userStore } from "../stores/UserStore";
 import { categoriesStore } from "../stores/CategoriesStore";
 // import { taskStore } from "../stores/TaskStore";
 import { useTaskStore } from "../stores/useTaskStore.js";
-
+import DropdownLaptop from "../components/filterorder/DropdownLaptop.js";
+import DropdownMobile from "../components/filterorder/DropdownMobile.js";
 import "./ScrumBoard.css";
 import "../App.css";
 import { tsuccess, twarn, terror } from "../components/messages/Message";
@@ -316,6 +317,15 @@ export default function ScrumBoard() {
   const deleteTask = t("Delete task");
   const editTask = t("Edit task");
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth > 500);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth > 500);
+    window.addEventListener("resize", handleResize);
+
+    // Limpeza na desmontagem
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       {/* <Header /> */}
@@ -332,20 +342,40 @@ export default function ScrumBoard() {
             <Tooltip title={resetFilter}>
               <RestoreIcon className="restore-button" onClick={handleResetFilter} fontSize="large" />
             </Tooltip>
-            {(role === "sm" || role === "po") && (
-              <div className="filter-container">
-                <div className="filter-side">
-                  <Dropdown className="filter-dropdown" value={usernameDD} data={userNames} type={t("Username")} onChange={(e) => setUsernameDD(e)} />
-                  <Dropdown
-                    className="filter-dropdown"
-                    value={categoryDD}
-                    data={categoriesNames}
-                    type={t("Category")}
-                    onChange={(e) => setCategoryDD(e)}
-                  />
-                </div>
-              </div>
-            )}
+            {(role === "sm" || role === "po") &&
+              // <div className="filter-container">
+              //   <div className="filter-side">
+              //     <Dropdown className="filter-dropdown" value={usernameDD} data={userNames} type={t("Username")} onChange={(e) => setUsernameDD(e)} />
+              //     <Dropdown
+              //       className="filter-dropdown"
+              //       value={categoryDD}
+              //       data={categoriesNames}
+              //       type={t("Category")}
+              //       onChange={(e) => setCategoryDD(e)}
+              //     />
+              //   </div>
+              // </div>
+              (isMobile ? (
+                <DropdownLaptop
+                  usernameDD={usernameDD}
+                  setUsernameDD={setUsernameDD}
+                  categoryDD={categoryDD}
+                  setCategoryDD={setCategoryDD}
+                  userNames={userNames}
+                  categoriesNames={categoriesNames}
+                  t={t}
+                />
+              ) : (
+                <DropdownMobile
+                  usernameDD={usernameDD}
+                  setUsernameDD={setUsernameDD}
+                  categoryDD={categoryDD}
+                  setCategoryDD={setCategoryDD}
+                  userNames={userNames}
+                  categoriesNames={categoriesNames}
+                  t={t}
+                />
+              ))}
           </div>
           {isDeleteModalOpen && (
             <ModalYesNo
