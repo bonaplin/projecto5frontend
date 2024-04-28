@@ -147,7 +147,8 @@ function handleWebSocketJSON(json) {
   }
   function handleLogout(data) {
     twarn("Time out, you are logged out!");
-    users.logout();
+    userStore.getState().logout();
+    window.location.href = "/login";
   }
   function handleNewTask(data) {
     tinfo("New task created!");
