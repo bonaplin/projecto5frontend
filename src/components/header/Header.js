@@ -123,7 +123,7 @@ function Header() {
 
   function handleClickNotifications() {}
 
-  console.log("Header render");
+  // console.log("Header render");
   return (
     <>
       <header className="header">

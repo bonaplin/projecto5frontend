@@ -36,7 +36,7 @@ function DeletedTasks() {
 
       if (response.ok) {
         addTasks(data);
-        console.log(allTasks);
+        // console.log(allTasks);
       } else {
         switch (response.status) {
           case 401:

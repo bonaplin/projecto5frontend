@@ -211,7 +211,7 @@ function handleWebSocketJSON(json) {
   }
   function handleStatisticCategoryCount(data) {
     statistics.setCategoryListOrdered(data.data);
-    console.log(data);
+    // console.log(data);
   }
   function handleRestoreTask(data) {
     // taskStore.getState().addTask(data, data.status);
@@ -225,18 +225,18 @@ function handleWebSocketJSON(json) {
       receiver: data.sender,
       id: data.id,
     };
-    console.log("Sending read confirmation", readConfirmation);
+    // console.log("Sending read confirmation", readConfirmation);
     let jsonString = JSON.stringify(readConfirmation);
     websockets.send(jsonString);
   }
   function handleMessageMarkAsRead(data) {
     websockets.markAsRead(data);
-    console.log("Message marked as read", data);
+    // console.log("Message marked as read", data);
   }
   function handleStatisticActiveUsers(data) {
     statistics.setActiveUsers(data.activeUsers);
     statistics.setInactiveUsers(data.inactiveUsers);
-    console.log(data);
+    // console.log(data);
   }
 }
 export { handleWebSocketJSON };

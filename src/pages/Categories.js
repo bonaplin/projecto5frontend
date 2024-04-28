@@ -25,7 +25,7 @@ function Categories() {
   // const [categorieData, setCategorieData] = useState([]);
   const [editCategory, setEditCategory] = useState(null);
 
-  console.log("Categories token", token);
+  // console.log("Categories token", token);
   const fetchCategories = async () => {
     const response = await fetch("http://localhost:8080/demo-1.0-SNAPSHOT/rest/categories/", {
       headers: {

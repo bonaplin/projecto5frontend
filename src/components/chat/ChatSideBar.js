@@ -11,7 +11,7 @@ function ChatSideBar({ onClose }) {
   const { selectedUser } = useParams();
   useEffect(() => {
     webSocketStore.getState().setSelectedUser(selectedUser);
-    console.log("selectedUser", selectedUser);
+    // console.log("selectedUser", selectedUser);
 
     return () => {
       webSocketStore.getState().setSelectedUser(null);
@@ -42,7 +42,7 @@ function ChatSideBar({ onClose }) {
         return response.json();
       })
       .then((data) => {
-        console.log("GET messages with user");
+        // console.log("GET messages with user");
         // Atualize a webSocketStore com as mensagens recebidas
         webSocketStore.getState().setMessages(data);
       })

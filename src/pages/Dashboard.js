@@ -50,7 +50,7 @@ function Dashboard() {
         statisticsStore.getState().setActiveUsers(active);
         const inactive = data.inactiveUsers;
         statisticsStore.getState().setInactiveUsers(inactive);
-        console.log("all", unconfirmed);
+        // console.log("all", unconfirmed);
       })
       .catch((error) => {
         console.log("Error:", error);
@@ -132,7 +132,7 @@ function Dashboard() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         statisticsStore.getState().setCategoryListOrdered(data);
       })
       .catch((error) => {
@@ -160,7 +160,7 @@ function Dashboard() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         tsuccess(t("Token expiration time updated"));
       })
       .catch((error) => {
